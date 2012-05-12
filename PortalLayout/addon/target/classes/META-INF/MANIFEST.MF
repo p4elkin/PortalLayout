@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Built-By: p4elkin
+Build-Jdk: 1.6.0_29
+Created-By: Maven Integration for Eclipse
+Implementation-Title: portal-layout - Addon
+Implementation-Vendor: 
+Implementation-Version: 0.0.1-SNAPSHOT
+Vaadin-Package-Version: 1
+
