@@ -1,8 +1,5 @@
 package org.vaadin.addon.portallayout.client.ui;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.vaadin.addon.portallayout.client.dnd.util.DOMUtil;
@@ -64,7 +61,7 @@ public class PortletHeader extends ComplexPanel implements Container {
     
     private final Element uidlContainer = DOM.createDiv();
     
-    private final Portlet parentPortlet;
+    private final VPortlet parentPortlet;
 
     private Widget child;
     
@@ -79,10 +76,6 @@ public class PortletHeader extends ComplexPanel implements Container {
     private boolean closable = true;
 
     private boolean collapsible = true;
-
-    private Map<String, Button> actionIdToButton = new HashMap<String, Button>();
-    
-    private Map<String, String> actionIdToIcon = new HashMap<String, String>();
     
     private ClickHandler closeButtonClickHandler = new ClickHandler() {
         @Override
@@ -113,9 +106,9 @@ public class PortletHeader extends ComplexPanel implements Container {
         }
     };
 
-    public PortletHeader(final Portlet parent, final ApplicationConnection client) {
+    public PortletHeader(final VPortlet parent) {
         super();
-        this.client = client;
+        
         setElement(container);
         vcaption = new VPortletCaption(null, client);
         container.setClassName(getClassName());
@@ -166,7 +159,7 @@ public class PortletHeader extends ComplexPanel implements Container {
     }
 
     public static String getClassName() {
-        return Portlet.getClassName() + CLASSNAME;
+        return VPortlet.getClassName() + CLASSNAME;
     }
 
     public void setClosable(boolean closable) {
@@ -185,53 +178,6 @@ public class PortletHeader extends ComplexPanel implements Container {
 
     public boolean isCollapsible() {
         return collapsible;
-    }
-
-    public void updateActions(final Map<String, String> actions) {
-        final Set<String> keys = actions.keySet();
-        final Iterator<String> it = keys.iterator();
-        while (it.hasNext()) {
-            final String key = it.next();
-            final String icon = actions.get(key);
-            final String currentIcon = actionIdToIcon.get(key);
-            if (currentIcon == null ||
-                !currentIcon.equals(icon)) {
-                Button button = actionIdToButton.get(key);
-                if (button == null) {
-                    button = new Button();
-                    button.addClickHandler(new ClickHandler() {
-                        @Override
-                        public void onClick(ClickEvent event) {
-                            parentPortlet.onActionTriggered(key);
-                        }
-                    });
-                    button.addMouseDownHandler(new MouseDownHandler() {
-                        
-                        @Override
-                        public void onMouseDown(MouseDownEvent event) {
-                            event.stopPropagation();
-                            
-                        }
-                    });
-                    insert(button, buttonContainer, 0, true);
-                }
-                button.getElement().getStyle().setBackgroundImage("url("+ icon +")");
-                button.setStyleName(getClassName() + BUTTON);
-                actionIdToButton.put(key, button);
-                actionIdToIcon.put(key, icon);
-            }
-        }
-        for (final String id : actionIdToIcon.keySet()) {
-            if (!actions.containsKey(id)) {
-                final Button b = actionIdToButton.get(id);
-                if (b != null) {
-                    b.removeFromParent();
-                    orphan(b);
-                }
-                actionIdToButton.remove(id);
-                actionIdToIcon.remove(id);
-            }
-        }
     }
     
     public void setHeaderWidget(Widget widget) {
@@ -325,6 +271,10 @@ public class PortletHeader extends ComplexPanel implements Container {
             return new RenderSpace(uidlContainer.getOffsetWidth(), uidlContainer.getOffsetHeight());
         }
         return null;
+    }
+
+    public void setAppConnection(ApplicationConnection client) {
+        this.client = client;
     }
 
 }

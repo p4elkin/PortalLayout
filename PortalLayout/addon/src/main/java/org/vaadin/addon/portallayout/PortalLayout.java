@@ -36,14 +36,15 @@ import com.vaadin.ui.Layout.SpacingHandler;
 @SuppressWarnings("serial")
 @ClientWidget(value = VPortalLayout.class, loadStyle = LoadStyle.EAGER)
 public class PortalLayout extends AbstractLayout implements SpacingHandler, LayoutClickNotifier {
-    
+
     public static class PortletClosedEvent extends Component.Event {
 
         public static final java.lang.reflect.Method PORTLET_CLOSED;
 
         static {
             try {
-                PORTLET_CLOSED = PortletCloseListener.class.getDeclaredMethod("portletClosed",new Class[] { PortletClosedEvent.class });
+                PORTLET_CLOSED = PortletCloseListener.class.getDeclaredMethod("portletClosed",
+                        new Class[] { PortletClosedEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
@@ -71,9 +72,8 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
 
         static {
             try {
-                PORTLET_COLLAPSE_STATE_CHANGED = PortletCollapseListener.class
-                        .getDeclaredMethod("portletCollapseStateChanged",
-                                new Class[] { PortletCollapseEvent.class });
+                PORTLET_COLLAPSE_STATE_CHANGED = PortletCollapseListener.class.getDeclaredMethod(
+                        "portletCollapseStateChanged", new Class[] { PortletCollapseEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
@@ -97,9 +97,11 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
 
     private static final String CLICK_EVENT = EventId.LAYOUT_CLICK;
 
-    private final Map<AnimationType, Boolean> animationModeMap = new EnumMap<AnimationType, Boolean>(AnimationType.class);
+    private final Map<AnimationType, Boolean> animationModeMap = new EnumMap<AnimationType, Boolean>(
+            AnimationType.class);
 
-    private final Map<AnimationType, Integer> animationSpeedMap = new EnumMap<AnimationType, Integer>(AnimationType.class);
+    private final Map<AnimationType, Integer> animationSpeedMap = new EnumMap<AnimationType, Integer>(
+            AnimationType.class);
 
     private final List<Component> components = new ArrayList<Component>();
 
@@ -136,21 +138,18 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public String addAction(final Component c, final ToolbarAction action) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Component does not belong to this portal!");
+            throw new IllegalArgumentException("Component does not belong to this portal!");
         }
         return details.addAction(action);
     }
 
     public void addCloseListener(final PortletCloseListener listener) {
-        addListener(VPortalLayout.PORTLET_CLOSED_EVENT_ID,
-                PortletClosedEvent.class, listener,
+        addListener(VPortalLayout.PORTLET_CLOSED_EVENT_ID, PortletClosedEvent.class, listener,
                 PortletClosedEvent.PORTLET_CLOSED);
     }
 
     public void addCollapseListener(final PortletCollapseListener listener) {
-        addListener(VPortalLayout.PORTLET_COLLAPSE_EVENT_ID,
-                PortletCollapseEvent.class, listener,
+        addListener(VPortalLayout.PORTLET_COLLAPSE_EVENT_ID, PortletCollapseEvent.class, listener,
                 PortletCollapseEvent.PORTLET_COLLAPSE_STATE_CHANGED);
     }
 
@@ -173,8 +172,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
 
     @Override
     public void addListener(LayoutClickListener listener) {
-        addListener(CLICK_EVENT, LayoutClickEvent.class, listener,
-                LayoutClickListener.clickMethod);
+        addListener(CLICK_EVENT, LayoutClickEvent.class, listener, LayoutClickListener.clickMethod);
     }
 
     public void addPortletStyleName(final Component c, final String style) {
@@ -184,7 +182,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
             requestRepaint();
         }
     }
-    
+
     public void removePortletStyleName(final Component c, final String style) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details != null) {
@@ -194,7 +192,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
             details.removeStyle(style);
         }
     }
-    
+
     public void clearPortletStyleNames(final Component c) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details != null) {
@@ -216,20 +214,16 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         if (variables.containsKey(PortalConst.PORTLET_ACTION_TRIGGERED)) {
             final Map<String, Object> portletParameters = (Map<String, Object>) variables
                     .get(PortalConst.PORTLET_ACTION_TRIGGERED);
-            final Component component = (Component) portletParameters
-                    .get(PortalConst.PAINTABLE_MAP_PARAM);
-            final String actionId = (String) portletParameters
-                    .get(PortalConst.PORTLET_ACTION_ID);
+            final Component component = (Component) portletParameters.get(PortalConst.PAINTABLE_MAP_PARAM);
+            final String actionId = (String) portletParameters.get(PortalConst.PORTLET_ACTION_ID);
             onActionTriggered(component, actionId);
         }
 
         if (variables.containsKey(PortalConst.PORTLET_POSITION_UPDATED)) {
             final Map<String, Object> portletParameters = (Map<String, Object>) variables
                     .get(PortalConst.PORTLET_POSITION_UPDATED);
-            final Component component = (Component) portletParameters
-                    .get(PortalConst.PAINTABLE_MAP_PARAM);
-            final Integer portletPosition = (Integer) portletParameters
-                    .get(PortalConst.PORTLET_POSITION);
+            final Component component = (Component) portletParameters.get(PortalConst.PAINTABLE_MAP_PARAM);
+            final Integer portletPosition = (Integer) portletParameters.get(PortalConst.PORTLET_POSITION);
             onComponentPositionUpdated(component, portletPosition);
         }
 
@@ -237,20 +231,17 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
             final Map<String, Object> params = (Map<String, Object>) variables
                     .get(PortalConst.PORTLET_COLLAPSE_STATE_CHANGED);
 
-            onPortletCollapsed(
-                    (Component) params.get(PortalConst.PAINTABLE_MAP_PARAM),
+            onPortletCollapsed((Component) params.get(PortalConst.PAINTABLE_MAP_PARAM),
                     (Boolean) params.get(PortalConst.PORTLET_COLLAPSED));
         }
 
         if (variables.containsKey(PortalConst.PORTLET_REMOVED)) {
-            final Component child = (Component) variables
-                    .get(PortalConst.PORTLET_REMOVED);
+            final Component child = (Component) variables.get(PortalConst.PORTLET_REMOVED);
             doComponentRemoveLogic(child);
         }
 
         if (variables.containsKey(PortalConst.PORTLET_CLOSED)) {
-            final Component child = (Component) variables
-                    .get(PortalConst.PORTLET_CLOSED);
+            final Component child = (Component) variables.get(PortalConst.PORTLET_CLOSED);
             fireCloseEvent(child);
             removeComponent(child);
         }
@@ -270,13 +261,12 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         final int index = components.indexOf(c);
 
         if (index != -1) {
-            throw new IllegalArgumentException(
-                    "Component has already been added to the portal!");
+            throw new IllegalArgumentException("Component has already been added to the portal!");
         }
 
         c.setWidth("100%");
-        final ComponentDetails details = c.getParent() instanceof PortalLayout ? ((PortalLayout) c
-                .getParent()).getDetails(c) : new ComponentDetails();
+        final ComponentDetails details = c.getParent() instanceof PortalLayout ? ((PortalLayout) c.getParent())
+                .getDetails(c) : new ComponentDetails();
         componentToDetails.put(c, details);
         if (position == components.size()) {
             components.add(c);
@@ -347,8 +337,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public boolean isClosable(Component c) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         return details.isClosable();
     }
@@ -364,8 +353,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         final ComponentDetails details = componentToDetails.get(c);
 
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
 
         return details.isCollapsed();
@@ -382,8 +370,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         final ComponentDetails details = componentToDetails.get(c);
 
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
 
         return details.isCollapsible();
@@ -410,8 +397,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public boolean isLocked(Component c) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         return details.isLocked();
     }
@@ -436,12 +422,10 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         return isSpacingEnabled;
     }
 
-    private void onActionTriggered(final Component component,
-            final String actionId) {
+    private void onActionTriggered(final Component component, final String actionId) {
         final ComponentDetails details = componentToDetails.get(component);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Wrong Component! Action Trigger Failed!");
+            throw new IllegalArgumentException("Wrong Component! Action Trigger Failed!");
         }
         final ToolbarAction action = details.getActionById(actionId);
         action.execute(new Context(this, component));
@@ -456,8 +440,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
      * @param newPosition
      *            New position of the component.
      */
-    private void onComponentPositionUpdated(final Component component,
-            int newPosition) {
+    private void onComponentPositionUpdated(final Component component, int newPosition) {
 
         // The client side reported that portlet is no longer there - remove
         // component if so.
@@ -490,13 +473,11 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
      * @param isCollapsed
      *            True if the portlet was collapsed, false - expanded.
      */
-    private void onPortletCollapsed(final Component component,
-            Boolean isCollapsed) {
+    private void onPortletCollapsed(final Component component, Boolean isCollapsed) {
         final ComponentDetails details = componentToDetails.get(component);
 
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
 
         details.setCollapsed(isCollapsed);
@@ -519,18 +500,12 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
 
             target.startTag("portlet");
             target.startTag("body");
-            target.addAttribute(PortalConst.PORTLET_CLOSABLE,
-                    childComponentDetails.isClosable());
-            target.addAttribute(PortalConst.PORTLET_LOCKED,
-                    childComponentDetails.isLocked());
-            target.addAttribute(PortalConst.PORTLET_COLLAPSED,
-                    childComponentDetails.isCollapsed());
-            target.addAttribute(PortalConst.PORTLET_COLLAPSIBLE,
-                    childComponentDetails.isCollapsible());
-            target.addAttribute("styles", childComponentDetails.getStyles()
-                    .toArray());
-            final Map<String, ToolbarAction> actions = childComponentDetails
-                    .getActions();
+            target.addAttribute(PortalConst.PORTLET_CLOSABLE, childComponentDetails.isClosable());
+            target.addAttribute(PortalConst.PORTLET_LOCKED, childComponentDetails.isLocked());
+            target.addAttribute(PortalConst.PORTLET_COLLAPSED, childComponentDetails.isCollapsed());
+            target.addAttribute(PortalConst.PORTLET_COLLAPSIBLE, childComponentDetails.isCollapsible());
+            target.addAttribute("styles", childComponentDetails.getStyles().toArray());
+            final Map<String, ToolbarAction> actions = childComponentDetails.getActions();
             if (actions != null && actions.entrySet().size() > 0) {
                 final Iterator<?> actionIt = actions.entrySet().iterator();
                 final String[] ids = new String[actions.entrySet().size()];
@@ -539,8 +514,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
                 while (actionIt.hasNext()) {
                     final Map.Entry<?, ?> entry = (Entry<?, ?>) actionIt.next();
                     final String id = (String) entry.getKey();
-                    final ThemeResource r = ((ToolbarAction) entry.getValue())
-                            .getIcon();
+                    final ThemeResource r = ((ToolbarAction) entry.getValue()).getIcon();
                     final String icon = "theme://" + r.getResourceId();
                     ids[pos] = id;
                     iconUrls[pos++] = icon;
@@ -572,27 +546,25 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public void removeAction(final Component c, String actionId) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Component does not belong to this portal!");
+            throw new IllegalArgumentException("Component does not belong to this portal!");
         }
         details.removeAction(actionId);
     }
 
     public void removeCloseListener(final PortletCloseListener listener) {
-        removeListener(VPortalLayout.PORTLET_CLOSED_EVENT_ID,
-                PortletClosedEvent.class, listener);
+        removeListener(VPortalLayout.PORTLET_CLOSED_EVENT_ID, PortletClosedEvent.class, listener);
     }
 
     public void removeCollapseListener(final PortletCollapseListener listener) {
-        removeListener(VPortalLayout.PORTLET_COLLAPSE_EVENT_ID,
-                PortletCollapseEvent.class, listener);
+        removeListener(VPortalLayout.PORTLET_COLLAPSE_EVENT_ID, PortletCollapseEvent.class, listener);
     }
 
     /*
      * (non-Javadoc)
      * 
      * @see
-     * com.vaadin.ui.AbstractComponentContainer#removeComponent(com.vaadin.ui.Component)
+     * com.vaadin.ui.AbstractComponentContainer#removeComponent(com.vaadin.ui
+     * .Component)
      */
     @Override
     public void removeComponent(Component c) {
@@ -606,20 +578,17 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     }
 
     @Override
-    public void replaceComponent(final Component oldComponent,
-            final Component newComponent) {
+    public void replaceComponent(final Component oldComponent, final Component newComponent) {
         final int position = components.indexOf(oldComponent);
         if (position < 0) {
-            throw new IllegalArgumentException(
-                    "Portal does not contain the portlet. Replacement failed.");
+            throw new IllegalArgumentException("Portal does not contain the portlet. Replacement failed.");
         }
         componentToDetails.put(newComponent, componentToDetails.get(oldComponent));
         removeComponent(oldComponent);
         doAddComponent(newComponent, position);
     }
 
-    public void setAnimationMode(final AnimationType animationType,
-            boolean animate) {
+    public void setAnimationMode(final AnimationType animationType, boolean animate) {
         animationModeMap.put(animationType, animate);
         requestRepaint();
     }
@@ -640,8 +609,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public void setClosable(final Component c, boolean closable) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         if (details.isClosable() != closable) {
             details.setClosable(closable);
@@ -660,8 +628,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public void setCollapsed(final Component c, boolean isCollapsed) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         if (isCollapsed != details.isCollapsed()) {
             details.setCollapsed(isCollapsed);
@@ -677,8 +644,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public void setCollapsible(final Component c, boolean isCollapsible) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         if (isCollapsible != details.isCollapsible()) {
             details.setCollapsible(isCollapsible);
@@ -718,8 +684,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public void setLocked(final Component c, boolean isLocked) {
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
-            throw new IllegalArgumentException(
-                    "Portal doesn not contain this component!");
+            throw new IllegalArgumentException("Portal doesn not contain this component!");
         }
         if (isLocked != details.isLocked()) {
             details.setLocked(isLocked);
@@ -747,7 +712,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         final ComponentDetails details = componentToDetails.get(child);
         if (details == null) {
             throw new IllegalArgumentException("Portal doesn not contain this component!");
-        }       
+        }
         details.setHeaderComponent(headerComponent);
         headerComponent.setParent(child);
         headerComponent.attach();
@@ -757,7 +722,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
         final ComponentDetails details = componentToDetails.get(c);
         if (details == null) {
             throw new IllegalArgumentException("Portal doesn not contain this component!");
-        }               
+        }
         return details.getHeaderComponent();
     }
 }

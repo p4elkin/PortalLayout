@@ -16,9 +16,9 @@ public class PortalDropPositioner extends SimplePanel implements PortalObject {
 
     private final SimplePanel internalContent = new SimplePanel();
 
-    private final Portlet portlet;
+    private final VPortlet portlet;
     
-    public PortalDropPositioner(final Portlet portlet) {
+    public PortalDropPositioner(final VPortlet portlet) {
         super();
         setStyleName(CLASS_NAME);
         this.portlet = portlet;
@@ -62,7 +62,7 @@ public class PortalDropPositioner extends SimplePanel implements PortalObject {
     }
 
     @Override
-    public Portlet getPortletRef() {
+    public VPortlet getPortletRef() {
         return portlet;
     }
 }

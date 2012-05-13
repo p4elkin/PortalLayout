@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.vaadin</groupId>
+  <groupId>org.vaadin.addons</groupId>
   <artifactId>portal-layout-root</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -32,9 +32,7 @@
           <finalName>${addonFullName}</finalName>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
-            <!-- First extract the manifest from the JAR -->
             <descriptor>assembly/extractManifest.xml</descriptor>
-            <!-- Then build the ZIP, including a copy of the manifest -->
             <descriptor>assembly/addon.xml</descriptor>
           </descriptors>
         </configuration>

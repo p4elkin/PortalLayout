@@ -30,7 +30,7 @@ public class PortalDropController extends AbstractPositioningDropController {
     private int targetDropIndex = -1;
 
     public PortalDropController(final VPortalLayout portal) {
-        super(portal.getContentPanel());
+        super(portal);
         this.portal = portal;
     }
 
@@ -38,21 +38,21 @@ public class PortalDropController extends AbstractPositioningDropController {
         return LocationWidgetComparator.BOTTOM_RIGHT_COMPARATOR;
     }
 
-    private void updatePortletLocationOnDrop(final Portlet portlet) {
-        final VPortalLayout currentParent = portlet.getParentPortal();
+    private void updatePortletLocationOnDrop(final VPortlet portlet) {
+        final VPortalLayout currentParent = portlet.getPortal();
 
         if (portal.getChildPosition(portlet) != targetDropIndex) {
-            portlet.setParentPortal(portal);
             portal.onPortletPositionUpdated(portlet, targetDropIndex);
         }
         
-        if (!currentParent.equals(portal))
+        if (!currentParent.equals(portal)) {
             currentParent.onPortletMovedOut(portlet);
+        }
     }
 
     private int updateDropPosition(final DragContext context) {
         final CoordinateLocation curLocation = new CoordinateLocation(context.mouseX, context.mouseY);
-        int targetDropIndex = DOMUtil.findIntersect(portal.getContentPanel(), curLocation, getLocationWidgetComparator());
+        int targetDropIndex = DOMUtil.findIntersect(portal, curLocation, getLocationWidgetComparator());
         return targetDropIndex;
     }
 
@@ -61,7 +61,7 @@ public class PortalDropController extends AbstractPositioningDropController {
     }
 
     protected PortalDropPositioner newPositioner(DragContext context) {
-        final Portlet portlet = (Portlet) context.selectedWidgets.get(0);
+        final VPortlet portlet = (VPortlet) context.selectedWidgets.get(0);
         if (portlet != null)
             return new PortalDropPositioner(portlet);
         return null;
@@ -73,8 +73,8 @@ public class PortalDropController extends AbstractPositioningDropController {
         assert targetDropIndex != -1 : "Should not happen after onPreviewDrop did not veto";
         final Widget widget = context.selectedWidgets.get(0);
         removeDummy();
-        updatePortletLocationOnDrop((Portlet) widget);
-        portal.addToRootElement((Portlet) widget, targetDropIndex);
+        updatePortletLocationOnDrop((VPortlet) widget);
+        portal.addToRootElement((VPortlet) widget, targetDropIndex);
     }
 
     @Override

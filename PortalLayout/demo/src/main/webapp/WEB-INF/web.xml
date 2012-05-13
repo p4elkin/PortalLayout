@@ -12,8 +12,13 @@
         <init-param>
             <description>Vaadin application class to start</description>
             <param-name>application</param-name>
-            <param-value>org.vaadin.addon.portallayout.demo.AddonDemoApplication</param-value>
+            <param-value>org.vaadin.addon.portallayout.demo.PortallayoutApplication</param-value>
         </init-param>
+        <init-param>
+			<description>Application widgetset</description>
+			<param-name>widgetset</param-name>
+			<param-value>org.vaadin.addon.portallayout.demo.PortalLayoutTestWidgetset</param-value>
+		</init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>Vaadin Application Servlet</servlet-name>
