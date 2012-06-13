@@ -11,6 +11,14 @@
     box-shadow: 5px 5px 5px #ccc;
 }
 
+.v-portlet-header {
+	float: none !important;
+}
+
+.v-portlet-content {
+	float: none !important;
+}
+
 .v-app .v-portlet-content {
     background-color: #FEFEFE;
     -moz-box-shadow: 5px 5px 5px #ccc;

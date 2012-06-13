@@ -3,8 +3,11 @@ package org.vaadin.addon.portallayout;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import org.vaadin.addon.portallayout.client.ui.VPortalLayout;
+import org.vaadin.addon.portallayout.client.ui.portal.VPortal;
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -15,9 +18,13 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.TextArea;
 
 @SuppressWarnings("serial")
-@ClientWidget(value=VPortalLayout.class, loadStyle=LoadStyle.EAGER)
-public class Portal extends AbstractLayout {
+@ClientWidget(value=VPortal.class, loadStyle=LoadStyle.EAGER)
+public class Portal extends AbstractLayout implements ServerSideHandler {
 
+    private ServerSideProxy proxy = new ServerSideProxy(this) {
+        
+    };
+    
     private List<Portlet> portlets = new LinkedList<Portlet>();
     
     public Portal() {
@@ -69,7 +76,15 @@ public class Portal extends AbstractLayout {
         for (final Portlet portlet : portlets) {
             portlet.paint(target);
         }
+        proxy.paintContent(target);
     }
+    
+    @Override
+    public void changeVariables(Object source, Map<String, Object> variables) {
+        super.changeVariables(source, variables);
+        proxy.changeVariables(source, variables);
+    }
+    
     
     @Override
     public Iterator<Component> getComponentIterator() {
@@ -92,5 +107,15 @@ public class Portal extends AbstractLayout {
                 return wrappedIt.hasNext();
             }
         };
+    }
+
+    @Override
+    public Object[] initRequestFromClient() {
+        return new Object[]{};
+    }
+
+    @Override
+    public void callFromClient(String method, Object[] params) {
+        throw new RuntimeException("unknown client call " + method);
     }
 }

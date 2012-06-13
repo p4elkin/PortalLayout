@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.vaadin.addon.portallayout.client.ui.AnimationType;
 import org.vaadin.addon.portallayout.client.ui.PortalConst;
 import org.vaadin.addon.portallayout.client.ui.VPortalLayout;
+import org.vaadin.addon.portallayout.client.ui.portlet.AnimationType;
 import org.vaadin.addon.portallayout.event.Context;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;

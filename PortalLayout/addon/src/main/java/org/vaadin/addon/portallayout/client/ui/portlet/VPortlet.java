@@ -1,14 +1,15 @@
-package org.vaadin.addon.portallayout.client.ui;
+package org.vaadin.addon.portallayout.client.ui.portlet;
 
 import java.util.Set;
 
+import org.vaadin.addon.portallayout.client.ui.VPortalLayout;
+import org.vaadin.addon.portallayout.client.ui.portal.VPortal;
 import org.vaadin.csstools.client.ComputedStyle;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
@@ -50,19 +51,19 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     private Size contentSizeInfo = new Size(0, 0);
 
-    private PortletHeader header;
+    private PortletHeader header = new PortletHeader(this);;
+
+    private Element containerElement = DOM.createDiv();
 
     private Widget content;
-
-    private Element containerElement;
-
+    
     private Element contentDiv;
 
-    private VPortalLayout parentPortal = null;
+    private VPortal parentPortal = null;
 
-    private final ContentCollapseAnimation animation;
+    private final ContentCollapseAnimation animation = new ContentCollapseAnimation();
 
-    private final FadeAnimation fadeAnimation;
+    private final FadeAnimation fadeAnimation = new FadeAnimation();
 
     private FloatSize relativeSize;
 
@@ -73,59 +74,51 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
     private PortletLockState isLocked = PortletLockState.PLS_NOT_SET;
 
     private ComputedStyle contentStyle = null;
-    
+
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("setClosable", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    setClosable((Boolean)params[0]);
+                    setClosable((Boolean) params[0]);
                 }
             });
-            
+
             register("setCollapsibe", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    setCollapsible((Boolean)params[0]);
+                    setCollapsible((Boolean) params[0]);
                 }
             });
-            
+
             register("setLocked", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    setLocked((Boolean)params[0]);
+                    setLocked((Boolean) params[0]);
                 }
             });
-            
+
             register("setCollapsed", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    setCollapsed((Boolean)params[0]);
+                    setCollapsed((Boolean) params[0]);
                 }
             });
-            
+
         }
     };
-    
+
     protected ApplicationConnection client;
 
     protected String paintableId;
-    
+
     public VPortlet() {
         super();
 
-        this.animation = new ContentCollapseAnimation();
-        this.fadeAnimation = new FadeAnimation();
-
-        containerElement = DOM.createDiv();
-
-        header = new PortletHeader(this);
-        header.getElement().getStyle().setFloat(Style.Float.LEFT);
         add(header, containerElement);
 
         contentDiv = DOM.createDiv();
         contentDiv.addClassName(CLASSNAME + CONTENT_CLASSNAME);
-        contentDiv.getStyle().setFloat(Style.Float.LEFT);
         contentDiv.getStyle().setOverflow(Overflow.HIDDEN);
 
         containerElement.appendChild(contentDiv);
@@ -140,7 +133,8 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
     }
 
     @Override
-    public void setWidgetSizes(int width, int height) {}
+    public void setWidgetSizes(int width, int height) {
+    }
 
     public int getVBorders() {
         return isCollapsed ? 0 : contentStyle.getBorder()[0] + contentStyle.getBorder()[2];
@@ -156,10 +150,6 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     public Widget getContent() {
         return content;
-    }
-
-    public void setContent(Widget content) {
-        this.content = content;
     }
 
     public Widget getDraggableArea() {
@@ -200,15 +190,15 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
     }
 
     public void close() {
-        fadeAnimation.start(
-                false,
-                parentPortal.shouldAnimate(AnimationType.AT_CLOSE) ? parentPortal
-                        .getAnimationSpeed(AnimationType.AT_CLOSE) : 0);
+        fadeAnimation.start(false,
+                false 
+               /*parentPortal.shouldAnimate(AnimationType.AT_CLOSE)*/ ? 2000/*parentPortal.getAnimationSpeed(AnimationType.AT_CLOSE)*/ : 0);
     }
 
     public void toggleCollapseState() {
-        animation.start(parentPortal.shouldAnimate(AnimationType.AT_COLLAPSE) ? parentPortal
-                .getAnimationSpeed(AnimationType.AT_COLLAPSE) : 0);
+        /*animation.start(parentPortal.shouldAnimate(AnimationType.AT_COLLAPSE) ? parentPortal.getAnimationSpeed(AnimationType.AT_COLLAPSE)
+                : 0);*/
+        animation.start(0);
     }
 
     public Size getContentSizeInfo() {
@@ -220,7 +210,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
     }
 
     public int getSpacing() {
-        return parentPortal.getVerticalSpacing();
+        return 0;//parentPortal.getVerticalSpacing();
     }
 
     public void setClosable(boolean closable) {
@@ -281,10 +271,10 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         super.onLoad();
         header.setWidth("100%");
         contentStyle = new ComputedStyle(contentDiv);
-        int position = parentPortal == null ? -1 : parentPortal.getChildPosition(this);
+        int position = parentPortal == null ? -1 : parentPortal.getPortletIndex(this);
         if (position != -1) {
-            if (parentPortal.shouldAnimate(AnimationType.AT_ATTACH))
-                fadeAnimation.start(true, parentPortal.getAnimationSpeed(AnimationType.AT_ATTACH));
+            if (/*parentPortal.shouldAnimate(AnimationType.AT_ATTACH*/false)
+                fadeAnimation.start(true, 0);//parentPortal.getAnimationSpeed(AnimationType.AT_ATTACH));
         }
     }
 
@@ -293,9 +283,9 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         this.client = client;
         this.paintableId = uidl.getId();
         this.header.setAppConnection(client);
-        
+
         proxy.update(this, uidl, client);
-        
+
         updateHeader(uidl);
         updateContent(uidl);
     }
@@ -305,11 +295,11 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         if (contentUidl != null) {
             final UIDL paintableUidl = contentUidl.getChildUIDL(0);
             final Paintable p = client.getPaintable(paintableUidl);
-            final Widget content = (Widget)p;
+            final Widget content = (Widget) p;
             if (!hasChildComponent(content)) {
                 replaceChildComponent(this.content, content);
                 this.content = content;
-            }            
+            }
             p.updateFromUIDL(paintableUidl, client);
         }
     }
@@ -319,7 +309,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         if (headerUidl != null) {
             final UIDL paintableUidl = headerUidl.getChildUIDL(0);
             final Paintable p = client.getPaintable(paintableUidl);
-            final Widget header = (Widget)p;
+            final Widget header = (Widget) p;
             this.header.setHeaderWidget(header);
             p.updateFromUIDL(paintableUidl, client);
         }
@@ -340,7 +330,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         if (oldComponent != null) {
             remove(oldComponent);
             if (oldComponent instanceof Paintable) {
-                client.unregisterPaintable((Paintable)oldComponent);   
+                client.unregisterPaintable((Paintable) oldComponent);
             }
         }
         add(newComponent, contentDiv);
@@ -370,13 +360,13 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         }
         return null;
     }
-    
+
     @Override
     public void setWidth(String width) {
         super.setWidth(width);
         header.setWidth(width);
     }
-    
+
     private class ContentCollapseAnimation extends Animation {
 
         private int height;
@@ -389,7 +379,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         public void start(int speed) {
             cancel();
             double duration = 0;
-            if (!isCollapsed && isHeightRelative) {
+            /*if (!isCollapsed && isHeightRelative) {
                 height = parentPortal.getRelativePortletHeight(VPortlet.this) - getVBorders();
                 setCollapsed(!isCollapsed);
             } else {
@@ -408,7 +398,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
                     parentPortal.calculatePortletSizes(portletSet);
                     height = content.getOffsetHeight();
                 }
-            }
+            }*/
             if (speed > 0) {
                 duration = (double) height / (double) speed * 1000d;
             }
@@ -419,7 +409,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         protected void onUpdate(double progress) {
             int heightValue = (int) (isCollapsed ? (1 - progress) * height : progress * height);
             contentSizeInfo.setHeight(heightValue);
-            //setPortletHeight(getContentHeight());
+            setHeight(heightValue + "px");
         }
 
         @Override
@@ -434,7 +424,6 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     }
 
-    
     protected class FadeAnimation extends Animation {
 
         private boolean fadeIn;
@@ -458,8 +447,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
                 }
             } else {
                 if (BrowserInfo.get().isIE8()) {
-                    getElement().getStyle().setProperty("filter",
-                            msOpacityPrpertyValue + (int) ((1 - progress) * 100) + ")");
+                    getElement().getStyle().setProperty("filter", msOpacityPrpertyValue + (int) ((1 - progress) * 100) + ")");
                 } else {
                     getElement().getStyle().setOpacity(1 - progress);
                 }
@@ -477,12 +465,11 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         }
     }
 
-
-    public void setPortal(final VPortalLayout portal) {
+    public void setPortal(final VPortal portal) {
         this.parentPortal = portal;
     }
-    
-    public VPortalLayout getPortal() {
+
+    public VPortal getPortal() {
         return parentPortal;
     }
 }

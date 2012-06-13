@@ -6,6 +6,9 @@ import org.vaadin.addon.portallayout.client.dnd.drop.AbstractPositioningDropCont
 import org.vaadin.addon.portallayout.client.dnd.util.CoordinateLocation;
 import org.vaadin.addon.portallayout.client.dnd.util.DOMUtil;
 import org.vaadin.addon.portallayout.client.dnd.util.LocationWidgetComparator;
+import org.vaadin.addon.portallayout.client.ui.portal.VPortal;
+import org.vaadin.addon.portallayout.client.ui.portlet.PortalDropPositioner;
+import org.vaadin.addon.portallayout.client.ui.portlet.VPortlet;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -21,28 +24,28 @@ public class PortalDropController extends AbstractPositioningDropController {
 
     private PortalDropPositioner dummy;
 
-    public PortalDropPositioner getDummy() {
-        return dummy;
-    }
-
-    private VPortalLayout portal;
+    private VPortal portal;
 
     private int targetDropIndex = -1;
 
-    public PortalDropController(final VPortalLayout portal) {
-        super(portal);
+    public PortalDropController(final VPortal portal) {
+        super(portal.asPanel());
         this.portal = portal;
     }
 
+    public PortalDropPositioner getDummy() {
+        return dummy;
+    }
+    
     protected LocationWidgetComparator getLocationWidgetComparator() {
         return LocationWidgetComparator.BOTTOM_RIGHT_COMPARATOR;
     }
 
     private void updatePortletLocationOnDrop(final VPortlet portlet) {
-        final VPortalLayout currentParent = portlet.getPortal();
+        final VPortal currentParent = portlet.getPortal();
 
-        if (portal.getChildPosition(portlet) != targetDropIndex) {
-            portal.onPortletPositionUpdated(portlet, targetDropIndex);
+        if (portal.getPortletIndex(portlet) != targetDropIndex) {
+            portal.updatePortletPosition(portlet, targetDropIndex);
         }
         
         if (!currentParent.equals(portal)) {
@@ -52,12 +55,12 @@ public class PortalDropController extends AbstractPositioningDropController {
 
     private int updateDropPosition(final DragContext context) {
         final CoordinateLocation curLocation = new CoordinateLocation(context.mouseX, context.mouseY);
-        int targetDropIndex = DOMUtil.findIntersect(portal, curLocation, getLocationWidgetComparator());
+        int targetDropIndex = DOMUtil.findIntersect(portal.asPanel(), curLocation, getLocationWidgetComparator());
         return targetDropIndex;
     }
 
     private int getDummyIndex() {
-        return (dummy == null) ? -1 : portal.getChildPosition(dummy);
+        return (dummy == null) ? -1 : portal.getPortletIndex(dummy);
     }
 
     protected PortalDropPositioner newPositioner(DragContext context) {
@@ -74,7 +77,6 @@ public class PortalDropController extends AbstractPositioningDropController {
         final Widget widget = context.selectedWidgets.get(0);
         removeDummy();
         updatePortletLocationOnDrop((VPortlet) widget);
-        portal.addToRootElement((VPortlet) widget, targetDropIndex);
     }
 
     @Override
@@ -99,13 +101,13 @@ public class PortalDropController extends AbstractPositioningDropController {
                     int targetIndex = updateDropPosition(context);
                     int dummyIndex = getDummyIndex();
                     if (dummyIndex != targetIndex && (dummyIndex != targetIndex - 1 || targetIndex == 0)) {
-                        if (dummyIndex == 0 && portal.getChildCount() == 1) {
+                        if (dummyIndex == 0 && portal.getPortletCount() == 1) {
                             // Do nothing...
                         } else if (targetIndex == -1) {
                             Panel parent = (Panel)dummy.getParent();
                             parent.remove(dummy);
                         } else {
-                            portal.addToRootElement(dummy, targetIndex);
+                            portal.updateDummyPosition(dummy, targetIndex);
                         }
                     }
                 }
@@ -116,8 +118,8 @@ public class PortalDropController extends AbstractPositioningDropController {
     @Override
     public void onEnter(final DragContext context) {
         dummy = newPositioner(context);
-        int dummyIndex = updateDropPosition(context);
-        portal.onPortletEntered(dummy, dummyIndex);
+        //int dummyIndex = updateDropPosition(context);
+        //portal.onPortletEntered(dummy, dummyIndex);
     }
 
     @Override

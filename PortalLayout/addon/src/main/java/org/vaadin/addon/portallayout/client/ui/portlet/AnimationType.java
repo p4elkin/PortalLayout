@@ -1,4 +1,4 @@
-package org.vaadin.addon.portallayout.client.ui;
+package org.vaadin.addon.portallayout.client.ui.portlet;
 
 public enum AnimationType {
     AT_CLOSE("CLOSE"),

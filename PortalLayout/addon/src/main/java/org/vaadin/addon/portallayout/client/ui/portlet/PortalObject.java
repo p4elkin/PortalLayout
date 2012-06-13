@@ -1,4 +1,5 @@
-package org.vaadin.addon.portallayout.client.ui;
+package org.vaadin.addon.portallayout.client.ui.portlet;
+
 
 import com.google.gwt.user.client.ui.IsWidget;
 

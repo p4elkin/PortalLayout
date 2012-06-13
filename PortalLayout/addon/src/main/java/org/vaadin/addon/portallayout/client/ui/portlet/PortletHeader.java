@@ -1,4 +1,4 @@
-package org.vaadin.addon.portallayout.client.ui;
+package org.vaadin.addon.portallayout.client.ui.portlet;
 
 import java.util.Set;
 

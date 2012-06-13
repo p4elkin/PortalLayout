@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vaadin.addon.portallayout.client.ui.VPortlet;
+import org.vaadin.addon.portallayout.client.ui.portlet.VPortlet;
 import org.vaadin.rpc.ServerSideHandler;
 import org.vaadin.rpc.ServerSideProxy;
 

@@ -1,8 +1,6 @@
 package org.vaadin.addon.portallayout.client.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,13 +10,12 @@ import java.util.Set;
 
 import org.vaadin.addon.portallayout.client.dnd.PickupDragController;
 import org.vaadin.addon.portallayout.client.dnd.util.DOMUtil;
-import org.vaadin.addon.portallayout.client.ui.VPortlet.PortletLockState;
+import org.vaadin.addon.portallayout.client.ui.portlet.PortalDropPositioner;
+import org.vaadin.addon.portallayout.client.ui.portlet.PortalObject;
+import org.vaadin.addon.portallayout.client.ui.portlet.VPortlet;
 import org.vaadin.csstools.client.CSSRule;
 import org.vaadin.csstools.client.ComputedStyle;
 
-import com.google.gwt.event.dom.client.DomEvent.Type;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -28,16 +25,12 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
-import com.vaadin.terminal.gwt.client.EventId;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderInformation.FloatSize;
 import com.vaadin.terminal.gwt.client.RenderInformation.Size;
 import com.vaadin.terminal.gwt.client.RenderSpace;
-import com.vaadin.terminal.gwt.client.StyleConstants;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
-import com.vaadin.terminal.gwt.client.ui.LayoutClickEventHandler;
-import com.vaadin.terminal.gwt.client.ui.VMarginInfo;
 
 /**
  * Client-side implementation of the portal layout.
@@ -56,22 +49,14 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
 
     protected PortalDropController dropController;
 
-    private PickupDragController localDragController = null;
-
     private CSSRule spacingRule = null;
-    
+
     private final List<VPortlet> portlets = new ArrayList<VPortlet>();
-
-    private final Map<AnimationType, Boolean> animationModeMap = new EnumMap<AnimationType, Boolean>(
-            AnimationType.class);
-
-    private final Map<AnimationType, Integer> animationSpeedMap = new EnumMap<AnimationType, Integer>(
-            AnimationType.class);
 
     private final Element marginWrapper = DOM.createDiv();
 
     private final Element contentEl = DOM.createDiv();
-    
+
     private Size actualSizeInfo = new Size(0, 0);
 
     private Size sizeInfoFromUidl = null;
@@ -82,67 +67,24 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
 
     private boolean isSpacingEnabled = false;
 
-    private boolean isCommunicative = true;
-
     private boolean isRendering = false;
 
     protected String paintableId;
 
     public PickupDragController getDragController() {
-        if (isCommunicative)
-            return commonDragController;
-        if (localDragController == null)
-            localDragController = new PickupDragController(RootPanel.get(), false);
-        return localDragController;
-    }
-
-    private LayoutClickEventHandler clickEventHandler = new LayoutClickEventHandler(this, EventId.LAYOUT_CLICK) {
-
-        @Override
-        protected Paintable getChildComponent(Element element) {
-            return getComponent(element);
-        }
-
-        @Override
-        protected <H extends EventHandler> HandlerRegistration registerHandler(H handler, Type<H> type) {
-            return addDomHandler(handler, type);
-        }
-    };
-    
-    public VPortalLayout() {
-        super();
-        setElement(marginWrapper);
-        marginWrapper.appendChild(contentEl);
-        
-        setStyleName(PortalConst.CLASSNAME);
-        getElement().getStyle().setProperty("overflow", "hidden");
-        marginWrapper.getStyle().setProperty("overflow", "hidden");
-
-        dropController = new PortalDropController(this);
-        getDragController().registerDropController(dropController);
+        return null;
     }
 
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         isRendering = true;
-
-        if (client.updateComponent(this, uidl, true)) {
-            isRendering = false;
-            return;
-        }
-
         sizeInfoFromUidl = null;
         this.client = client;
-        paintableId = uidl.getId();
-        updateSpacingInfoFromUidl(uidl);
-        updateMarginsFromUidl(uidl);
-        updateAnimationsFromUidl(uidl);
-        clickEventHandler.handleEventHandlerRegistration(client);
+        this.paintableId = uidl.getId();
         final FloatSize relaiveSize = Util.parseRelativeSize(uidl);
         if (relaiveSize == null || relaiveSize.getHeight() == -1) {
-            sizeInfoFromUidl = new Size(
-                    parsePixel(uidl.getStringAttribute("width")) - getHorizontalMargins(),
-                    parsePixel(uidl.getStringAttribute("height")) - getVerticalMargins());   
+            sizeInfoFromUidl = new Size(parsePixel(uidl.getStringAttribute("width")) - getHorizontalMargins(),
+                    parsePixel(uidl.getStringAttribute("height")) - getVerticalMargins());
         }
 
         actualSizeInfo.setHeight(DOMUtil.getClientHeight(getElement()));
@@ -184,26 +126,13 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
             p.updateFromUIDL(relUidl, client);
         }
 
-        updateCommunicationAbility(uidl);
-
         for (final VPortlet w : orphanCandidates) {
             remove(w);
             portlets.remove(w);
             client.unregisterPaintable((Paintable) w);
         }
-        
+
         isRendering = false;
-    }
-    
-    private void updateAnimationsFromUidl(final UIDL uidl) {
-        for (final AnimationType at : Arrays.asList(AnimationType.values())) {
-            if (uidl.hasAttribute(at.toString())) {
-                setAnimationMode(at, uidl.getBooleanAttribute(at.toString()));
-            }
-            if (uidl.hasAttribute(at.toString() + "-SPEED")) {
-                setAnimationSpeed(at, uidl.getIntAttribute(at.toString() + "-SPEED"));
-            }
-        }
     }
 
     private int getVerticalMargins() {
@@ -214,65 +143,9 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         return DOMUtil.getHorizontalMargin(marginWrapper);
     }
 
-    private void updateMarginsFromUidl(UIDL uidl) {
-        VMarginInfo marginInfo = new VMarginInfo(uidl.getIntAttribute("margins"));
-        setStyleName(marginWrapper, PortalConst.CLASSNAME + "-" + StyleConstants.MARGIN_TOP, marginInfo.hasTop());
-        setStyleName(marginWrapper, PortalConst.CLASSNAME + "-" + StyleConstants.MARGIN_RIGHT, marginInfo.hasRight());
-        setStyleName(marginWrapper, PortalConst.CLASSNAME + "-" + StyleConstants.MARGIN_BOTTOM, marginInfo.hasBottom());
-        setStyleName(marginWrapper, PortalConst.CLASSNAME + "-" + StyleConstants.MARGIN_LEFT, marginInfo.hasLeft());
-    }
 
     private Iterator<Widget> getPortalContentIterator() {
         return getChildren().iterator();
-    }
-
-    private void updateCommunicationAbility(final UIDL uidl) {
-        Boolean canCommunicate = true;//uidl.getBooleanAttribute(PortalConst.PORTAL_COMMUNICATIVE);
-        final PickupDragController currentController = getDragController();
-        if (canCommunicate != isCommunicative) {
-            currentController.unregisterDropController(dropController);
-            isCommunicative = canCommunicate;
-            final PickupDragController newController = getDragController();
-            newController.registerDropController(dropController);
-            for (final VPortlet portlet : portlets)
-                if (!portlet.isLocked()) {
-                    currentController.makeNotDraggable(portlet);
-                    newController.makeDraggable(portlet, portlet.getDraggableArea());
-                }
-        }
-    }
-
-    private void setLock(final VPortlet portlet, boolean isLocked) {
-        PortletLockState formerLockState = portlet.getLockState();
-        portlet.setLocked(isLocked);
-        if (!isLocked && formerLockState != PortletLockState.PLS_NOT_LOCKED)
-            getDragController().makeDraggable(portlet, portlet.getDraggableArea());
-        else if (isLocked && formerLockState == PortletLockState.PLS_NOT_LOCKED)
-            getDragController().makeNotDraggable(portlet);
-    }
-
-    
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        spacingRule = new CSSRule("." + PortalConst.STYLENAME_SPACING, false);
-    }
-    
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        final PickupDragController dragController = getDragController();
-        for (final VPortlet p : portlets) {
-            dragController.makeNotDraggable(p);
-        }
-        dragController.unregisterDropController(dropController);
-    }
-
-    private void updateSpacingInfoFromUidl(final UIDL uidl) {
-        boolean newSpacingEnabledState = uidl.getBooleanAttribute("spacing");
-        if (isSpacingEnabled != newSpacingEnabledState) {
-            isSpacingEnabled = newSpacingEnabledState;
-        }
     }
 
     private void recalculateLayoutAndPortletSizes() {
@@ -329,8 +202,7 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         final Iterator<PortalObject> it = objSet.iterator();
         while (it.hasNext()) {
             final PortalObject portalObject = (PortalObject) it.next();
-            int height = portalObject.isHeightRelative() ? getRelativePortletHeight(portalObject) : portalObject
-                    .getContentHeight();
+            int height = portalObject.isHeightRelative() ? getRelativePortletHeight(portalObject) : portalObject.getContentHeight();
             portalObject.setWidgetSizes(width, height);
         }
         if (client != null)
@@ -374,7 +246,6 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         return getWidgetIndex(child);
     }
 
-
     private float normalizedRealtiveRatio() {
         float result = 0;
         if (sumRelativeHeight != 0f)
@@ -390,13 +261,6 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         }
     }
 
-    public void onActionTriggered(final VPortlet portlet, String key) {
-        final Map<String, Object> params = new HashMap<String, Object>();
-        params.put(PortalConst.PAINTABLE_MAP_PARAM, portlet.getContentAsPaintable());
-        params.put(PortalConst.PORTLET_ACTION_ID, key);
-        client.updateVariable(paintableId, PortalConst.PORTLET_ACTION_TRIGGERED, params, true);
-    }
-
     public void onPortletCollapseStateChanged(final VPortlet portlet) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put(PortalConst.PAINTABLE_MAP_PARAM, portlet.getContentAsPaintable());
@@ -410,7 +274,7 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
             portlet.removeFromParent();
             portlets.add(portlet);
             addToRootElement(portlet, i);
-            portlet.setPortal(this);
+            //portlet.setPortal(this);
         }
     }
 
@@ -429,18 +293,18 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         VPortalLayout.this.updateSpacingOnPortletPositionChange((PortalObject) w, false);
         portlets.remove(w);
         if (!isRendering) {
-            recalculateLayoutAndPortletSizes();   
+            recalculateLayoutAndPortletSizes();
         }
         return result;
     };
-    
+
     public void addToRootElement(final PortalObject widget, int position) {
-        insert((Widget)widget, contentEl, position);
+        insert((Widget) widget, contentEl, position);
         /**
          * TODO: remove.
          */
         if (widget instanceof VPortlet) {
-            setLock((VPortlet)widget, false);   
+            //setLock((VPortlet) widget, false);
         }
     }
 
@@ -449,18 +313,6 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         if (child != null) {
             portlets.remove(portlet.getContent());
             client.updateVariable(paintableId, PortalConst.PORTLET_REMOVED, child, true);
-        }
-    }
-
-    public void onPortletPositionUpdated(VPortlet portlet, int newPosition) {
-        final Paintable child = portlet.getContentAsPaintable();
-        if (child != null) {
-            final Map<String, Object> params = new HashMap<String, Object>();
-            params.put(PortalConst.PAINTABLE_MAP_PARAM, child);
-            params.put(PortalConst.PORTLET_POSITION, newPosition);
-            client.updateVariable(paintableId, PortalConst.PORTLET_POSITION_UPDATED, params, true);
-            portlets.add(portlet);
-            portlet.setPortal(this);
         }
     }
 
@@ -491,7 +343,8 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
     }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
 
     @Override
     public boolean hasChildComponent(Widget component) {
@@ -499,7 +352,8 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
     }
 
     @Override
-    public void updateCaption(Paintable component, UIDL uidl) {}
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -510,13 +364,13 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
         if (child instanceof VPortlet) {
-            final VPortlet portlet = (VPortlet)child;
+            final VPortlet portlet = (VPortlet) child;
             final Size sizeInfo = portlet.getContentSizeInfo();
             int height = sizeInfo.getHeight();
             if (portlet.isHeightRelative()) {
-                height = (int) (((float) height) * 100 / portlet.getRelativeHeightValue());   
+                height = (int) (((float) height) * 100 / portlet.getRelativeHeightValue());
             }
-            return new RenderSpace(sizeInfo.getWidth(), height);   
+            return new RenderSpace(sizeInfo.getWidth(), height);
         }
         return null;
     }
@@ -527,46 +381,14 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         }
         return 0;
     }
-    
+
     public static int parsePixel(String value) {
-        final Integer result = ComputedStyle.parseInt(value); 
+        final Integer result = ComputedStyle.parseInt(value);
         return result == null ? 0 : result;
     }
 
-    private Paintable getComponent(Element element) {
-        return Util.getPaintableForElement(client, this, element);
-    }
-
-    public boolean shouldAnimate(final AnimationType animationType) {
-        Boolean result = animationModeMap.get(animationType);
-        return result == null || result;
-    }
-
-    public void setAnimationMode(final AnimationType animationType, boolean animate) {
-        animationModeMap.put(animationType, animate);
-    }
-
-    public void setAnimationSpeed(final AnimationType animationType, int speed) {
-        animationSpeedMap.put(animationType, speed);
-    }
-
-    public int getAnimationSpeed(final AnimationType animationType) {
-        Integer speed = animationSpeedMap.get(animationType);
-        if (speed == null) {
-            switch (animationType) {
-            case AT_ATTACH:
-                return PortalConst.DEFAULT_ATTACH_SPEED;
-            case AT_CLOSE:
-                return PortalConst.DEFAULT_CLOSE_SPEED;
-            case AT_COLLAPSE:
-                return PortalConst.DEFAULT_COLLAPSE_SPEED;
-            }
-        }
-        return speed;
-    }
-
     public void onPortletEntered(PortalDropPositioner dummy, int dummyIndex) {
-        
+
     }
 
     @Override

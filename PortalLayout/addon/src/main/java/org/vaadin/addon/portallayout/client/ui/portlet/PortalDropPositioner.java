@@ -1,4 +1,4 @@
-package org.vaadin.addon.portallayout.client.ui;
+package org.vaadin.addon.portallayout.client.ui.portlet;
 
 import org.vaadin.addon.portallayout.client.dnd.util.DOMUtil;
 
@@ -10,8 +10,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author p4elkin
  */
-public class PortalDropPositioner extends SimplePanel implements PortalObject {
 
+public class PortalDropPositioner extends SimplePanel implements PortalObject {
     private static final String CLASS_NAME = "v-portallayout-positioner";
 
     private final SimplePanel internalContent = new SimplePanel();

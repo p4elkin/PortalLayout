@@ -1,4 +1,5 @@
 .v-portallayout {
+	
 }
 
 .v-portallayout-margin-top {
@@ -52,7 +53,6 @@
 	background-image: url(expand.png);
 }
 
-
 .v-portlet .v-portlet-header-toolbar {
 	display: inline-block;
 }
@@ -65,7 +65,7 @@
 
 .v-portlet .v-portlet-header-widget-slot {
 	height: 100%;
-	float: rigth;
+	float: right;
 }
 
 .v-portlet .v-portlet-header-widget {
