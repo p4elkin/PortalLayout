@@ -296,14 +296,7 @@ public class PortalLayout extends AbstractLayout implements SpacingHandler, Layo
     public int getAnimationSpeed(final AnimationType animationType) {
         final Integer speed = animationSpeedMap.get(animationType);
         if (speed == null) {
-            switch (animationType) {
-            case AT_ATTACH:
-                return PortalConst.DEFAULT_ATTACH_SPEED;
-            case AT_CLOSE:
-                return PortalConst.DEFAULT_CLOSE_SPEED;
-            case AT_COLLAPSE:
-                return PortalConst.DEFAULT_COLLAPSE_SPEED;
-            }
+            return PortalConst.DEFAULT_SPEED;
         }
         return speed;
     }
