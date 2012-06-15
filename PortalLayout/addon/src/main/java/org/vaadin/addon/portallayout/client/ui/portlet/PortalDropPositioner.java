@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 
 public class PortalDropPositioner extends SimplePanel implements PortalObject {
+    
     private static final String CLASS_NAME = "v-portallayout-positioner";
 
     private final SimplePanel internalContent = new SimplePanel();
@@ -48,7 +49,7 @@ public class PortalDropPositioner extends SimplePanel implements PortalObject {
         return portlet.getContentHeight();
     }
     
-    @Override
+    
     public void setWidgetSizes(int width, int height) {
         int innerWidth = width - DOMUtil.getHorizontalBorders(this);
         int innerHeight = height - DOMUtil.getVerticalBorders(this) + 

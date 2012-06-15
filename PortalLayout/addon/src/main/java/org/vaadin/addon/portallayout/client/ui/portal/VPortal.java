@@ -29,7 +29,6 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.EventId;
 import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.RenderInformation.Size;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
@@ -89,6 +88,10 @@ public class VPortal extends Composite implements Container, ClientSideHandler, 
         protected <H extends EventHandler> HandlerRegistration registerHandler(H handler, Type<H> type) {
             return addDomHandler(handler, type);
         }
+        
+        private Paintable getComponent(Element element) {
+            return Util.getPaintableForElement(client, VPortal.this, element);
+        }
     };
     
     public VPortal() {
@@ -116,16 +119,11 @@ public class VPortal extends Composite implements Container, ClientSideHandler, 
                     final VPortlet portlet = (VPortlet) child;
                     orphanCandidates.remove(portlet);
                     view.acceptPortlet(portlet, pos);
-                    final Size portletSize = portlet.getContentSizeInfo();
-                    //portletSize.setWidth(actualSizeInfo.getWidth());
                     portlet.tryDetectRelativeHeight(portletUidl);
                     if (portlet.isHeightRelative()) {
                         realtiveSizePortletUIDLS.put(portlet, portletUidl);
                     } else {
                         portlet.updateFromUIDL(portletUidl, client);
-                        if (!portlet.isCollapsed()) {
-                            portletSize.setHeight(Util.getRequiredHeight(portlet.getElement()));
-                        }
                     }
                     portlet.setPortal(this);
                 }   
@@ -138,7 +136,6 @@ public class VPortal extends Composite implements Container, ClientSideHandler, 
             final UIDL relUidl = realtiveSizePortletUIDLS.get(p);
             p.updateFromUIDL(relUidl, client);
         }
-
 
         for (final VPortlet w : orphanCandidates) {
             view.removePortlet(w);
@@ -212,10 +209,6 @@ public class VPortal extends Composite implements Container, ClientSideHandler, 
     @Override
     public boolean initWidget(Object[] params) {
         return false;
-    }
-
-    private Paintable getComponent(Element element) {
-        return Util.getPaintableForElement(client, this, element);
     }
     
     @Override

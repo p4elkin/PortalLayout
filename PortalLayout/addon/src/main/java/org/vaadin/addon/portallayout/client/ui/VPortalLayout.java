@@ -143,11 +143,6 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         return DOMUtil.getHorizontalMargin(marginWrapper);
     }
 
-
-    private Iterator<Widget> getPortalContentIterator() {
-        return getChildren().iterator();
-    }
-
     private void recalculateLayoutAndPortletSizes() {
         recalculateLayout();
         final Set<PortalObject> objSet = getPortletSet();
@@ -174,7 +169,7 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         sumRelativeHeight = 0;
         int contentsSize = getChildCount();
         int newHeight = 0;
-        final Iterator<Widget> it = getPortalContentIterator();
+        final Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             final PortalObject p = (PortalObject) it.next();
             final VPortlet corresponingPortlet = p.getPortletRef();
@@ -203,7 +198,7 @@ public class VPortalLayout extends ComplexPanel implements Paintable, Container,
         while (it.hasNext()) {
             final PortalObject portalObject = (PortalObject) it.next();
             int height = portalObject.isHeightRelative() ? getRelativePortletHeight(portalObject) : portalObject.getContentHeight();
-            portalObject.setWidgetSizes(width, height);
+            //portalObject.setWidgetSizes(width, height);
         }
         if (client != null)
             client.runDescendentsLayout(this);

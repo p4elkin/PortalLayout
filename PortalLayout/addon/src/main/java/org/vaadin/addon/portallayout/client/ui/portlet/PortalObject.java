@@ -41,15 +41,6 @@ public interface PortalObject extends IsWidget {
      */
     public int getContentHeight();
     
-    /**
-     * Set pixel size of the portal object (Portlet or PortalDropPositioners).
-     * 
-     * @param width
-     *            New width value.
-     * @param height
-     *            New height value.
-     */
-    public void setWidgetSizes(int width, int height);
 
     /**
      * Set the pixel value reserved for the spacing.

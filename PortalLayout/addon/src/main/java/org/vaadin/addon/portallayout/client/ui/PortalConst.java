@@ -99,9 +99,6 @@ public class PortalConst {
      */
     public static final String STYLENAME_SPACING = CLASSNAME + "-spacing";
     
-    public static final int DEFAULT_COLLAPSE_SPEED = 1500;
-    
-    public static final int DEFAULT_CLOSE_SPEED = 400;
-    
-    public static final int DEFAULT_ATTACH_SPEED = 400;
+    public static final int DEFAULT_SPEED = 700;
+   
 }

@@ -54,10 +54,8 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
     private PortletHeader header = new PortletHeader(this);;
 
     private Element containerElement = DOM.createDiv();
-
-    private Widget content;
     
-    private Element contentDiv;
+    private final Element contentDiv = DOM.createDiv();
 
     private VPortal parentPortal = null;
 
@@ -75,6 +73,8 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     private ComputedStyle contentStyle = null;
 
+    private Widget content;
+    
     private ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("setClosable", new Method() {
@@ -114,13 +114,9 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     public VPortlet() {
         super();
-
         add(header, containerElement);
-
-        contentDiv = DOM.createDiv();
         contentDiv.addClassName(CLASSNAME + CONTENT_CLASSNAME);
         contentDiv.getStyle().setOverflow(Overflow.HIDDEN);
-
         containerElement.appendChild(contentDiv);
         setElement(containerElement);
         setStyleName(CLASSNAME);
@@ -130,10 +126,6 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     public int getHeaderHeight() {
         return header.getOffsetHeight();
-    }
-
-    @Override
-    public void setWidgetSizes(int width, int height) {
     }
 
     public int getVBorders() {
@@ -221,14 +213,6 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         header.setCollapsible(isCollapsible);
     }
 
-    public boolean isClosable() {
-        return header.isClosable();
-    }
-
-    public boolean isCollapsible() {
-        return header.isCollapsible();
-    }
-
     @Override
     public int getRequiredHeight() {
         int result = header.getOffsetHeight() + contentDiv.getOffsetHeight();
@@ -242,9 +226,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
 
     @Override
     public float getRelativeHeightValue() {
-        if (relativeSize != null && !isCollapsed)
-            return relativeSize.getHeight();
-        return 0f;
+        return (relativeSize != null && !isCollapsed) ? relativeSize.getHeight() : 0f;
     }
 
     @Override
@@ -283,9 +265,7 @@ public class VPortlet extends ComplexPanel implements PortalObject, Container, C
         this.client = client;
         this.paintableId = uidl.getId();
         this.header.setAppConnection(client);
-
         proxy.update(this, uidl, client);
-
         updateHeader(uidl);
         updateContent(uidl);
     }

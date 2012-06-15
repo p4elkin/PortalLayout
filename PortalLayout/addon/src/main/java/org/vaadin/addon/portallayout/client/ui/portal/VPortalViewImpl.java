@@ -33,19 +33,19 @@ import com.vaadin.terminal.gwt.client.ui.VMarginInfo;
 
 public class VPortalViewImpl extends ComplexPanel implements VPortalView {
     
-    private final List<VPortlet> portlets = new ArrayList<VPortlet>();
-    
     private final static PickupDragController commonDragController = new PickupDragController(RootPanel.get(), false);
 
     private final Map<AnimationType, Boolean> animationModeMap = new EnumMap<AnimationType, Boolean>(AnimationType.class);
 
     private final Map<AnimationType, Integer> animationSpeedMap = new EnumMap<AnimationType, Integer>(AnimationType.class);
     
-    private CSSRule spacingRule = null;
+    private final List<VPortlet> portlets = new ArrayList<VPortlet>();
     
     private PickupDragController localDragController = null;
 
     private PortalDropController dropController;
+    
+    private CSSRule spacingRule = null;
     
     private final Element marginWrapper = DOM.createDiv();
 
@@ -154,7 +154,7 @@ public class VPortalViewImpl extends ComplexPanel implements VPortalView {
         while (it.hasNext()) {
             final PortalObject portalObject = (PortalObject) it.next();
             int height = portalObject.isHeightRelative() ? getRelativePortletHeight(portalObject) : portalObject.getContentHeight();
-            portalObject.setWidgetSizes(width, height);
+            //portalObject.setWidgetSizes(width, height);
         }
         /*if (client != null)
             client.runDescendentsLayout(this);*/
@@ -204,18 +204,7 @@ public class VPortalViewImpl extends ComplexPanel implements VPortalView {
     
     @Override
     public int getAnimationSpeed(final AnimationType animationType) {
-        Integer speed = animationSpeedMap.get(animationType);
-        if (speed == null) {
-            switch (animationType) {
-            case AT_ATTACH:
-                return PortalConst.DEFAULT_ATTACH_SPEED;
-            case AT_CLOSE:
-                return PortalConst.DEFAULT_CLOSE_SPEED;
-            case AT_COLLAPSE:
-                return PortalConst.DEFAULT_COLLAPSE_SPEED;
-            }
-        }
-        return speed;
+        return animationSpeedMap.get(animationType) == null ? PortalConst.DEFAULT_SPEED : animationSpeedMap.get(animationType);
     }
     
     @Override
@@ -305,6 +294,7 @@ public class VPortalViewImpl extends ComplexPanel implements VPortalView {
                 setPortletLock((VPortlet) portlet, false);
                 portlets.add((VPortlet)portlet);
             }
+            
         }
     }
 
