@@ -126,9 +126,12 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     }
     
     public void setIcon(String iconUri) {
-        iconUri = iconUri == null ? "" : iconUri;
-        icon.setUrl(iconUri);
-        icon.getElement().getStyle().setDisplay(iconUri == "" ? Display.NONE : Display.INLINE);
+        icon.setVisible(iconUri != null);
+        if (iconUri != null) {
+            iconUri = iconUri == null ? "" : iconUri;
+            icon.setUrl(iconUri);
+            icon.getElement().getStyle().setDisplay(iconUri == "" ? Display.NONE : Display.INLINE);   
+        }
     }
     
     public Widget getDraggableArea() {

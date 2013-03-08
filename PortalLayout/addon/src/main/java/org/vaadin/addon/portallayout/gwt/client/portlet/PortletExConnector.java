@@ -68,7 +68,6 @@ public class PortletExConnector extends AbstractExtensionConnector implements Po
         });
     }
     
-    
     @Override
     protected void extend(ServerConnector target) {
         ComponentConnector cc = (ComponentConnector)target;

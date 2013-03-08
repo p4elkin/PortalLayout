@@ -23,7 +23,6 @@ import org.vaadin.addon.portallayout.gwt.client.dnd.PortalWithExDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletExConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalWithExState;
@@ -118,13 +117,7 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
             final PortletExConnector pc = (PortletExConnector)getState().contentToPortlet.get(connector);
             pc.setCaption(connector.getState().caption);
             URLReference iconRef = connector.getState().resources.get(ComponentConstants.ICON_RESOURCE);
-            if (iconRef != null) {
-                pc.setIcon(iconRef.getURL());   
-            }
-        }
-        if (connector instanceof PortletConnector) {
-            final PortletConnector portletConnector = (PortletConnector) connector;
-            portletConnector.updateOwnCaption();
+            pc.setIcon(iconRef != null ? iconRef.getURL() : null);   
         }
     }
 
@@ -134,7 +127,7 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
         final List<ComponentConnector> oldChildren = event.getOldChildren();
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
-            view.removePortlet(((PortletConnector) cc).getWidget());
+            view.removePortlet(((PortletExConnector)getState().contentToPortlet.get(cc)).getWidget());
         }
 
         final Iterator<ComponentConnector> it = children.iterator();

@@ -70,6 +70,7 @@
 										<!-- include sources -->
 										<include>**/*.java</include>
 										<include>**/*.js</include>
+										<include>**/*.css</include>
 										<!-- include widgetset -->
 										<include>**/*.gwt.xml</include>
 										<!-- include public folder -->
