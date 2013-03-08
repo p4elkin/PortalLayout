@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.vaadin.addons</groupId>
+		<groupId>org.vaadin.addon</groupId>
 		<artifactId>portal-layout-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>

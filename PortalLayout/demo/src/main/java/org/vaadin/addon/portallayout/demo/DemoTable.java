@@ -41,11 +41,7 @@ public class DemoTable extends Table {
         addRecord("Keith", "Richards");
         addRecord("Mike", "Stipe");
         addRecord("Paul", "Banks");
-        for (int i = 0; i < 1000; i++) {
-            addRecord("asdsad", "asdsadas");
-        }
         setContainerDataSource(container);
-        setValue(container.getIdByIndex(900));
     }
     
     private void addRecord(String first, String last) {

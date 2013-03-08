@@ -1,86 +1,86 @@
 package org.vaadin.addon.portallayout.demo;
 
-import org.vaadin.addon.portallayout.PortalLayout;
-import org.vaadin.addon.portallayout.PortalLayout.PortletCloseListener;
-import org.vaadin.addon.portallayout.PortalLayout.PortletClosedEvent;
-import org.vaadin.addon.portallayout.PortalLayout.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.PortalLayout.PortletCollapseListener;
-import org.vaadin.addon.portallayout.ToolbarAction;
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
-import org.vaadin.addon.portallayout.event.Context;
-import org.vaadin.teemu.ratingstars.RatingStars;
-import org.vaadin.youtubeplayer.YouTubePlayer;
+import org.vaadin.addon.portallayout.portal.Portal;
+import org.vaadin.addon.portallayout.portlet.Portlet;
 
-import com.vaadin.Application;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
-public class ActionDemoTab extends Panel implements PortletCloseListener, PortletCollapseListener {
+public class ActionDemoTab extends Panel /*implements PortletCloseListener, PortletCollapseListener*/ {
    
-    public class DemoPortal extends PortalLayout {
+    public class DemoPortal extends Portal {
         
         public DemoPortal() {
             setWidth("100%");
             setHeight("800px");
-            addCloseListener(ActionDemoTab.this);
-            addCollapseListener(ActionDemoTab.this);
+            //addCloseListener(ActionDemoTab.this);
+            //addCollapseListener(ActionDemoTab.this);
             setMargin(true);
         }
     }
     
-    private final PortalLayout videoPortal = new DemoPortal() {
+    private final Portal videoPortal = new DemoPortal() {
         @Override
-        public void addComponent(Component c, int position) {
-            super.addComponent(c, position);
-            clearPortletStyleNames(c);
-            addPortletStyleName(c, "red");
+        public Portlet wrapInPortlet(Component c/*, int position*/) {
+            //clearPortletStyleNames(c);
+            //addPortletStyleName(c, "red");
+            c.setHeight("300px");
+            Portlet p = super.wrapInPortlet(c/*, position*/);
+            p.setHeight("300px");
+            return p;
         };
     };
     
-    private final PortalLayout imagePortal = new DemoPortal()  {
+    private final Portal imagePortal = new DemoPortal()  {
         @Override
-        public void addComponent(Component c, int position) {
-            super.addComponent(c, position);
-            clearPortletStyleNames(c);
-            addPortletStyleName(c, "green");
+        public Portlet wrapInPortlet(Component c/*, int position*/) {
+            //clearPortletStyleNames(c);
+            //addPortletStyleName(c, "green");
+            c.setHeight("300px");
+            Portlet p = super.wrapInPortlet(c/*, position*/);
+            p.setHeight("300px");
+            return p;
         };
     };
     
-    private final PortalLayout miscPortal = new DemoPortal()  {
+    private final Portal miscPortal = new DemoPortal()  {
         @Override
-        public void addComponent(Component c, int position) {
-            super.addComponent(c, position);
-            clearPortletStyleNames(c);
-            addPortletStyleName(c, "yellow");
+        public Portlet wrapInPortlet(Component c/*, int position*/) {
+            
+            c.setHeight("300px");
+            Portlet p = super.wrapInPortlet(c/*, position*/);
+            p.setHeight("300px");
+            return p;
+            //clearPortletStyleNames(c);
+            //addPortletStyleName(c, "yellow");
         };
     };
-    
-    private final Application app;
     
     private final GridLayout layout = new GridLayout(3, 1);
     
     private boolean init = false;
     
-    public ActionDemoTab(Application app) {
+    public ActionDemoTab() {
         super();
-        this.app = app;
         setSizeFull();
         setContent(layout);
         layout.setWidth("100%");
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setWidth("100%");
         buildPortals();
         construct();
     }
@@ -93,23 +93,22 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
     
 
     public void construct() {
-        if (!init) {
-            init = true;
-            createVideoContents();
-            createImageContents();
-            createMiscContents();   
-        }
+        if (init)
+            return;
+        init = true;
+        createVideoContents();
+        createImageContents();
+        createMiscContents();
     }
     
     private void createMiscContents() {
         final DemoTable table = new DemoTable();
-        miscPortal.addComponent(table);
+        miscPortal.wrapInPortlet(table);
         table.setCaption("Artists");
         table.setIcon(new ThemeResource("chart.png"));
         
         final HorizontalLayout header =  new HorizontalLayout();
         final TextField filterField = new TextField();
-        filterField.setWidth("100px");
         final NativeSelect filterType = new NativeSelect();
         final Label caption = new Label("Filter: ");
         for (final NameType t : NameType.values()) {
@@ -125,7 +124,7 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
         header.setSpacing(true);
         header.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
         header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);
-        miscPortal.setHeaderComponent(table, header);
+        miscPortal.getPortlet(table).setHeaderToolbar(header);
         filterField.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -135,9 +134,9 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
     }
 
     private void createImageContents() {
-        final PortalImage image = new PortalImage(app);
-        imagePortal.addComponent(image);
-        final RatingStars rating = new RatingStars();
+        final PortalImage image = new PortalImage();
+        imagePortal.wrapInPortlet(image);
+        /*final RatingStars rating = new RatingStars();
         rating.setImmediate(true);
         rating.addListener(new ValueChangeListener() {            
             @Override
@@ -146,9 +145,9 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
                     image.setRating((Double)rating.getValue());
                 }
             }
-        });
-        imagePortal.setHeaderComponent(image, rating);
-        imagePortal.addAction(image, new ToolbarAction(new ThemeResource("arrow_right.png")) {
+        });*/
+        //imagePortal.setHeaderComponent(image, rating);
+        /*imagePortal.addAction(image, new ToolbarAction(new ThemeResource("arrow_right.png")) {
             @Override
             public void execute(final Context context) {
                 if (!image.isEmpty()) {
@@ -171,24 +170,27 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
                     }
                 }
             }
-        });
+        });*/
     }
     
     private void createVideoContents() {
-        final YouTubePlayer pl = new YouTubePlayer();
+        
+        Embedded pl = new Embedded(null, new ExternalResource(
+                "http://www.youtube.com/v/meXvxkn1Y_8&hl=en_US&fs=1&"));
+        pl.setAlternateText("Vaadin Eclipse Quickstart video");
+        pl.setMimeType("application/x-shockwave-flash");
+        pl.setParameter("allowFullScreen", "true");
         pl.setHeight("100%");
-        pl.setVideoId("QrzGpVOPcTI");
         pl.setImmediate(true);
-        videoPortal.addComponent(pl);
-        pl.setCaption("Player");
+        videoPortal.wrapInPortlet(pl);
+        pl.setCaption("Joy Division - Disorder");
         pl.setIcon(new ThemeResource("video.png"));
         
         final HorizontalLayout header =  new HorizontalLayout();
         final TextField idField = new TextField();
-        final Label caption = new Label("Id: ");
+        final Label caption = new Label("Enter video id: ");
         caption.addStyleName("v-white-text");
         idField.setImmediate(true);
-        idField.setWidth("100px");
         header.setSizeUndefined();
         header.addComponent(caption);
         header.addComponent(idField);
@@ -198,11 +200,11 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
         idField.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                pl.setVideoId(idField.getValue().toString());
+                //pl.setVideoId(idField.getValue().toString());
             }
         });
         
-        videoPortal.setHeaderComponent(pl, header);
+        /*videoPortal.setHeaderComponent(pl, header);
         videoPortal.addAction(pl, new ToolbarAction(new ThemeResource("stop.png")) {
             @Override
             public void execute(final Context context) {
@@ -232,11 +234,11 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
                 n.setDelayMsec(1000);
                 getWindow().showNotification(n);
             }
-        });
+        });*/
     }
 
 
-    @Override
+    /*@Override
     public void portletCollapseStateChanged(PortletCollapseEvent event) {
         final Context context = event.getContext();
         getWindow().showNotification(context.getComponent().getCaption() + "collapsed " + 
@@ -246,6 +248,6 @@ public class ActionDemoTab extends Panel implements PortletCloseListener, Portle
     @Override
     public void portletClosed(PortletClosedEvent event) {
         getWindow().showNotification(event.getContext().getComponent().getCaption() + "closed");
-    }
+    }*/
 
 }

@@ -3,26 +3,23 @@ package org.vaadin.addon.portallayout.demo;
 import java.io.File;
 import java.io.FileFilter;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Embedded;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
-public class PortalImage extends Embedded {
+public class PortalImage extends Image {
 
     private int currentDisplayedImage = -1;
-    
-    private File[] files; 
-    
-    private double[] ratings; 
-    
-    private Application app;
-    
-    public PortalImage(final Application app) {
+
+    private File[] files;
+
+    private double[] ratings;
+
+    public PortalImage() {
         super();
-        this.app = app;
-        String fullPath = app.getContext().getBaseDirectory() + "/sample_pictures";
+        String fullPath = UI.getCurrent().getSession().getService().getBaseDirectory() + "/sample_pictures";
         File dir = new File(fullPath);
         files = dir.listFiles(new FileFilter() {
             @Override
@@ -33,7 +30,7 @@ public class PortalImage extends Embedded {
                 return "jpg".equals(ext);
             }
         });
-        if (!isEmpty()) {        
+        if (!isEmpty()) {
             ratings = new double[files.length];
             showNextFile();
             setCaption(files[currentDisplayedImage].getName());
@@ -42,11 +39,11 @@ public class PortalImage extends Embedded {
         setWidth("100%");
         setHeight("400px");
     }
-    
+
     public boolean isEmpty() {
         return files == null || files.length == 0;
     }
-    
+
     public double getRating() {
         double result = 0d;
         if (!isEmpty()) {
@@ -54,39 +51,36 @@ public class PortalImage extends Embedded {
         }
         return result;
     }
-    
+
     public void setRating(double rating) {
         if (!isEmpty()) {
             ratings[currentDisplayedImage] = rating;
         }
     }
-    
+
     public void showNextFile() {
         final File next = getNextFile();
         setCaption(next.getName());
-        setSource(new FileResource(next, app));
+        setSource(new FileResource(next));
     }
 
     public void showPrevFile() {
         final File prev = getPrevFile();
         setCaption(prev.getName());
-        setSource(new FileResource(prev, app));
+        setSource(new FileResource(prev));
     }
-    
+
     private File getNextFile() {
-        if (files == null ||
-            files.length == 0)
+        if (files == null || files.length == 0)
             return null;
         currentDisplayedImage = ++currentDisplayedImage % files.length;
         return files[currentDisplayedImage];
     }
 
     private File getPrevFile() {
-        if (files == null ||
-            files.length == 0)
+        if (files == null || files.length == 0)
             return null;
-        currentDisplayedImage = currentDisplayedImage == 0 ? 
-                files.length - 1 : --currentDisplayedImage;
+        currentDisplayedImage = currentDisplayedImage == 0 ? files.length - 1 : --currentDisplayedImage;
         return files[currentDisplayedImage];
     }
 }
