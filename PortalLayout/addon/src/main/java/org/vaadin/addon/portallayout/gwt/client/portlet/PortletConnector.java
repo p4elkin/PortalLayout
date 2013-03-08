@@ -15,12 +15,12 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalWithExtensionConnector;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletExState;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
-import org.vaadin.addon.portallayout.portlet.PortletEx;
+import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,8 +38,8 @@ import com.vaadin.shared.ui.Connect;
 /**
  * PortletExConnector.
  */
-@Connect(PortletEx.class)
-public class PortletExConnector extends AbstractExtensionConnector implements PortletCollapseEvent.Handler, PortletCloseEvent.Handler {
+@Connect(Portlet.class)
+public class PortletConnector extends AbstractExtensionConnector implements PortletCollapseEvent.Handler, PortletCloseEvent.Handler {
 
     private final PortletServerRpc rpc = RpcProxy.create(PortletServerRpc.class, this);
     
@@ -102,8 +102,8 @@ public class PortletExConnector extends AbstractExtensionConnector implements Po
     }
     
     @Override
-    public PortletExState getState() {
-        return (PortletExState)super.getState();
+    public PortletState getState() {
+        return (PortletState)super.getState();
     }
 
     public void setSlotHeight(String height) { 
@@ -120,7 +120,7 @@ public class PortletExConnector extends AbstractExtensionConnector implements Po
 
     @Override
     public void onPortletClose(PortletCloseEvent e) {
-        ((PortalWithExtensionConnector)getParent().getParent()).removePortlet(getParent());
+        ((PortalLayoutConnector)getParent().getParent()).removePortlet(getParent());
     }
 
     @Override

@@ -19,8 +19,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
-import org.vaadin.addon.portallayout.gwt.shared.portal.PortalWithExState;
-import org.vaadin.addon.portallayout.portlet.PortletEx;
+import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.Extension;
@@ -37,15 +37,15 @@ import com.vaadin.ui.Layout.MarginHandler;
  * PortalWithExtension.
  */
 @StyleSheet("test.css")
-public class PortalWithExtension extends AbstractComponent implements MarginHandler, HasComponents {
+public class PortalLayout extends AbstractComponent implements MarginHandler, HasComponents {
 
-    public PortalWithExtension() {
+    public PortalLayout() {
         setStyleName("v-portal-layout");
         registerRpc(new PortalServerRpc() {
 
             @Override
             public void removePortlet(Connector portlet) {
-                PortalWithExtension.this.removePortlet((Component) portlet);
+                PortalLayout.this.removePortlet((Component) portlet);
             }
 
             @Override
@@ -58,7 +58,7 @@ public class PortalWithExtension extends AbstractComponent implements MarginHand
     }
 
     private void addComponentAt(Component c, int index) {
-        PortletEx portlet = getPortletForComponent(c);
+        Portlet portlet = getPortletForComponent(c);
         LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portletConnectors;
         if (portlets.contains(portlet)) {
             portlets.remove(portlet);
@@ -66,30 +66,30 @@ public class PortalWithExtension extends AbstractComponent implements MarginHand
         portlets.add(index, portlet);
     }
 
-    public PortletEx wrapInPortlet(Component c) {
-        PortletEx result = getPortletForComponent(c);
+    public Portlet wrapInPortlet(Component c) {
+        Portlet result = getPortletForComponent(c);
         return result;
     }
 
-    private PortletEx getPortletForComponent(Component c) {
-        PortletEx result = (PortletEx) getState().contentToPortlet.get(c);
+    private Portlet getPortletForComponent(Component c) {
+        Portlet result = (Portlet) getState().contentToPortlet.get(c);
         if (result != null) {
             return result;
         } else {
             for (Extension extension : c.getExtensions()) {
-                if (extension instanceof PortletEx) {
-                    addPortletMapping(c, (PortletEx) extension);
-                    return (PortletEx) extension;
+                if (extension instanceof Portlet) {
+                    addPortletMapping(c, (Portlet) extension);
+                    return (Portlet) extension;
                 }
             }
         }
-        result = new PortletEx(c);
+        result = new Portlet(c);
         addPortletMapping(c, result);
         return result;
     }
 
     public void removePortlet(Component portletContent) {
-        PortletEx portlet = (PortletEx) getState().contentToPortlet.remove(portletContent);
+        Portlet portlet = (Portlet) getState().contentToPortlet.remove(portletContent);
         if (portlet != null) {
             getState().portletConnectors.remove(portlet);
             if (portletContent.getParent() == this) {
@@ -101,11 +101,11 @@ public class PortalWithExtension extends AbstractComponent implements MarginHand
         }
     }
 
-    public void removePortlet(PortletEx portlet) {
+    public void removePortlet(Portlet portlet) {
         removePortlet((Component) portlet.getParent());
     }
 
-    private void addPortletMapping(Component c, PortletEx result) {
+    private void addPortletMapping(Component c, Portlet result) {
         getState().contentToPortlet.put(c, result);
         getState().portletConnectors.add(result);
 
@@ -123,8 +123,8 @@ public class PortalWithExtension extends AbstractComponent implements MarginHand
     }
 
     @Override
-    protected PortalWithExState getState() {
-        return (PortalWithExState) super.getState();
+    protected PortalLayoutState getState() {
+        return (PortalLayoutState) super.getState();
     }
 
     @Override
@@ -164,7 +164,7 @@ public class PortalWithExtension extends AbstractComponent implements MarginHand
         };
     }
 
-    public PortletEx getPortlet(Component c) {
-        return (PortletEx) getState().contentToPortlet.get(c);
+    public Portlet getPortlet(Component c) {
+        return (Portlet) getState().contentToPortlet.get(c);
     }
 }

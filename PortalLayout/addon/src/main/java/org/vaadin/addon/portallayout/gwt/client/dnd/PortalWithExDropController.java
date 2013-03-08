@@ -15,7 +15,7 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.dnd;
 
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalWithExtensionConnector;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
 
@@ -38,9 +38,9 @@ public class PortalWithExDropController extends AbstractPositioningDropControlle
 
     private final InsertPanel panel;
 
-    private final PortalWithExtensionConnector portalConnector;
+    private final PortalLayoutConnector portalConnector;
     
-    public PortalWithExDropController(PortalWithExtensionConnector portal) {
+    public PortalWithExDropController(PortalLayoutConnector portal) {
         super(portal.getView().asWidget());
         this.panel = portal.getView();
         this.portalConnector = portal;
@@ -56,7 +56,7 @@ public class PortalWithExDropController extends AbstractPositioningDropControlle
         PortletWidget portletWidget = (PortletWidget) context.selectedWidgets.get(0);
         PortletSlot slot = portletWidget.getSlot();
         if (panel != slot.getParent()) {
-            PortalWithExtensionConnector originalConnector = ((PortalWithExtensionConnector) 
+            PortalLayoutConnector originalConnector = ((PortalLayoutConnector) 
                     Util.findConnectorFor(portletWidget.getContentWidget()).getParent());
             originalConnector.setOutcomingPortletCandidate(portletWidget);
             portalConnector.setIncomingPortletCandidate(portletWidget);

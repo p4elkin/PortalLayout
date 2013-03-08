@@ -23,10 +23,10 @@ import org.vaadin.addon.portallayout.gwt.client.dnd.PortalWithExDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletExConnector;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
-import org.vaadin.addon.portallayout.gwt.shared.portal.PortalWithExState;
-import org.vaadin.addon.portallayout.portal.PortalWithExtension;
+import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.portal.PortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -50,8 +50,8 @@ import com.vaadin.shared.ui.Connect;
 /**
  * PortalWithExtensionConnector.
  */
-@Connect(PortalWithExtension.class)
-public class PortalWithExtensionConnector extends AbstractLayoutConnector implements PortalView.Presenter, PostLayoutListener {
+@Connect(PortalLayout.class)
+public class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter, PostLayoutListener {
 
     /**
      * PortalPickupDragController.
@@ -114,7 +114,7 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
     @Override
     public void updateCaption(ComponentConnector connector) {
         if (getState().contentToPortlet.get(connector) != null) {
-            final PortletExConnector pc = (PortletExConnector)getState().contentToPortlet.get(connector);
+            final PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(connector);
             pc.setCaption(connector.getState().caption);
             URLReference iconRef = connector.getState().resources.get(ComponentConstants.ICON_RESOURCE);
             pc.setIcon(iconRef != null ? iconRef.getURL() : null);   
@@ -127,14 +127,14 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
         final List<ComponentConnector> oldChildren = event.getOldChildren();
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
-            view.removePortlet(((PortletExConnector)getState().contentToPortlet.get(cc)).getWidget());
+            view.removePortlet(((PortletConnector)getState().contentToPortlet.get(cc)).getWidget());
         }
 
         final Iterator<ComponentConnector> it = children.iterator();
         while (it.hasNext()) {
             final ComponentConnector cc = it.next();
             if (getState().contentToPortlet.get(cc) != null) {
-                final PortletExConnector pc = (PortletExConnector)getState().contentToPortlet.get(cc);
+                final PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(cc);
                 final PortletWidget portletWidget = pc.getWidget();
                 cc.getLayoutManager().addElementResizeListener(cc.getWidget().getElement(), portletResizeListener);
                 commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());
@@ -188,8 +188,8 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
     }
 
     @Override
-    public PortalWithExState getState() {
-        return (PortalWithExState) super.getState();
+    public PortalLayoutState getState() {
+        return (PortalLayoutState) super.getState();
     }
 
     @Override
@@ -218,7 +218,7 @@ public class PortalWithExtensionConnector extends AbstractLayoutConnector implem
             int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
             double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
             for (ComponentConnector cc : relativeHeightPortlets) {
-                PortletExConnector pc = (PortletExConnector)getState().contentToPortlet.get(cc);
+                PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(cc);
                 if (!pc.isCollased()) {
                     float height = Util.parseRelativeSize(cc.getState().height);
                     double slotHeight = (height / totalPercentage * ratio);

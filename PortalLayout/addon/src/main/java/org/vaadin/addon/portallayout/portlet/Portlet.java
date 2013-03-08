@@ -15,7 +15,7 @@
  */
 package org.vaadin.addon.portallayout.portlet;
 
-import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletExState;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
 
 import com.vaadin.server.AbstractClientConnector;
@@ -25,9 +25,9 @@ import com.vaadin.ui.Component;
 /**
  * PortletEx.
  */
-public class PortletEx extends AbstractExtension {
+public class Portlet extends AbstractExtension {
 
-    public PortletEx() {
+    public Portlet() {
         registerRpc(new PortletServerRpc() {
             @Override
             public void setCollapsed(boolean isCollapsed) {
@@ -40,7 +40,7 @@ public class PortletEx extends AbstractExtension {
         });
     }
     
-    public PortletEx(Component c) {
+    public Portlet(Component c) {
         this();
         wrap(c);
     }
@@ -50,7 +50,7 @@ public class PortletEx extends AbstractExtension {
     }
     
     @Override
-    protected PortletExState getState() {
-        return (PortletExState)super.getState();
+    protected PortletState getState() {
+        return (PortletState)super.getState();
     }
 }

@@ -26,7 +26,7 @@ import com.vaadin.shared.ui.AbstractLayoutState;
 /**
  * PortalWithExState.
  */
-public class PortalWithExState extends AbstractLayoutState {
+public class PortalLayoutState extends AbstractLayoutState {
 
     public int marginsBitmask = 0;
     
