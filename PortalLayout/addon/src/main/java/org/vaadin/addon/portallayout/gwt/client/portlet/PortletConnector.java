@@ -63,12 +63,13 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             boolean isCollapsed = widget.isCollapsed();
             if (isCollapsed != getState().isCollapsed) {
-                widget.getSlot().setStyleName("collapsed", getState().isCollapsed);
+                widget.setStyleName("collapsed", getState().isCollapsed);
                 if (getState().isCollapsed) {
                     widget.getSlot().setHeight(widget.getHeader().getOffsetHeight() + "px");   
                 } else {
                     widget.getSlot().getElement().getStyle().clearHeight();
                 }   
+                layoutManager.setNeedsMeasure((ComponentConnector)getParent());
             }
         }
     }
@@ -135,11 +136,8 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         return (PortletState)super.getState();
     }
 
-    public void setSlotHeight(String height) { 
-        widget.getSlot().setHeight(height);
-        if (widget.hasRelativeHeight()) {
-            widget.resizeContent(layoutManager.getInnerHeight(widget.getElementWrapper()));    
-        }
+    public void setSlotHeight(String slotHeight) { 
+        widget.getSlot().setHeight(slotHeight);
     }
 
     public void setCaption(String caption) {
@@ -163,6 +161,12 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     @Override
     public void onUnregister() {
         super.onUnregister();
+        widget.getSlot().removeFromParent();
         widget.removeFromParent();
+    }
+
+    public void setSlotHeight(String percentSlotSize, double pixelSlotSize) {
+        setSlotHeight(percentSlotSize);
+        widget.resizeContent((int)(pixelSlotSize - widget.getHeaderHeight()));
     }
 }

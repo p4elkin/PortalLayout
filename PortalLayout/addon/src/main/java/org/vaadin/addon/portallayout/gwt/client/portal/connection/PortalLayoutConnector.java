@@ -41,7 +41,6 @@ import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
-import com.vaadin.client.ui.PostLayoutListener;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ComponentConstants;
@@ -53,7 +52,7 @@ import com.vaadin.shared.ui.Connect;
  * PortalWithExtensionConnector.
  */
 @Connect(PortalLayout.class)
-public class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter, PostLayoutListener {
+public class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter {
 
     /**
      * PortalPickupDragController.
@@ -129,7 +128,10 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         final List<ComponentConnector> oldChildren = event.getOldChildren();
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
-            view.removePortlet(getPortletConnectorForContent(cc).getWidget());
+            final PortletConnector pc = getPortletConnectorForContent(cc);
+            if (pc != null) {
+                view.removePortlet(pc.getWidget());    
+            }
         }
 
         final Iterator<ComponentConnector> it = children.iterator();
@@ -138,7 +140,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             if (getState().contentToPortlet.get(cc) != null) {
                 final PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(cc);
                 final PortletWidget portletWidget = pc.getWidget();
-                cc.getLayoutManager().addElementResizeListener(cc.getWidget().getElement(), portletResizeListener);
+                cc.getLayoutManager().addElementResizeListener(portletWidget.getSlot().getElement(), portletResizeListener);
                 commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());
                 getView().addPortlet(pc.getWidget());
 
@@ -195,42 +197,42 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     }
 
     @Override
-    public void postLayout() {
-        //recalculateHeights();
-    }
-
-    @Override
     public void recalculateHeights() {
-        Profiler.enter("PLC.recalcHeight");
-        Iterator<ComponentConnector> it = getCurrentChildren().iterator();
-        List<ComponentConnector> relativeHeightPortlets = new ArrayList<ComponentConnector>();
-        double totalPercentage = 0;
-        int totalFixedHeightConsumption = 0;
-        while (it.hasNext()) {
-            ComponentConnector cc = it.next();
-            if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                totalPercentage += Util.parseRelativeSize(cc.getState().height);
-                relativeHeightPortlets.add(cc);
-            } else {
-                Widget portletWidget = getPortletConnectorForContent(cc).getWidget();
-                totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
-            }
-        }
-        if (totalPercentage > 0) {
-            totalPercentage = Math.max(totalPercentage, 100);
-            int totalPortalHeight = getLayoutManager().getInnerHeight(getWidget().getElement());
-            int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
-            double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
-            for (ComponentConnector cc : relativeHeightPortlets) {
-                PortletConnector pc = getPortletConnectorForContent(cc);
-                if (!pc.isCollased()) {
-                    float height = Util.parseRelativeSize(cc.getState().height);
-                    double slotHeight = (height / totalPercentage * ratio);
-                    pc.setSlotHeight(slotHeight + "%");
+        /*Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {*/
+                Profiler.enter("PLC.recalcHeight");
+                Iterator<ComponentConnector> it = getCurrentChildren().iterator();
+                List<ComponentConnector> relativeHeightPortlets = new ArrayList<ComponentConnector>();
+                double totalPercentage = 0;
+                int totalFixedHeightConsumption = 0;
+                while (it.hasNext()) {
+                    ComponentConnector cc = it.next();
+                    if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
+                        totalPercentage += Util.parseRelativeSize(cc.getState().height);
+                        relativeHeightPortlets.add(cc);
+                    } else {
+                        Widget portletWidget = getPortletConnectorForContent(cc).getWidget();
+                        totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
+                    }
                 }
-            }
-        }
-        Profiler.leave("PLC.recalcHeight");
+                if (totalPercentage > 0) {
+                    totalPercentage = Math.max(totalPercentage, 100);
+                    int totalPortalHeight = getLayoutManager().getInnerHeight(getWidget().getElement());
+                    int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
+                    double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
+                    for (ComponentConnector cc : relativeHeightPortlets) {
+                        PortletConnector pc = getPortletConnectorForContent(cc);
+                        if (!pc.isCollased()) {
+                            float height = Util.parseRelativeSize(cc.getState().height);
+                            double slotHeight = (height / totalPercentage * ratio);
+                            pc.setSlotHeight(slotHeight + "%", slotHeight * totalPortalHeight  / 100f);
+                        }
+                    }
+                }
+                Profiler.leave("PLC.recalcHeight");
+            //}
+        //});
     }
     
     public void propagateHierarchyChangesToServer() {

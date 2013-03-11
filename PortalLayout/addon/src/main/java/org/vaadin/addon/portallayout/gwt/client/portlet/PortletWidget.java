@@ -83,7 +83,7 @@ public class PortletWidget extends FlowPanel {
     }
 
     public boolean isCollapsed() {
-        return getSlot().getStyleName().contains("collapsed");
+        return getStyleName().contains("collapsed");
     }
 
     public Element getContentElement() {
@@ -124,5 +124,9 @@ public class PortletWidget extends FlowPanel {
             int contentHeight = (int) (wrapperHeight * 1f / relativeHeightValue * 100f);
             contentEl.getStyle().setHeight(contentHeight, Unit.PX);   
         }
+    }
+
+    public double getHeaderHeight() {
+        return header.getOffsetHeight();
     }
 }

@@ -47,7 +47,6 @@ public class PortalDropController extends AbstractPositioningDropController {
         this.portalConnector = portal;
     }
     
-    
     protected LocationWidgetComparator getLocationWidgetComparator() {
         return LocationWidgetComparator.BOTTOM_HALF_COMPARATOR;
     }
