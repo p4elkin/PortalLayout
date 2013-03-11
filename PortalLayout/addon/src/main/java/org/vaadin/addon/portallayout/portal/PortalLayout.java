@@ -35,7 +35,7 @@ import com.vaadin.ui.Layout.MarginHandler;
 /**
  * PortalWithExtension.
  */
-@StyleSheet("test.css")
+@StyleSheet("portallayout_styles.css")
 public class PortalLayout extends AbstractComponent implements MarginHandler, HasComponents {
 
     public PortalLayout() {
