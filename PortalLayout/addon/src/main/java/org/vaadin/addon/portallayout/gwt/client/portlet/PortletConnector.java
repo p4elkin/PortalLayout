@@ -158,6 +158,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onPortletCollapse(PortletCollapseEvent e) {
+        widget.getHeader().toggleCollapseStyles(!getState().isCollapsed);
         rpc.setCollapsed(!getState().isCollapsed);
     }
 
