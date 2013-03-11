@@ -27,7 +27,6 @@ import com.vaadin.server.Extension;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
@@ -116,9 +115,7 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
                 }
             }
         }
-        if (c.getParent() != null) {
-            AbstractSingleComponentContainer.removeFromParent(c);
-        }
+        c.setParent(null);
         c.setParent(this);
     }
 

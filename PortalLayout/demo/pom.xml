@@ -108,11 +108,6 @@
 					<style>PRETTY</style>
 					<strict>true</strict>
 					<runTarget>http://localhost:8080/</runTarget>
-
-					<!-- <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory> 
-						<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs> <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp> 
-						<noServer>true</noServer> <draftCompile>true</draftCompile> <compileReport>true</compileReport> 
-						<style>PRETTY</style> <strict>true</strict> <runTarget>http://localhost:8080/</runTarget> -->
 				</configuration>
 				<executions>
 					<execution>

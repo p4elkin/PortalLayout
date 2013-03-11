@@ -1,7 +1,7 @@
 package org.vaadin.addon.portallayout.demo;
 
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
-import org.vaadin.addon.portallayout.portal.Portal;
+import org.vaadin.addon.portallayout.portal.PortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -21,7 +21,7 @@ import com.vaadin.ui.TextField;
 @SuppressWarnings("serial")
 public class ActionDemoTab extends Panel /*implements PortletCloseListener, PortletCollapseListener*/ {
    
-    public class DemoPortal extends Portal {
+    public class DemoPortal extends PortalLayout {
         
         public DemoPortal() {
             setWidth("100%");
@@ -32,37 +32,34 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         }
     }
     
-    private final Portal videoPortal = new DemoPortal() {
+    private final PortalLayout videoPortal = new DemoPortal() {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "red");
             c.setHeight("300px");
             Portlet p = super.wrapInPortlet(c/*, position*/);
-            p.setHeight("300px");
             return p;
         };
     };
     
-    private final Portal imagePortal = new DemoPortal()  {
+    private final PortalLayout imagePortal = new DemoPortal()  {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "green");
             c.setHeight("300px");
             Portlet p = super.wrapInPortlet(c/*, position*/);
-            p.setHeight("300px");
             return p;
         };
     };
     
-    private final Portal miscPortal = new DemoPortal()  {
+    private final PortalLayout miscPortal = new DemoPortal()  {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             
             c.setHeight("300px");
             Portlet p = super.wrapInPortlet(c/*, position*/);
-            p.setHeight("300px");
             return p;
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "yellow");
@@ -111,7 +108,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         final TextField filterField = new TextField();
         final NativeSelect filterType = new NativeSelect();
         final Label caption = new Label("Filter: ");
-        for (final NameType t : NameType.values()) {
+/*        for (final NameType t : NameType.values()) {
             filterType.addItem(t);
         }
         filterType.setValue(NameType.NT_FIRST_NAME);
@@ -123,8 +120,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         header.addComponent(filterType);
         header.setSpacing(true);
         header.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-        header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);
-        miscPortal.getPortlet(table).setHeaderToolbar(header);
+        header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);*/
+        //miscPortal.getPortlet(table).setHeaderToolbar(header);
         filterField.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {

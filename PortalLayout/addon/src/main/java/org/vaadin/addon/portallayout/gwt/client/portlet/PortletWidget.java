@@ -4,11 +4,14 @@ import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEve
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.Handler;
 import org.vaadin.addon.portallayout.gwt.client.portlet.header.PortletHeader;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.Util;
 
 public class PortletWidget extends FlowPanel {
     
@@ -16,8 +19,10 @@ public class PortletWidget extends FlowPanel {
     
     private final PortletHeader header = new PortletHeader();
 
+    private final Element contentWrapper = DOM.createDiv();
+    
     private final Element contentEl = DOM.createDiv();
-
+    
     private Widget contentWidget;
     
     public PortletWidget() {
@@ -27,9 +32,15 @@ public class PortletWidget extends FlowPanel {
         getElement().getStyle().setPosition(Position.RELATIVE);
         super.add(header);
 
+        contentWrapper.setClassName("v-portlet-content-wrapper");
         contentEl.setClassName("v-portlet-content");
-        getElement().appendChild(contentEl);
+        contentWrapper.appendChild(contentEl);
+        
+        getElement().appendChild(contentWrapper);
         getElement().getStyle().setColor("white");
+        
+        contentEl.getStyle().setDisplay(Display.NONE);
+        contentWrapper.getStyle().setPosition(Position.STATIC);
         
         header.addPortletCollapseEventHandler(new Handler() {
             @Override
@@ -58,7 +69,7 @@ public class PortletWidget extends FlowPanel {
     
     @Override
     public void add(Widget child) {
-        super.add(child, contentEl);
+        super.add(child, hasRelativeHeight() ? contentEl : contentWrapper);
     }
 
     public void blur() {
@@ -81,5 +92,37 @@ public class PortletWidget extends FlowPanel {
 
     public void setHeaderToolbar(Widget toolbar) {
         header.setToolbar(toolbar);
+    }
+
+    public void updateContentStructure(boolean isHeightRelative) {
+        if (isHeightRelative != hasRelativeHeight()) {
+            if (isHeightRelative) {
+                contentEl.getStyle().setDisplay(Display.BLOCK);
+                contentWrapper.getStyle().setPosition(Position.ABSOLUTE);
+                remove(contentWidget);
+                add(contentWidget, contentEl);
+            } else {
+                contentEl.getStyle().setDisplay(Display.NONE);
+                contentWrapper.getStyle().setPosition(Position.STATIC);
+                remove(contentWidget);
+                add(contentWidget, contentWrapper);            
+            }   
+        }
+    }
+
+    public boolean hasRelativeHeight() {
+        return Display.BLOCK.getCssName().equalsIgnoreCase(contentEl.getStyle().getDisplay());
+    }
+
+    public Element getElementWrapper() {
+        return contentWrapper;
+    }
+
+    public void resizeContent(int wrapperHeight) {
+        float relativeHeightValue = Util.parseRelativeSize(getContentWidget().getElement().getStyle().getHeight());
+        if (relativeHeightValue >= 0) {
+            int contentHeight = (int) (wrapperHeight * 1f / relativeHeightValue * 100f);
+            contentEl.getStyle().setHeight(contentHeight, Unit.PX);   
+        }
     }
 }

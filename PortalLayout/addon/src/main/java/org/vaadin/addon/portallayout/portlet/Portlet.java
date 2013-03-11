@@ -33,10 +33,6 @@ public class Portlet extends AbstractExtension {
             public void setCollapsed(boolean isCollapsed) {
                 getState().isCollapsed = isCollapsed;
             }
-            
-            @Override
-            public void updateCaptionFromContent(String caption) {
-            }
         });
     }
     

@@ -27,12 +27,13 @@ import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.allen_sauer.gwt.dnd.client.util.LocationWidgetComparator;
 import com.google.gwt.user.client.ui.InsertPanel;
+import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 
 /**
  * PortalWithExDropController.
  */
-public class PortalWithExDropController extends AbstractPositioningDropController {
+public class PortalDropController extends AbstractPositioningDropController {
 
     private PortletSlot positionerSlot;
 
@@ -40,7 +41,7 @@ public class PortalWithExDropController extends AbstractPositioningDropControlle
 
     private final PortalLayoutConnector portalConnector;
     
-    public PortalWithExDropController(PortalLayoutConnector portal) {
+    public PortalDropController(PortalLayoutConnector portal) {
         super(portal.getView().asWidget());
         this.panel = portal.getView();
         this.portalConnector = portal;
@@ -77,14 +78,15 @@ public class PortalWithExDropController extends AbstractPositioningDropControlle
             positionerSlot.setWidget(portletWidget);
         }
 
-        /*PortalLayoutConnector originalConnector = ((PortalLayoutConnector) 
-                Util.findConnectorFor(portletWidget).getParent());
+        ComponentConnector parentConnector = Util.findConnectorFor(portletWidget.getContentWidget());
+        PortalLayoutConnector originalConnector = ((PortalLayoutConnector) 
+                Util.findConnectorFor(portletWidget.getContentWidget()).getParent());
         if (originalConnector != portalConnector) {
             portalConnector.propagateHierarchyChangesToServer();
             originalConnector.propagateHierarchyChangesToServer();
         } else {
-            portalConnector.updatePortletPositionOnServer(portletWidget);
-        }*/
+            portalConnector.updatePortletPositionOnServer(parentConnector);
+        }
     }
 
     @Override

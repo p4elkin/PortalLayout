@@ -1,6 +1,6 @@
 package org.vaadin.addon.portallayout;
 
-import org.vaadin.addon.portallayout.portal.PortalWithExtension;
+import org.vaadin.addon.portallayout.portal.PortalLayout;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
@@ -37,8 +37,8 @@ public class PortalLayoutDemoUI extends UI {
         ((VerticalLayout)layout).setExpandRatio(hl, 1f);
     }
 
-    private PortalWithExtension createPortal(final Layout layout) {
-        final PortalWithExtension p = new PortalWithExtension();
+    private PortalLayout createPortal(final Layout layout) {
+        final PortalLayout p = new PortalLayout();
         p.setCaption("Portal");
         p.setHeight("90%");
         p.setWidth("60%");
@@ -46,7 +46,7 @@ public class PortalLayoutDemoUI extends UI {
         Component c = new TextArea();
         //c.setSizeFull();
         c.setCaption("TextBox1");
-        //c.setHeight("50%");
+        c.setHeight("50%");
         p.wrapInPortlet(c);
 
         final Component c1 = new TextArea();

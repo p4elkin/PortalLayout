@@ -15,7 +15,6 @@
  */
 package org.vaadin.addon.portallayout.gwt.shared.portlet.rpc;
 
-import com.vaadin.shared.annotations.Delayed;
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
@@ -24,9 +23,5 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface PortletServerRpc extends ServerRpc {
     
     void setCollapsed(boolean isCollapsed);
-    
-    @Delayed
-    @Deprecated
-    void updateCaptionFromContent(String caption);
     
 }
