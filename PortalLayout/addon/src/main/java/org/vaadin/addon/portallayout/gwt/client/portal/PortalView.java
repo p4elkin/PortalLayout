@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 public interface PortalView extends IsWidget, HasWidgets, IndexedPanel, InsertPanel {
     
-    void addPortlet(final PortletWidget pc);
+    void addPortlet(PortletWidget pc);
     
     void removePortlet(PortletWidget widget);
     

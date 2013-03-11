@@ -1,5 +1,6 @@
 package org.vaadin.addon.portallayout;
 
+import org.vaadin.addon.portallayout.demo.ActionDemoTab;
 import org.vaadin.addon.portallayout.portal.PortalLayout;
 
 import com.vaadin.server.ExternalResource;
@@ -32,47 +33,39 @@ public class PortalLayoutDemoUI extends UI {
 
         hl.addComponent(createPortal(layout));
         hl.addComponent(createPortal(layout));
-        //layout.addComponent(new ActionDemoTab());
-        layout.addComponent(hl);
-        ((VerticalLayout)layout).setExpandRatio(hl, 1f);
+        layout.addComponent(new ActionDemoTab());
+        //layout.addComponent(hl);
+        //((VerticalLayout)layout).setExpandRatio(hl, 1f);
     }
 
     private PortalLayout createPortal(final Layout layout) {
-        final PortalLayout p = new PortalLayout();
-        p.setCaption("Portal");
-        p.setHeight("90%");
-        p.setWidth("60%");
+        final PortalLayout portalLayout = new PortalLayout();
+        portalLayout.setCaption("Portal");
+        portalLayout.setHeight("90%");
+        portalLayout.setWidth("60%");
         
-        Component c = new TextArea();
+        Component childComponent = new TextArea();
         //c.setSizeFull();
-        c.setCaption("TextBox1");
-        c.setHeight("50%");
-        p.wrapInPortlet(c);
+        childComponent.setCaption("TextBox1");
+        childComponent.setHeight("50%");
+        portalLayout.wrapInPortlet(childComponent);
 
         final Component c1 = new TextArea();
         c1.setCaption("TextBox2");
-        p.wrapInPortlet(c1);
+        portalLayout.wrapInPortlet(c1);
         
         final Component c2 = new TextArea();
         //c2.setSizeFull();
         c2.setCaption("TextBox3");
-        p.wrapInPortlet(c2);
+        portalLayout.wrapInPortlet(c2);
         
-        c.setIcon(new ExternalResource("http://cs323919.userapi.com/v323919017/28f1/kzjuLO59loc.jpg"));
+        childComponent.setIcon(new ExternalResource("http://cs323919.userapi.com/v323919017/28f1/kzjuLO59loc.jpg"));
         
-        c.setWidth("100%");
+        childComponent.setWidth("100%");
         c1.setWidth("100%");
         c2.setWidth("100%");
         
-        /*layout.addComponent(new Button("!", new ClickListener() {
-            
-            @Override
-            public void buttonClick(ClickEvent event) { 
-                i += 5;
-                p.getPortlet(c1).setHeight(i + "px");
-            }
-        }));*/
-        return p;
+        return portalLayout;
     }
 
 }

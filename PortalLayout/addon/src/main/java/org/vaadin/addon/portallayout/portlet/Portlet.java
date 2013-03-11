@@ -45,6 +45,38 @@ public class Portlet extends AbstractExtension {
         extend((AbstractClientConnector)c);
     }
     
+    public void setCollapsed(boolean collapsed) {
+        getState().isCollapsed = collapsed;
+    }
+    
+    public void setClosable(boolean closable) {
+        getState().isClosable = closable;
+    }
+    
+    public void setCollapsible(boolean collapsible) {
+        getState().isCollapsible = collapsible;
+    }
+    
+    public void setLocked(boolean locked) {
+        getState().isLocked = locked;
+    }
+    
+    public boolean isLocked() {
+        return getState().isLocked;
+    }
+    
+    public boolean isCollapsed() {
+        return getState().isCollapsed;
+    }
+    
+    public boolean isCollapsible() {
+        return getState().isCollapsible;
+    }
+    
+    public boolean isClosable() {
+        return getState().isClosable;
+    }
+    
     @Override
     protected PortletState getState() {
         return (PortletState)super.getState();

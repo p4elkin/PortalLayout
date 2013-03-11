@@ -7,53 +7,69 @@
         <title>MyAddon 0.0.1 Manual</title>
         <author>
             <personname>
-                <firstname>Firstname</firstname>
-                <surname>Lastname</surname>
+                <firstname>Aleksandr</firstname>
+                <surname>Pchelintcev</surname>
             </personname>
-            <email>firstname.lastname@example.com</email>
+            <email>aleksandr@vaadin.com</email>
         </author>
         <copyright>
-            <year>2011</year>
-            <holder>my organization</holder>
+            <year>2013</year>
+            <holder>Vaadin</holder>
         </copyright>
     </info>
 
     <section xml:id="introduction">
         <title>Introduction</title>
         <para>
-            Document the MyAddon add-on for <link xl:href="http://vaadin.com">Vaadin</link> here.
+            Documentation of the PortalLayout add-on for Vaadin 7 (<link xl:href="https://vaadin.com/directory#addon/portallayout:vaadin"></link>).
         </para>
     </section>
 
     <section xml:id="usage">
-        <title>Using MyAddon</title>
+        <title>Using PortalLayout for Vaadin7</title>
         <para>
-            This is another section.
-        </para>
+        	<classname>PortalLayout</classname> is a simple component that implements <interfacename>HasComponents</interfacename> interface.
+        	It wraps other comonents in <classname>Portlets</classname> and renders them in a stack. In order to add a component to 
+        	<classname>PortalLayout</classname> one should call the following:  
+        	            <programlisting language="java"><![CDATA[
 
-        <para>
-            A section can have multiple paragraphs. You can do formatting using pre-defined styles such as
-            <classname>MyClass&lt;T&gt;</classname>, <interfacename>@NotNull</interfacename> etc. 
+    private void createPortal() {
+       ....
+       final PortalLayout portalLayout = new PortalLayout();
+       ....
+       Component childComponent = new TextArea();
+       Portlet portlet = portalLayout.wrapInPortlet(childComponent);
+       ....
+    }
+                ]]></programlisting>
         </para>
         
         <para>
-            Program listings can also be included in the documentation:
-            
-            <programlisting language="java"><![CDATA[
-import mypackage.*;
+        	The <classname>Portlet</classname> is a child class of an <classname>AbstractExtension</classname>. On the client-side it is responsible for 
+        	providing a chrome for a wrapped component: draggable area (header), caption and icon areas, controls for close/collapse and auxillary components
+        	in the header that play a role of toolbars. Portlet provides basic setter/getter methods on the server-side:
+        	        	            <programlisting language="java"><![CDATA[
 
-public class MyClass {
-    // ... listing here
-}
+    public void setCollapsed(boolean collapsed) {}
+    
+    public void setClosable(boolean closable) {}
+    
+    public void setCollapsible(boolean collapsible) {}
+    
+    public void setLocked(boolean locked) {}
+    
+    public boolean isLocked() {}
+    
+    public boolean isCollapsed() {}
+    
+    public boolean isCollapsible() {}
+    
+    public boolean isClosable() {}
                 ]]></programlisting>
-        </para>
+		</para>
+		
+		<para>
+			<classname>PortalLayout</classname> allows for portlet exchange between instances out of the box. 
+		</para>
     </section>
-
-    <section xml:id="another_section">
-        <title>Another section</title>
-        <para>
-            You can link from one section to another: <xref linkend="usage"/>.
-        </para>
-    </section>
-
 </article>

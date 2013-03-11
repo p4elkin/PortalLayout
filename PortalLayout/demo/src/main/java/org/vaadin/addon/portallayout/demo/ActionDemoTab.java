@@ -7,7 +7,6 @@ import org.vaadin.addon.portallayout.portlet.Portlet;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
@@ -48,7 +47,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "green");
-            c.setHeight("300px");
+            c.setHeight("50%");
             Portlet p = super.wrapInPortlet(c/*, position*/);
             return p;
         };
@@ -102,7 +101,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         final DemoTable table = new DemoTable();
         miscPortal.wrapInPortlet(table);
         table.setCaption("Artists");
-        table.setIcon(new ThemeResource("chart.png"));
+        //table.setIcon(new ThemeResource("chart.png"));
         
         final HorizontalLayout header =  new HorizontalLayout();
         final TextField filterField = new TextField();
@@ -178,10 +177,11 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         pl.setMimeType("application/x-shockwave-flash");
         pl.setParameter("allowFullScreen", "true");
         pl.setHeight("100%");
+        pl.setWidth("100%");
         pl.setImmediate(true);
         videoPortal.wrapInPortlet(pl);
         pl.setCaption("Joy Division - Disorder");
-        pl.setIcon(new ThemeResource("video.png"));
+        //pl.setIcon(new ThemeResource("video.png"));
         
         final HorizontalLayout header =  new HorizontalLayout();
         final TextField idField = new TextField();

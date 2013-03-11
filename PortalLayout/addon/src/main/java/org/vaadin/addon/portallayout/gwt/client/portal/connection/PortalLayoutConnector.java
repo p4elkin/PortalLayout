@@ -152,26 +152,20 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     public void setIncomingPortletCandidate(PortletWidget portletWidget) {
         assert portletWidget != null;
         ComponentConnector pc = Util.findConnectorFor(portletWidget.getContentWidget());
-        if (!getChildComponents().contains(pc) || outcomingPortletCandidate == pc) {
-            if (this.outcomingPortletCandidate == pc) {
-                this.outcomingPortletCandidate = null;
-            } else {
-                this.incomingPortletCandidate = pc;
-            }
-            recalculateHeights();
+        if (this.outcomingPortletCandidate == pc) {
+            this.outcomingPortletCandidate = null;
+        } else if (!getChildComponents().contains(pc)) {
+            this.incomingPortletCandidate = pc;
         }
     }
 
     public void setOutcomingPortletCandidate(PortletWidget portletWidget) {
         assert portletWidget != null;
         ComponentConnector pc = Util.findConnectorFor(portletWidget.getContentWidget());
-        if (getChildComponents().contains(pc) || incomingPortletCandidate == pc) {
-            if (this.incomingPortletCandidate == pc) {
-                this.incomingPortletCandidate = null;
-            } else {
-                this.outcomingPortletCandidate = pc;
-            }
-            recalculateHeights();
+        if (this.incomingPortletCandidate == pc) {
+            this.incomingPortletCandidate = null;
+        } else if (getChildComponents().contains(pc)) {
+            this.outcomingPortletCandidate = pc;
         }
     }
 
@@ -209,7 +203,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
 
         if (incomingPortletCandidate != null) {
-            Widget slot = PortalLayoutUtil.getPortletConnectorForContent(incomingPortletCandidate).getWidget().getSlot();
+            Widget slot = PortalLayoutUtil.getPortletConnectorForContent(incomingPortletCandidate).getWidget()
+                    .getSlot();
             rpc.updatePortletPosition(incomingPortletCandidate, view.getWidgetIndex(slot));
             incomingPortletCandidate = null;
         }

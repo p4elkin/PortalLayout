@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 
 import com.vaadin.server.FileResource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
 
@@ -34,10 +33,10 @@ public class PortalImage extends Image {
             ratings = new double[files.length];
             showNextFile();
             setCaption(files[currentDisplayedImage].getName());
-            setIcon(new ThemeResource("picture.png"));
+            //setIcon(new ThemeResource("picture.png"));
         }
         setWidth("100%");
-        setHeight("400px");
+        setHeight("70%");
     }
 
     public boolean isEmpty() {

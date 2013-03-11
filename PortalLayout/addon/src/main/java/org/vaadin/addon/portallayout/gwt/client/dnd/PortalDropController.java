@@ -40,13 +40,13 @@ public class PortalDropController extends AbstractPositioningDropController {
     private final InsertPanel panel;
 
     private final PortalLayoutConnector portalConnector;
-    
+
     public PortalDropController(PortalLayoutConnector portal) {
         super(portal.getView().asWidget());
         this.panel = portal.getView();
         this.portalConnector = portal;
     }
-    
+
     protected LocationWidgetComparator getLocationWidgetComparator() {
         return LocationWidgetComparator.BOTTOM_HALF_COMPARATOR;
     }
@@ -56,8 +56,7 @@ public class PortalDropController extends AbstractPositioningDropController {
         PortletWidget portletWidget = (PortletWidget) context.selectedWidgets.get(0);
         PortletSlot slot = portletWidget.getSlot();
         if (panel != slot.getParent()) {
-            PortalLayoutConnector originalConnector = ((PortalLayoutConnector) 
-                    Util.findConnectorFor(portletWidget.getContentWidget()).getParent());
+            PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util.findConnectorFor(slot.getParent()));
             originalConnector.setOutcomingPortletCandidate(portletWidget);
             portalConnector.setIncomingPortletCandidate(portletWidget);
         }
@@ -78,8 +77,8 @@ public class PortalDropController extends AbstractPositioningDropController {
         }
 
         ComponentConnector parentConnector = Util.findConnectorFor(portletWidget.getContentWidget());
-        PortalLayoutConnector originalConnector = ((PortalLayoutConnector) 
-                Util.findConnectorFor(portletWidget.getContentWidget()).getParent());
+        PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util
+                .findConnectorFor(portletWidget.getContentWidget()).getParent());
         if (originalConnector != portalConnector) {
             portalConnector.propagateHierarchyChangesToServer();
             originalConnector.propagateHierarchyChangesToServer();
@@ -91,8 +90,7 @@ public class PortalDropController extends AbstractPositioningDropController {
     @Override
     public void onMove(DragContext context) {
         super.onMove(context);
-        int targetIndex = DOMUtil.findIntersect(
-                panel,
+        int targetIndex = DOMUtil.findIntersect(panel,
                 new CoordinateLocation(context.mouseX, context.mouseY),
                 getLocationWidgetComparator());
 
@@ -112,7 +110,7 @@ public class PortalDropController extends AbstractPositioningDropController {
             }
         }
     }
-    
+
     protected void configurePostionerSlot(DragContext context, PortletSlot slot) {
         positionerSlot = slot;
         int targetIndex = DOMUtil.findIntersect(panel,
@@ -121,6 +119,5 @@ public class PortalDropController extends AbstractPositioningDropController {
         panel.insert(positionerSlot, targetIndex);
         positionerSlot.addStyleName(DragClientBundle.INSTANCE.css().positioner());
     }
-
 
 }
