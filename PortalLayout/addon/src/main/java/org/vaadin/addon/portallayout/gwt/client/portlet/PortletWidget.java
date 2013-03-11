@@ -96,7 +96,7 @@ public class PortletWidget extends FlowPanel {
 
     public void updateContentStructure(boolean isHeightRelative) {
         if (isHeightRelative != hasRelativeHeight()) {
-            if (isHeightRelative) {
+            if (isHeightRelative && !isCollapsed()) {
                 contentEl.getStyle().setDisplay(Display.BLOCK);
                 contentWrapper.getStyle().setPosition(Position.ABSOLUTE);
                 remove(contentWidget);

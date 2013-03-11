@@ -1,10 +1,10 @@
 <module>
-	<!-- WS Compiler: manually edited -->
 	<!-- <set-property name="vaadin.profiler" value="true"/> --> 
 	<inherits name="com.vaadin.DefaultWidgetSet" /> 
 	<stylesheet src="PortalLayout/portallayout.css"/>
  	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
  	<source path="client"/>
  	<source path="shared"/>
+ 	
 </module>
 

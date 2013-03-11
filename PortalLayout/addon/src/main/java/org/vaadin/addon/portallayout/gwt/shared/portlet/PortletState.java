@@ -31,8 +31,6 @@ public class PortletState extends AbstractComponentState {
 
     public boolean isCollapsible = true;
     
-    //public SlotSize slotSize = new SlotSize();
-    
     public Connector content;
     
     public Connector headerToolbar;

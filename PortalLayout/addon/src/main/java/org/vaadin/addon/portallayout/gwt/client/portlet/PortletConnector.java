@@ -15,6 +15,7 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
@@ -39,17 +40,18 @@ import com.vaadin.shared.ui.Connect;
  * PortletExConnector.
  */
 @Connect(Portlet.class)
-public class PortletConnector extends AbstractExtensionConnector implements PortletCollapseEvent.Handler, PortletCloseEvent.Handler {
+public class PortletConnector extends AbstractExtensionConnector implements PortletCollapseEvent.Handler,
+        PortletCloseEvent.Handler {
 
     private LayoutManager layoutManager;
-    
+
     /**
      * heightStateChangeListener.
      */
     private final class HeightStateChangeListener implements StateChangeHandler {
         @Override
         public void onStateChanged(StateChangeEvent event) {
-            ComponentConnector cc = (ComponentConnector)event.getConnector();
+            ComponentConnector cc = (ComponentConnector) event.getConnector();
             isHeightRelative = (ComponentStateUtil.isRelativeHeight(cc.getState()));
             widget.updateContentStructure(isHeightRelative);
         }
@@ -65,11 +67,12 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
             if (isCollapsed != getState().isCollapsed) {
                 widget.setStyleName("collapsed", getState().isCollapsed);
                 if (getState().isCollapsed) {
-                    widget.getSlot().setHeight(widget.getHeader().getOffsetHeight() + "px");   
+                    widget.getSlot().setHeight(widget.getHeader().getOffsetHeight() + "px");
                 } else {
                     widget.getSlot().getElement().getStyle().clearHeight();
-                }   
-                layoutManager.setNeedsMeasure((ComponentConnector)getParent());
+                    PortalLayoutConnector pc = (PortalLayoutConnector)((ComponentConnector)getParent().getParent());
+                    PortalLayoutUtil.recalculatePortletHeights(pc);
+                }
             }
         }
     }
@@ -98,11 +101,11 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     }
 
     private final PortletServerRpc rpc = RpcProxy.create(PortletServerRpc.class, this);
-    
+
     private final PortletWidget widget = new PortletWidget();
-    
+
     private boolean isHeightRelative = false;
-    
+
     @Override
     protected void init() {
         super.init();
@@ -110,33 +113,33 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         widget.getHeader().addPortletCloseEventHandler(this);
         addStateChangeHandler("isCollapsed", new CollapseStateChangeListener());
     }
-    
+
     @Override
     protected void extend(ServerConnector target) {
-        ComponentConnector cc = (ComponentConnector)target;
+        ComponentConnector cc = (ComponentConnector) target;
         Widget w = cc.getWidget();
         widget.setContentWidget(w);
         cc.addStateChangeHandler("height", new HeightStateChangeListener());
-        
-        layoutManager = cc.getLayoutManager(); 
+
+        layoutManager = cc.getLayoutManager();
         layoutManager.addElementResizeListener(widget.getElementWrapper(), new ContentAreaSizeChangeListener());
         layoutManager.addElementResizeListener(widget.getElement(), new FixedHeightPortletResizeListener());
     }
-    
+
     public PortletWidget getWidget() {
         return widget;
     }
 
     public boolean isCollased() {
-        return false;
-    }
-    
-    @Override
-    public PortletState getState() {
-        return (PortletState)super.getState();
+        return widget.isCollapsed();
     }
 
-    public void setSlotHeight(String slotHeight) { 
+    @Override
+    public PortletState getState() {
+        return (PortletState) super.getState();
+    }
+
+    public void setSlotHeight(String slotHeight) {
         widget.getSlot().setHeight(slotHeight);
     }
 
@@ -150,14 +153,14 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onPortletClose(PortletCloseEvent e) {
-        ((PortalLayoutConnector)getParent().getParent()).removePortlet(getParent());
+        ((PortalLayoutConnector) getParent().getParent()).removePortlet(getParent());
     }
 
     @Override
     public void onPortletCollapse(PortletCollapseEvent e) {
         rpc.setCollapsed(!getState().isCollapsed);
     }
-    
+
     @Override
     public void onUnregister() {
         super.onUnregister();
@@ -167,6 +170,6 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     public void setSlotHeight(String percentSlotSize, double pixelSlotSize) {
         setSlotHeight(percentSlotSize);
-        widget.resizeContent((int)(pixelSlotSize - widget.getHeaderHeight()));
+        widget.resizeContent((int) (pixelSlotSize - widget.getHeaderHeight()));
     }
 }

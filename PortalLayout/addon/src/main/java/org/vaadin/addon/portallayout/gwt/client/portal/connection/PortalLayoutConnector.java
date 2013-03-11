@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vaadin.addon.portallayout.gwt.client.dnd.PortalDropController;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.Profiler;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
@@ -45,7 +45,6 @@ import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ComponentConstants;
 import com.vaadin.shared.communication.URLReference;
-import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -81,28 +80,29 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     }
 
     private final PortalServerRpc rpc = RpcProxy.create(PortalServerRpc.class, this);
-    
-    private final static PortalPickupDragController commonDragController = new PortalPickupDragController(RootPanel.get(), false);
-    
+
+    private final static PortalPickupDragController commonDragController = new PortalPickupDragController(
+            RootPanel.get(), false);
+
     private ComponentConnector incomingPortletCandidate;
 
     private ComponentConnector outcomingPortletCandidate;
-    
+
     private PortalView view;
-    
+
     private final ElementResizeListener portletResizeListener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent event) {
             recalculateHeights();
         }
     };
-    
+
     @Override
     protected void init() {
         super.init();
         getLayoutManager().setNeedsMeasure(this);
     }
-    
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
@@ -111,14 +111,14 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             commonDragController.setMoveablePanleStyleName(themeUri.substring(themeUri.lastIndexOf("/") + 1));
         }
     }
-    
+
     @Override
     public void updateCaption(ComponentConnector connector) {
         if (getState().contentToPortlet.get(connector) != null) {
-            final PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(connector);
+            final PortletConnector pc = (PortletConnector) getState().contentToPortlet.get(connector);
             pc.setCaption(connector.getState().caption);
             URLReference iconRef = connector.getState().resources.get(ComponentConstants.ICON_RESOURCE);
-            pc.setIcon(iconRef != null ? iconRef.getURL() : null);   
+            pc.setIcon(iconRef != null ? iconRef.getURL() : null);
         }
     }
 
@@ -128,9 +128,9 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         final List<ComponentConnector> oldChildren = event.getOldChildren();
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
-            final PortletConnector pc = getPortletConnectorForContent(cc);
+            final PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
             if (pc != null) {
-                view.removePortlet(pc.getWidget());    
+                view.removePortlet(pc.getWidget());
             }
         }
 
@@ -138,16 +138,17 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         while (it.hasNext()) {
             final ComponentConnector cc = it.next();
             if (getState().contentToPortlet.get(cc) != null) {
-                final PortletConnector pc = (PortletConnector)getState().contentToPortlet.get(cc);
+                final PortletConnector pc = (PortletConnector) getState().contentToPortlet.get(cc);
                 final PortletWidget portletWidget = pc.getWidget();
-                cc.getLayoutManager().addElementResizeListener(portletWidget.getSlot().getElement(), portletResizeListener);
+                cc.getLayoutManager().addElementResizeListener(portletWidget.getSlot().getElement(),
+                        portletResizeListener);
                 commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());
                 getView().addPortlet(pc.getWidget());
 
             }
         }
     }
-    
+
     public void setIncomingPortletCandidate(PortletWidget portletWidget) {
         assert portletWidget != null;
         ComponentConnector pc = Util.findConnectorFor(portletWidget.getContentWidget());
@@ -173,7 +174,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             recalculateHeights();
         }
     }
-    
+
     @Override
     public Panel getWidget() {
         return (Panel) super.getWidget();
@@ -198,43 +199,9 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
 
     @Override
     public void recalculateHeights() {
-        /*Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {*/
-                Profiler.enter("PLC.recalcHeight");
-                Iterator<ComponentConnector> it = getCurrentChildren().iterator();
-                List<ComponentConnector> relativeHeightPortlets = new ArrayList<ComponentConnector>();
-                double totalPercentage = 0;
-                int totalFixedHeightConsumption = 0;
-                while (it.hasNext()) {
-                    ComponentConnector cc = it.next();
-                    if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                        totalPercentage += Util.parseRelativeSize(cc.getState().height);
-                        relativeHeightPortlets.add(cc);
-                    } else {
-                        Widget portletWidget = getPortletConnectorForContent(cc).getWidget();
-                        totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
-                    }
-                }
-                if (totalPercentage > 0) {
-                    totalPercentage = Math.max(totalPercentage, 100);
-                    int totalPortalHeight = getLayoutManager().getInnerHeight(getWidget().getElement());
-                    int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
-                    double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
-                    for (ComponentConnector cc : relativeHeightPortlets) {
-                        PortletConnector pc = getPortletConnectorForContent(cc);
-                        if (!pc.isCollased()) {
-                            float height = Util.parseRelativeSize(cc.getState().height);
-                            double slotHeight = (height / totalPercentage * ratio);
-                            pc.setSlotHeight(slotHeight + "%", slotHeight * totalPortalHeight  / 100f);
-                        }
-                    }
-                }
-                Profiler.leave("PLC.recalcHeight");
-            //}
-        //});
+        PortalLayoutUtil.recalculatePortletHeights(this);
     }
-    
+
     public void propagateHierarchyChangesToServer() {
         if (outcomingPortletCandidate != null) {
             rpc.removePortlet(outcomingPortletCandidate);
@@ -242,31 +209,22 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
 
         if (incomingPortletCandidate != null) {
-            Widget slot = getPortletConnectorForContent(incomingPortletCandidate).getWidget().getSlot();
+            Widget slot = PortalLayoutUtil.getPortletConnectorForContent(incomingPortletCandidate).getWidget().getSlot();
             rpc.updatePortletPosition(incomingPortletCandidate, view.getWidgetIndex(slot));
             incomingPortletCandidate = null;
         }
     }
-    
+
     public void updatePortletPositionOnServer(ComponentConnector cc) {
-        Widget slot = getPortletConnectorForContent(cc).getWidget().getSlot();
+        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget().getSlot();
         int positionInView = view.getWidgetIndex(slot);
         int positionInState = getState().portletConnectors.indexOf(cc);
         if (positionInState != positionInView) {
             rpc.updatePortletPosition(cc, positionInView);
         }
     }
-    
-    private PortletConnector getPortletConnectorForContent(ComponentConnector cc) {
-        ComponentConnector parent = (ComponentConnector)cc.getParent();
-        if (parent instanceof PortalLayoutConnector) {
-            PortalLayoutConnector portalConnector = (PortalLayoutConnector)parent;
-            return (PortletConnector)portalConnector.getState().contentToPortlet.get(cc);
-        }
-        return null;
-    }
 
-    protected List<ComponentConnector> getCurrentChildren() {
+    public List<ComponentConnector> getCurrentChildren() {
         List<ComponentConnector> result = new ArrayList<ComponentConnector>(getChildComponents()) {
             @Override
             public boolean add(ComponentConnector cc) {
