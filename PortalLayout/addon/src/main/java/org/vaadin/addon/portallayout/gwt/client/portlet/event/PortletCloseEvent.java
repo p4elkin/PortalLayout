@@ -15,7 +15,7 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet.event;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -32,13 +32,13 @@ public class PortletCloseEvent extends GwtEvent<PortletCloseEvent.Handler>{
         void onPortletClose(PortletCloseEvent e);
     }
     
-    private final PortletWidget portlet;
+    private final PortletChrome portlet;
     
-    public PortletCloseEvent(PortletWidget portletWidget) {
+    public PortletCloseEvent(PortletChrome portletWidget) {
         this.portlet = portletWidget;
     }
     
-    public PortletWidget getPortlet() {
+    public PortletChrome getPortlet() {
         return portlet;
     }
     

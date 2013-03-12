@@ -17,7 +17,7 @@ package org.vaadin.addon.portallayout.gwt.client.dnd;
 
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
@@ -53,8 +53,8 @@ public class PortalDropController extends AbstractPositioningDropController {
 
     @Override
     public void onEnter(DragContext context) {
-        PortletWidget portletWidget = (PortletWidget) context.selectedWidgets.get(0);
-        PortletSlot slot = portletWidget.getSlot();
+        PortletChrome portletWidget = (PortletChrome) context.selectedWidgets.get(0);
+        PortletSlot slot = portletWidget.getAssociatedSlot();
         if (panel != slot.getParent()) {
             PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util.findConnectorFor(slot.getParent()));
             originalConnector.setOutcomingPortletCandidate(portletWidget);
@@ -71,7 +71,7 @@ public class PortalDropController extends AbstractPositioningDropController {
     @Override
     public void onDrop(DragContext context) {
         super.onDrop(context);
-        PortletWidget portletWidget = (PortletWidget) context.selectedWidgets.get(0);
+        PortletChrome portletWidget = (PortletChrome) context.selectedWidgets.get(0);
         if (positionerSlot != null) {
             positionerSlot.setWidget(portletWidget);
         }

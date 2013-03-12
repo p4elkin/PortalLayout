@@ -1,6 +1,6 @@
 package org.vaadin.addon.portallayout.gwt.client.portal;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -36,16 +36,16 @@ public class PortalViewImpl extends FlowPanel implements PortalView {
     }
     
     @Override
-    public void addPortlet(PortletWidget p) {
-        p.getSlot().setWidget(p);
-        if (getWidgetIndex(p.getSlot()) < 0) {
-            add(p.getSlot());
+    public void addPortlet(PortletChrome p) {
+        p.getAssociatedSlot().setWidget(p);
+        if (getWidgetIndex(p.getAssociatedSlot()) < 0) {
+            add(p.getAssociatedSlot());
         }
     }
 
     @Override
-    public void removePortlet(PortletWidget portletWidget) {
-        if (getWidgetIndex(portletWidget.getSlot()) >= 0) {
+    public void removePortlet(PortletChrome portletWidget) {
+        if (getWidgetIndex(portletWidget.getAssociatedSlot()) >= 0) {
             portletWidget.close();
         }
     }

@@ -1,6 +1,6 @@
 package org.vaadin.addon.portallayout.gwt.client.portal;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IndexedPanel;
@@ -10,9 +10,9 @@ import com.google.gwt.user.client.ui.Panel;
 
 public interface PortalView extends IsWidget, HasWidgets, IndexedPanel, InsertPanel {
     
-    void addPortlet(PortletWidget pc);
+    void addPortlet(PortletChrome pc);
     
-    void removePortlet(PortletWidget widget);
+    void removePortlet(PortletChrome widget);
     
     @Override
     Panel asWidget();

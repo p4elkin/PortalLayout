@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
 
-public class PortletWidget extends FlowPanel {
+public class PortletChrome extends FlowPanel {
     
     private final PortletSlot slot = new PortletSlot(this);
     
@@ -25,7 +25,7 @@ public class PortletWidget extends FlowPanel {
     
     private Widget contentWidget;
     
-    public PortletWidget() {
+    public PortletChrome() {
         super();
         setStyleName("v-portlet");
         header.setStyleName("v-portlet-header");
@@ -37,7 +37,6 @@ public class PortletWidget extends FlowPanel {
         contentWrapper.appendChild(contentEl);
         
         getElement().appendChild(contentWrapper);
-        getElement().getStyle().setColor("white");
         
         contentEl.getStyle().setDisplay(Display.NONE);
         contentWrapper.getStyle().setPosition(Position.STATIC);
@@ -50,7 +49,7 @@ public class PortletWidget extends FlowPanel {
         });
     }
     
-    public PortletSlot getSlot() {
+    public PortletSlot getAssociatedSlot() {
         return slot;
     }
     
@@ -79,7 +78,7 @@ public class PortletWidget extends FlowPanel {
     }
 
     public void close() {
-        getSlot().removeFromParent();
+        getAssociatedSlot().removeFromParent();
     }
 
     public boolean isCollapsed() {

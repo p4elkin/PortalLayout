@@ -6,14 +6,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PortletSlot extends SimplePanel {
 
-    public PortletSlot(PortletWidget portlet) {
+    public PortletSlot(PortletChrome portlet) {
         setStyleName("v-portlet-slot");
         setWidget(portlet);
     }
     
     @Override
-    public PortletWidget getWidget() {
-        return (PortletWidget)super.getWidget();
+    public PortletChrome getWidget() {
+        return (PortletChrome)super.getWidget();
     }
     
     @Override

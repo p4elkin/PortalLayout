@@ -24,7 +24,7 @@ import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portal.PortalLayout;
@@ -139,8 +139,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             final ComponentConnector cc = it.next();
             if (getState().contentToPortlet.get(cc) != null) {
                 final PortletConnector pc = (PortletConnector) getState().contentToPortlet.get(cc);
-                final PortletWidget portletWidget = pc.getWidget();
-                cc.getLayoutManager().addElementResizeListener(portletWidget.getSlot().getElement(),
+                final PortletChrome portletWidget = pc.getWidget();
+                cc.getLayoutManager().addElementResizeListener(portletWidget.getAssociatedSlot().getElement(),
                         portletResizeListener);
                 commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());
                 getView().addPortlet(pc.getWidget());
@@ -149,7 +149,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
     }
 
-    public void setIncomingPortletCandidate(PortletWidget portletWidget) {
+    public void setIncomingPortletCandidate(PortletChrome portletWidget) {
         assert portletWidget != null;
         ComponentConnector pc = Util.findConnectorFor(portletWidget.getContentWidget());
         if (this.outcomingPortletCandidate == pc) {
@@ -159,7 +159,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
     }
 
-    public void setOutcomingPortletCandidate(PortletWidget portletWidget) {
+    public void setOutcomingPortletCandidate(PortletChrome portletWidget) {
         assert portletWidget != null;
         ComponentConnector pc = Util.findConnectorFor(portletWidget.getContentWidget());
         if (this.incomingPortletCandidate == pc) {
@@ -204,14 +204,14 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
 
         if (incomingPortletCandidate != null) {
             Widget slot = PortalLayoutUtil.getPortletConnectorForContent(incomingPortletCandidate).getWidget()
-                    .getSlot();
+                    .getAssociatedSlot();
             rpc.updatePortletPosition(incomingPortletCandidate, view.getWidgetIndex(slot));
             incomingPortletCandidate = null;
         }
     }
 
     public void updatePortletPositionOnServer(ComponentConnector cc) {
-        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget().getSlot();
+        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget().getAssociatedSlot();
         int positionInView = view.getWidgetIndex(slot);
         int positionInState = getState().portletConnectors.indexOf(cc);
         if (positionInState != positionInView) {

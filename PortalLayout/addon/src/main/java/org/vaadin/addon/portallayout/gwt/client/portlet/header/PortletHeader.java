@@ -1,6 +1,6 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet.header;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent.HasPortletCloseEventHandlers;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
@@ -164,8 +164,8 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     }
     
     @Override
-    public PortletWidget getParent() {
-        return (PortletWidget)super.getParent();
+    public PortletChrome getParent() {
+        return (PortletChrome)super.getParent();
     }
     
     @Override
