@@ -23,10 +23,10 @@ import org.vaadin.addon.portallayout.gwt.client.dnd.PortalDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletWidget;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portal.PortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;

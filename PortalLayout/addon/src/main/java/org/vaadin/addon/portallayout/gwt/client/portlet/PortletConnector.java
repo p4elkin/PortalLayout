@@ -64,9 +64,9 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             boolean isCollapsed = widget.isCollapsed();
-            if (isCollapsed != getState().isCollapsed) {
-                widget.setStyleName("collapsed", getState().isCollapsed);
-                if (getState().isCollapsed) {
+            if (isCollapsed != getState().collapsed) {
+                widget.setStyleName("collapsed", getState().collapsed);
+                if (getState().collapsed) {
                     widget.getSlot().setHeight(widget.getHeader().getOffsetHeight() + "px");
                 } else {
                     widget.getSlot().getElement().getStyle().clearHeight();
@@ -111,7 +111,30 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         super.init();
         widget.getHeader().addPortletCollapseEventHandler(this);
         widget.getHeader().addPortletCloseEventHandler(this);
-        addStateChangeHandler("isCollapsed", new CollapseStateChangeListener());
+        addStateChangeHandler("collapsed", new CollapseStateChangeListener());
+        addStateChangeHandler("collapsible", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent e) {
+                widget.getHeader().setCollapsible(getState().collapsible);
+            }
+        });
+        
+        addStateChangeHandler("closable", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent e) {
+                widget.getHeader().setClosable(getState().closable);
+                if (!((PortletState)e.getConnector().getState()).closable) {
+                    System.out.println();
+                }
+            }
+        });
+        
+        addStateChangeHandler("locked", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent e) {
+                
+            }
+        });
     }
 
     @Override
@@ -120,7 +143,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         Widget w = cc.getWidget();
         widget.setContentWidget(w);
         cc.addStateChangeHandler("height", new HeightStateChangeListener());
-
+        
         layoutManager = cc.getLayoutManager();
         layoutManager.addElementResizeListener(widget.getElementWrapper(), new ContentAreaSizeChangeListener());
         layoutManager.addElementResizeListener(widget.getElement(), new FixedHeightPortletResizeListener());
@@ -158,8 +181,8 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onPortletCollapse(PortletCollapseEvent e) {
-        widget.getHeader().toggleCollapseStyles(!getState().isCollapsed);
-        rpc.setCollapsed(!getState().isCollapsed);
+        widget.getHeader().toggleCollapseStyles(!getState().collapsed);
+        rpc.setCollapsed(!getState().collapsed);
     }
 
     @Override

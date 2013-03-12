@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc;
+package org.vaadin.addon.portallayout.gwt.shared.portal.rpc;
 
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.ServerRpc;

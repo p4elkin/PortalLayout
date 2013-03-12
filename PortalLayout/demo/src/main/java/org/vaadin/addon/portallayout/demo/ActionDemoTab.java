@@ -131,7 +131,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
 
     private void createImageContents() {
         final PortalImage image = new PortalImage();
-        imagePortal.wrapInPortlet(image);
+        Portlet portlet = imagePortal.wrapInPortlet(image);
+        portlet.setClosable(false);
         /*final RatingStars rating = new RatingStars();
         rating.setImmediate(true);
         rating.addListener(new ValueChangeListener() {            
@@ -179,7 +180,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         pl.setHeight("100%");
         pl.setWidth("100%");
         pl.setImmediate(true);
-        videoPortal.wrapInPortlet(pl);
+        Portlet portlet = videoPortal.wrapInPortlet(pl);
+        portlet.setCollapsible(false);
         pl.setCaption("Joy Division - Disorder");
         //pl.setIcon(new ThemeResource("video.png"));
         

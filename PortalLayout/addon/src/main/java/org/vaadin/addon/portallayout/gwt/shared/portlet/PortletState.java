@@ -23,13 +23,13 @@ import com.vaadin.shared.Connector;
  */
 public class PortletState extends AbstractComponentState {
 
-    public boolean isLocked = false;
+    public boolean locked = false;
 
-    public boolean isCollapsed = false;
+    public boolean collapsed = false;
 
-    public boolean isClosable = true;
+    public boolean closable = true;
 
-    public boolean isCollapsible = true;
+    public boolean collapsible = true;
     
     public Connector content;
     

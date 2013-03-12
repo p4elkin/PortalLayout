@@ -31,7 +31,7 @@ public class Portlet extends AbstractExtension {
         registerRpc(new PortletServerRpc() {
             @Override
             public void setCollapsed(boolean isCollapsed) {
-                getState().isCollapsed = isCollapsed;
+                getState().collapsed = isCollapsed;
             }
         });
     }
@@ -46,35 +46,35 @@ public class Portlet extends AbstractExtension {
     }
     
     public void setCollapsed(boolean collapsed) {
-        getState().isCollapsed = collapsed;
+        getState().collapsed = collapsed;
     }
     
     public void setClosable(boolean closable) {
-        getState().isClosable = closable;
+        getState().closable = closable;
     }
     
     public void setCollapsible(boolean collapsible) {
-        getState().isCollapsible = collapsible;
+        getState().collapsible = collapsible;
     }
     
     public void setLocked(boolean locked) {
-        getState().isLocked = locked;
+        getState().locked = locked;
     }
     
     public boolean isLocked() {
-        return getState().isLocked;
+        return getState().locked;
     }
     
     public boolean isCollapsed() {
-        return getState().isCollapsed;
+        return getState().collapsed;
     }
     
     public boolean isCollapsible() {
-        return getState().isCollapsible;
+        return getState().collapsible;
     }
     
     public boolean isClosable() {
-        return getState().isClosable;
+        return getState().closable;
     }
     
     @Override

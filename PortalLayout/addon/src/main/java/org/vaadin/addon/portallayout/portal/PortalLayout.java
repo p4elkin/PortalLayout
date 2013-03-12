@@ -18,8 +18,8 @@ package org.vaadin.addon.portallayout.portal;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.annotations.StyleSheet;
@@ -138,7 +138,7 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
     public void setMargin(MarginInfo marginInfo) {
         getState().marginsBitmask = marginInfo.getBitMask();
     }
-
+    
     @Override
     public Iterator<Component> iterator() {
         return new Iterator<Component>() {
