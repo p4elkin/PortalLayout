@@ -33,11 +33,14 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout.MarginHandler;
 
 /**
- * PortalWithExtension.
+ * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
  */
 @StyleSheet("portallayout_styles.css")
 public class PortalLayout extends AbstractComponent implements MarginHandler, HasComponents {
 
+    /**
+     * Constructs a {@link PortalLayout}.
+     */
     public PortalLayout() {
         setStyleName("v-portal-layout");
         registerRpc(new PortalServerRpc() {
@@ -56,15 +59,11 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
         });
     }
 
-    private void addComponentAt(Component c, int index) {
-        Portlet portlet = getPortletForComponent(c);
-        LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portletConnectors;
-        if (portlets.contains(portlet)) {
-            portlets.remove(portlet);
-        }
-        portlets.add(index, portlet);
-    }
-
+    /**
+     * 
+     * @param c Component to be wrapped into a {@link Portlet}.
+     * @return created {@link Portlet}.
+     */
     public Portlet wrapInPortlet(Component c) {
         Portlet result = getPortletForComponent(c);
         return result;
@@ -87,6 +86,10 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
         return result;
     }
 
+    /**
+     * Finds the correspondent {@link Portlet} and removes it.  
+     * @param portletContent Content Component. 
+     */
     public void removePortlet(Component portletContent) {
         Portlet portlet = (Portlet) getState().contentToPortlet.remove(portletContent);
         if (portlet != null) {
@@ -100,8 +103,36 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
         }
     }
 
+    /**
+     * Removes a {@link Portlet} from current layout.  
+     * @param portletContent {@link Portlet} to be removed. 
+     */
     public void removePortlet(Portlet portlet) {
         removePortlet((Component) portlet.getParent());
+    }
+    
+    @Override
+    public void setMargin(boolean enabled) {
+        setMargin(new MarginInfo(enabled));
+    }
+
+    @Override
+    public MarginInfo getMargin() {
+        return new MarginInfo(getState().marginsBitmask);
+    }
+
+    @Override
+    public void setMargin(MarginInfo marginInfo) {
+        getState().marginsBitmask = marginInfo.getBitMask();
+    }
+    
+    private void addComponentAt(Component c, int index) {
+        Portlet portlet = getPortletForComponent(c);
+        LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portletConnectors;
+        if (portlets.contains(portlet)) {
+            portlets.remove(portlet);
+        }
+        portlets.add(index, portlet);
     }
 
     private void addPortletMapping(Component c, Portlet result) {
@@ -122,21 +153,6 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
     @Override
     protected PortalLayoutState getState() {
         return (PortalLayoutState) super.getState();
-    }
-
-    @Override
-    public void setMargin(boolean enabled) {
-        setMargin(new MarginInfo(enabled));
-    }
-
-    @Override
-    public MarginInfo getMargin() {
-        return new MarginInfo(getState().marginsBitmask);
-    }
-
-    @Override
-    public void setMargin(MarginInfo marginInfo) {
-        getState().marginsBitmask = marginInfo.getBitMask();
     }
     
     @Override

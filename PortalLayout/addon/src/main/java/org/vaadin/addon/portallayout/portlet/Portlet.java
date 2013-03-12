@@ -23,10 +23,13 @@ import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
 
 /**
- * PortletEx.
+ * Extends a component on the client-side by providing a chrome with controls, icon and a caption.
  */
 public class Portlet extends AbstractExtension {
 
+    /**
+     * Constructs an empty {@link Portlet} which is not bound to any component.
+     */
     public Portlet() {
         registerRpc(new PortletServerRpc() {
             @Override
@@ -36,13 +39,17 @@ public class Portlet extends AbstractExtension {
         });
     }
     
-    public Portlet(Component c) {
+    /**
+     * Constructs a {@link Portlet} bound to a provided component.
+     * @param portletContent Portlet Content.
+     */
+    public Portlet(Component portletContent) {
         this();
-        wrap(c);
+        wrap(portletContent);
     }
     
-    public void wrap(Component c) {
-        extend((AbstractClientConnector)c);
+    public void wrap(Component content) {
+        extend((AbstractClientConnector)content);
     }
     
     public void setCollapsed(boolean collapsed) {

@@ -16,15 +16,14 @@
 package org.vaadin.addon.portallayout.gwt.client.dnd;
 
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbstractPositioningDropController;
 import com.allen_sauer.gwt.dnd.client.util.CoordinateLocation;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.allen_sauer.gwt.dnd.client.util.LocationWidgetComparator;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.vaadin.client.ComponentConnector;
@@ -117,7 +116,6 @@ public class PortalDropController extends AbstractPositioningDropController {
                 new CoordinateLocation(context.mouseX, context.mouseY),
                 getLocationWidgetComparator());
         panel.insert(positionerSlot, targetIndex);
-        positionerSlot.addStyleName(DragClientBundle.INSTANCE.css().positioner());
+        positionerSlot.addStyleName("v-portallayout-positioner");
     }
-
 }

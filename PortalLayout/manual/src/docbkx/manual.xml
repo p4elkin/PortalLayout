@@ -22,6 +22,12 @@
         <title>Introduction</title>
         <para>
             Documentation of the PortalLayout add-on for Vaadin 7 (<link xl:href="https://vaadin.com/directory#addon/portallayout:vaadin"></link>).
+            The primary target of an add-on is to provide an easy way to build the portal-like structures. Given a child component <classname>PortalLayout</classname>
+            wraps it into a <classname>Portlet</classname> instance which is draggable by its header, optionally closable, collapsible and may contain an 
+            additional toolbar. The DOM structure of <classname>PortalLayout</classname> is rather simplistic - it stacks the children one above another, but 
+            more complex views can be achieved as different instances of <classname>PortalLayout</classname> can exchange their <classname>Portlets</classname>
+            out-of-the-box, so by merely putting several <classname>PortalLayouts</classname> side-by-side or even in different parts of the view the 
+            developer instantly achieves highly interactive and customizable UI.  
         </para>
     </section>
 
