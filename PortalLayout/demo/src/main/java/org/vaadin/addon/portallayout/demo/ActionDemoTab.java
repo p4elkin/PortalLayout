@@ -99,7 +99,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     
     private void createMiscContents() {
         final DemoTable table = new DemoTable();
-        miscPortal.wrapInPortlet(table);
+        Portlet portlet = miscPortal.wrapInPortlet(table);
         table.setCaption("Artists");
         //table.setIcon(new ThemeResource("chart.png"));
         
@@ -107,7 +107,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         final TextField filterField = new TextField();
         final NativeSelect filterType = new NativeSelect();
         final Label caption = new Label("Filter: ");
-/*        for (final NameType t : NameType.values()) {
+        for (final NameType t : NameType.values()) {
             filterType.addItem(t);
         }
         filterType.setValue(NameType.NT_FIRST_NAME);
@@ -119,8 +119,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         header.addComponent(filterType);
         header.setSpacing(true);
         header.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-        header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);*/
-        //miscPortal.getPortlet(table).setHeaderToolbar(header);
+        header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);
+        portlet.setHeaderComponent(header);
         filterField.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {

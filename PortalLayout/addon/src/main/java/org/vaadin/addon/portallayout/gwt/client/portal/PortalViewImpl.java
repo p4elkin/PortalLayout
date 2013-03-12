@@ -21,7 +21,7 @@ public class PortalViewImpl extends FlowPanel implements PortalView {
     public Panel asWidget() {
         return this;
     }
-    
+
     @Override
     public void insert(Widget w, int beforeIndex) {
         super.insert(w, beforeIndex);

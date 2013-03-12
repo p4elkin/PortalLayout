@@ -93,6 +93,7 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
     public void removePortlet(Component portletContent) {
         Portlet portlet = (Portlet) getState().contentToPortlet.remove(portletContent);
         if (portlet != null) {
+            portlet.remove();
             getState().portletConnectors.remove(portlet);
             if (portletContent.getParent() == this) {
                 portletContent.setParent(null);
@@ -158,8 +159,8 @@ public class PortalLayout extends AbstractComponent implements MarginHandler, Ha
     @Override
     public Iterator<Component> iterator() {
         return new Iterator<Component>() {
-            final Iterator<Connector> wrappedIt = getState().portletConnectors.iterator();
-
+            private final Iterator<Connector> wrappedIt = getState().portletConnectors.iterator();
+            
             @Override
             public void remove() {
                 wrappedIt.remove();

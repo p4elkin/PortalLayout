@@ -135,6 +135,16 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
                 
             }
         });
+        
+        addStateChangeHandler("headerToolbar", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent e) {
+                Widget toolbar = getState().headerToolbar == null ? null : ((ComponentConnector)getState().headerToolbar).getWidget(); 
+                portletChrome.setHeaderToolbar(toolbar);
+            }
+        });
+        
+        
     }
 
     @Override

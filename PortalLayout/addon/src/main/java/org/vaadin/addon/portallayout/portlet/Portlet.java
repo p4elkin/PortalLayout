@@ -48,8 +48,22 @@ public class Portlet extends AbstractExtension {
         wrap(portletContent);
     }
     
+    @Override
+    public void remove() {
+        super.remove();
+        markAsDirty();
+    }
+    
     public void wrap(Component content) {
         extend((AbstractClientConnector)content);
+    }
+    
+    public void setHeaderComponent(Component header) {
+        if (getState().headerToolbar != null) {
+            ((Component)getState().headerToolbar).setParent(null);
+        }
+        getState().headerToolbar = header;
+        header.setParent(getParent().getParent());
     }
     
     public void setCollapsed(boolean collapsed) {

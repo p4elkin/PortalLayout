@@ -184,7 +184,12 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     }
 
     public void setToolbar(Widget toolbar) {
+        if (this.toolbarWidget != null) {
+            remove(toolbarWidget);
+        }
         this.toolbarWidget = toolbar;
-        add(toolbar, uidlContainer);
+        if (toolbar != null) {
+            add(toolbar, uidlContainer);    
+        }
     }
 }

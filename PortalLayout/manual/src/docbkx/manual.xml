@@ -52,8 +52,7 @@
         
         <para>
         	The <classname>Portlet</classname> is a child class of an <classname>AbstractExtension</classname>. On the client-side it is responsible for 
-        	providing a chrome for a wrapped component: draggable area (header), caption and icon areas, controls for close/collapse and auxillary components
-        	in the header that play a role of toolbars. Portlet provides basic setter/getter methods on the server-side:
+        	providing a chrome for a wrapped component: draggable area (header), caption and icon areas, controls for close/collapse. Portlet provides basic setter/getter methods on the server-side:
         	        	            <programlisting language="java"><![CDATA[
 
     public void setCollapsed(boolean collapsed) {}
