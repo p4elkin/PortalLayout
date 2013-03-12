@@ -1,7 +1,5 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.Handler;
 import org.vaadin.addon.portallayout.gwt.client.portlet.header.PortletHeader;
 
 import com.google.gwt.dom.client.Style.Display;
@@ -15,7 +13,7 @@ import com.vaadin.client.Util;
 
 public class PortletChrome extends FlowPanel {
     
-    private final PortletSlot slot = new PortletSlot(this);
+    private final PortletSlot associatedSlot = new PortletSlot(this);
     
     private final PortletHeader header = new PortletHeader();
 
@@ -40,17 +38,10 @@ public class PortletChrome extends FlowPanel {
         
         contentEl.getStyle().setDisplay(Display.NONE);
         contentWrapper.getStyle().setPosition(Position.STATIC);
-        
-        header.addPortletCollapseEventHandler(new Handler() {
-            @Override
-            public void onPortletCollapse(PortletCollapseEvent e) {
-                
-            }
-        });
     }
     
     public PortletSlot getAssociatedSlot() {
-        return slot;
+        return associatedSlot;
     }
     
     public Widget getContentWidget() {
