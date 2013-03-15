@@ -8,7 +8,7 @@
   <moduleSets>
     <moduleSet>
       <includes>
-        <include>org.vaadin.addon:portal-layout-addon</include>
+        <include>org.vaadin.addon:PortalLayout</include>
       </includes>
       <binaries>
         <outputDirectory>/</outputDirectory>

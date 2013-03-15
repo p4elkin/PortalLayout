@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.vaadin.addon</groupId>
 		<artifactId>portal-layout-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>2.0.alpha2</version>
 	</parent>
 	<artifactId>portal-layout-demo</artifactId>
 	<packaging>war</packaging>
@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.vaadin.addon</groupId>
-			<artifactId>portal-layout-addon</artifactId>
+			<artifactId>PortalLayout</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
