@@ -64,10 +64,10 @@ public class Portlet extends AbstractExtension {
     }
     
     public void setHeaderComponent(Component header) {
-        if (getState().headerToolbar != null) {
-            ((Component)getState().headerToolbar).setParent(null);
+        if (getState().headerComponent != null) {
+            ((Component)getState().headerComponent).setParent(null);
         }
-        getState().headerToolbar = header;
+        getState().headerComponent = header;
         header.setParent(getParent().getParent());
     }
     
@@ -124,4 +124,12 @@ public class Portlet extends AbstractExtension {
         return getParent() == null ? null : (Component)getParent();
     }
     
+    @Override
+    public void attach() {
+        super.attach();
+    }
+
+    public Component getHeaderComponent() {
+        return getState().headerComponent == null ? null : (Component)getState().headerComponent;
+    }
 }

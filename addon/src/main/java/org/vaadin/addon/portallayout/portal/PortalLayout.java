@@ -38,7 +38,7 @@ public class PortalLayout extends PortalBase {
     @Override
     public void beforeClientResponse(boolean initial) {
         super.beforeClientResponse(initial);
-        Iterator<Component> it = iterator();
+        Iterator<Component> it = portletContentIterator();
         while (it.hasNext()) {
             final Component c = it.next();
             String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
@@ -46,9 +46,7 @@ public class PortalLayout extends PortalBase {
             if (!"100%".equals(width)) {
                 getPortlet(c).setPreferredFixedContentWidth(width);
                 c.beforeClientResponse(initial);
-                System.out.println("Preferred width of " + getPortlet(c).getParent().getClass() + " is " + width +  ", c is " + c.getClass());
             }
         }
     }
-    
 }

@@ -36,7 +36,7 @@ public class PortalImage extends Image {
             //setIcon(new ThemeResource("picture.png"));
         }
         setWidth("150px");
-        setHeight("70%");
+        setHeight("30%");
     }
 
     @Override

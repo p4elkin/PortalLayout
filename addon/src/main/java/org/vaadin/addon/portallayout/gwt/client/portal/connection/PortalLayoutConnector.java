@@ -97,6 +97,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     
     private PortalHeightRedistributionStrategy heightRedistributionStrategy;
     
+    private final List<ComponentConnector> headerConnectors = new ArrayList<ComponentConnector>();
+    
     private final ElementResizeListener portletResizeListener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent event) {
@@ -139,6 +141,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
         oldChildren.removeAll(children);
+        headerConnectors.clear();
         for (final ComponentConnector cc : oldChildren) {
             final PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
             if (pc != null) {
@@ -159,6 +162,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
                 }
                 getView().addPortlet(pc.getWidget());
 
+            } else {
+                headerConnectors.add(cc);
             }
         }
     }
@@ -252,6 +257,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
                 return false;
             };
         };
+        result.removeAll(headerConnectors);
         result.add(incomingPortletCandidate);
         result.remove(outcomingPortletCandidate);
         return result;

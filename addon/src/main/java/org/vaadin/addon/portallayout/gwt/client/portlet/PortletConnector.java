@@ -52,7 +52,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     private final class HeaderToolbarStateHandler implements StateChangeHandler {
         @Override
         public void onStateChanged(StateChangeEvent e) {
-            Widget toolbar = getState().headerToolbar == null ? null : ((ComponentConnector)getState().headerToolbar).getWidget(); 
+            Widget toolbar = getState().headerComponent == null ? null : ((ComponentConnector)getState().headerComponent).getWidget(); 
             portletChrome.setHeaderToolbar(toolbar);
         }
     }
@@ -140,7 +140,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         portletChrome.getHeader().addPortletCollapseEventHandler(this);
         portletChrome.getHeader().addPortletCloseEventHandler(this);
         stateChangeHandlers.put("collapsed", new CollapseStateChangeListener());
-        stateChangeHandlers.put("headerToolbar", new HeaderToolbarStateHandler());
+        stateChangeHandlers.put("headerComponent", new HeaderToolbarStateHandler());
         stateChangeHandlers.put("collapsible", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent e) {
@@ -221,12 +221,9 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onUnregister() {
-        super.onUnregister();
         portletChrome.getAssociatedSlot().removeFromParent();
         portletChrome.removeFromParent();
-        for (StateChangeHandler handler : stateChangeHandlers.values()) {
-            removeStateChangeHandler(handler);
-        }
+        super.onUnregister();
     }
 
     public void setSlotHeight(String percentSlotSize, double pixelSlotSize) {

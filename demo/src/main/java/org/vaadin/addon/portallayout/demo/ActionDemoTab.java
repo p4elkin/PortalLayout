@@ -51,7 +51,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             setHeight("800px");
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "green");
-            c.setHeight("50%");
+            c.setHeight("30%");
             Portlet p = super.wrapInPortlet(c/*, position*/);
             //p.setCaption("Test Image");
             //p.setPreferredContentWidth("200px");
@@ -65,7 +65,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             
             c.setHeight("300px");
             Portlet p = super.wrapInPortlet(c/*, position*/);
-            p.setLocked(true);
+            //p.setLocked(true);
             return p;
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "yellow");
