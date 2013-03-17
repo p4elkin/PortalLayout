@@ -92,7 +92,7 @@
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 							<Vaadin-Package-Version>1</Vaadin-Package-Version>
-							<Vaadin-Addon>PortalLayout-${pom.version}</Vaadin-Addon>
+							<Vaadin-Addon>PortalLayout-${pom.version}.jar</Vaadin-Addon>
 							<Vaadin-Widgetsets>org.vaadin.addon.portallayout.gwt.PortalLayoutWidgetSet</Vaadin-Widgetsets>
 						</manifestEntries>
 					</archive>

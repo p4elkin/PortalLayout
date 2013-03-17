@@ -152,6 +152,13 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
             draggable.relativeX = widget.getAbsoluteLeft() - draggableAbsoluteLeft;
             draggable.relativeY = widget.getAbsoluteTop() - draggableAbsoluteTop;
         }
+        PortletChrome portletWidget = (PortletChrome) context.selectedWidgets.get(0);
+        PortletSlot slot = portletWidget.getAssociatedSlot();
+        if (panel != slot.getParent()) {
+            PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util.findConnectorFor(slot.getParent()));
+            originalConnector.setOutcomingPortletCandidate(portletWidget);
+            portalConnector.setIncomingPortletCandidate(portletWidget);
+        }
     }
 
     @Override
@@ -175,14 +182,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
 
         // may have changed due to scrollIntoView() or user driven scrolling
         calcDropTargetOffset();
-
-        PortletChrome portletWidget = (PortletChrome) context.selectedWidgets.get(0);
-        PortletSlot slot = portletWidget.getAssociatedSlot();
-        if (panel != slot.getParent()) {
-            PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util.findConnectorFor(slot.getParent()));
-            originalConnector.setOutcomingPortletCandidate(portletWidget);
-            portalConnector.setIncomingPortletCandidate(portletWidget);
-        }
     }
 
     

@@ -15,56 +15,15 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.Util;
-import com.vaadin.shared.ui.ComponentStateUtil;
 
 /**
  * PortalLayoutUtil.
  */
 public class PortalLayoutUtil {
-
-    public static void recalculatePortletHeights(PortalLayoutConnector portalConnector) {
-        Profiler.enter("PLC.recalcHeight");
-        Iterator<ComponentConnector> it = portalConnector.getCurrentChildren().iterator();
-        List<ComponentConnector> relativeHeightPortlets = new ArrayList<ComponentConnector>();
-        double totalPercentage = 0;
-        int totalFixedHeightConsumption = 0;
-        while (it.hasNext()) {
-            ComponentConnector cc = it.next();
-            if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                totalPercentage += Util.parseRelativeSize(cc.getState().height);
-                relativeHeightPortlets.add(cc);
-            } else {
-                Widget portletWidget = getPortletConnectorForContent(cc).getWidget();
-                totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
-            }
-        }
-        if (totalPercentage > 0) {
-            totalPercentage = Math.max(totalPercentage, 100);
-            int totalPortalHeight = portalConnector.getLayoutManager().getInnerHeight(portalConnector.getWidget().getElement());
-            int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
-            double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
-            for (ComponentConnector cc : relativeHeightPortlets) {
-                PortletConnector pc = getPortletConnectorForContent(cc);
-                if (!pc.isCollased()) {
-                    float height = Util.parseRelativeSize(cc.getState().height);
-                    double slotHeight = (height / totalPercentage * ratio);
-                    pc.setSlotHeight(slotHeight + "%", slotHeight * totalPortalHeight / 100f);
-                }
-            }
-        }
-        Profiler.leave("PLC.recalcHeight");
-    }
     
     public static PortletConnector getPortletConnectorForContent(ComponentConnector cc) {
         ComponentConnector parent = (ComponentConnector) cc.getParent();

@@ -32,5 +32,6 @@ public class PortletState extends AbstractComponentState {
     public boolean collapsible = true;
     
     public Connector headerToolbar;
-    
+
+    public String fixedContentWidth = "";
 }

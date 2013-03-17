@@ -1,6 +1,8 @@
 package org.vaadin.addon.portallayout.demo;
 
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
+import org.vaadin.addon.portallayout.portal.AbsolutePortal;
+import org.vaadin.addon.portallayout.portal.PortalBase;
 import org.vaadin.addon.portallayout.portal.PortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
@@ -31,7 +33,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         }
     }
     
-    private final PortalLayout videoPortal = new DemoPortal() {
+    private final PortalBase videoPortal = new DemoPortal() {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             //clearPortletStyleNames(c);
@@ -42,18 +44,22 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         };
     };
     
-    private final PortalLayout imagePortal = new DemoPortal()  {
+    private final PortalBase imagePortal = new AbsolutePortal() {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
+            setWidth("100%");
+            setHeight("800px");
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "green");
             c.setHeight("50%");
             Portlet p = super.wrapInPortlet(c/*, position*/);
+            //p.setCaption("Test Image");
+            //p.setPreferredContentWidth("200px");
             return p;
         };
     };
     
-    private final PortalLayout miscPortal = new DemoPortal()  {
+    private final PortalBase miscPortal = new DemoPortal()  {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             

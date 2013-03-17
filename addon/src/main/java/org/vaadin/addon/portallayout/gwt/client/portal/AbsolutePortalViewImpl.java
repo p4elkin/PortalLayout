@@ -19,15 +19,35 @@ import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * AbsolutePortalViewImpl.
  */
 public class AbsolutePortalViewImpl extends AbsolutePanel implements PortalView {
 
+    private final Presenter presenter;
+    
+    public AbsolutePortalViewImpl(Presenter presenter) {
+        this.presenter = presenter;
+    }
+    
     @Override
     public Panel asWidget() {
         return (Panel)super.asWidget();
+    }
+
+    @Override
+    public void insert(Widget w, int beforeIndex) {
+        super.insert(w, beforeIndex);
+        presenter.recalculateHeights();
+    }
+    
+    @Override
+    public boolean remove(Widget w) {
+        boolean result =  super.remove(w);
+        presenter.recalculateHeights();
+        return result;
     }
     
     @Override

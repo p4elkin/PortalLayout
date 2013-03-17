@@ -108,6 +108,10 @@ public class PortletChrome extends FlowPanel {
         return contentWrapper;
     }
 
+    /**
+     * For the case of relative-height content: the method will set the content element height to 'h' so that contentHeight(%) * h == exactly 
+     * the height of available area (content wrapper).
+     */
     public void resizeContent(int wrapperHeight) {
         float relativeHeightValue = Util.parseRelativeSize(getContentWidget().getElement().getStyle().getHeight());
         if (relativeHeightValue >= 0) {

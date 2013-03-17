@@ -20,9 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vaadin.addon.portallayout.gwt.client.dnd.PortalDropController;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
+import org.vaadin.addon.portallayout.gwt.client.portal.StackHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
@@ -93,6 +95,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
 
     private DropController dropController;
     
+    private PortalHeightRedistributionStrategy heightRedistributionStrategy;
+    
     private final ElementResizeListener portletResizeListener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent event) {
@@ -103,7 +107,12 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     @Override
     protected void init() {
         super.init();
+        this.heightRedistributionStrategy = initHeightRedistributionStrategy();
         getLayoutManager().setNeedsMeasure(this);
+    }
+
+    protected PortalHeightRedistributionStrategy initHeightRedistributionStrategy() {
+        return new StackHeightRedistributionStrategy();
     }
 
     @Override
@@ -205,7 +214,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
 
     @Override
     public void recalculateHeights() {
-        PortalLayoutUtil.recalculatePortletHeights(this);
+        getHeightRedistributionStrategy().redistributeHeights(this);
     }
 
     public void propagateHierarchyChangesToServer() {
@@ -248,5 +257,9 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
 
     public void removePortlet(ServerConnector connector) {
         rpc.removePortlet(connector);
+    }
+    
+    public PortalHeightRedistributionStrategy getHeightRedistributionStrategy() {
+        return heightRedistributionStrategy;
     }
 }

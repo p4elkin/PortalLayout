@@ -16,168 +16,39 @@
 package org.vaadin.addon.portallayout.portal;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
-import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
-import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.annotations.StyleSheet;
-import com.vaadin.server.Extension;
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.Layout.MarginHandler;
 
 /**
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
  */
 @StyleSheet("portallayout_styles.css")
-public class PortalLayout extends AbstractComponent implements MarginHandler, HasComponents {
+public class PortalLayout extends PortalBase {
 
-    /**
-     * Constructs a {@link PortalLayout}.
-     */
-    public PortalLayout() {
-        setStyleName("v-portal-layout");
-        registerRpc(new PortalServerRpc() {
-
-            @Override
-            public void removePortlet(Connector portlet) {
-                PortalLayout.this.removePortlet((Component) portlet);
-            }
-
-            @Override
-            public void updatePortletPosition(Connector portlet, int index) {
-                if (index >= 0) {
-                    addComponentAt((Component) portlet, index);
-                }
-            }
-        });
-    }
-
-    /**
-     * 
-     * @param c Component to be wrapped into a {@link Portlet}.
-     * @return created {@link Portlet}.
-     */
-    public Portlet wrapInPortlet(Component c) {
-        Portlet result = getPortletForComponent(c);
-        return result;
-    }
-
-    private Portlet getPortletForComponent(Component c) {
-        Portlet result = (Portlet) getState().contentToPortlet.get(c);
-        if (result != null) {
-            return result;
-        } else {
-            for (Extension extension : c.getExtensions()) {
-                if (extension instanceof Portlet) {
-                    addPortletMapping(c, (Portlet) extension);
-                    return (Portlet) extension;
-                }
-            }
-        }
-        result = new Portlet(c);
-        addPortletMapping(c, result);
-        return result;
-    }
-
-    /**
-     * Finds the correspondent {@link Portlet} and removes it.  
-     * @param portletContent Content Component. 
-     */
-    public void removePortlet(Component portletContent) {
-        Portlet portlet = (Portlet) getState().contentToPortlet.remove(portletContent);
-        if (portlet != null) {
-            getState().portletConnectors.remove(portlet);
-            if (portletContent.getParent() == this) {
-                portletContent.setParent(null);
-            }
-        } else {
-            throw new IllegalArgumentException("Portal does not contain portlet with content "
-                    + portletContent.getConnectorId());   
-        }
-    }
-
-    /**
-     * Removes a {@link Portlet} from current layout.  
-     * @param portletContent {@link Portlet} to be removed. 
-     */
+    @Override
     public void removePortlet(Portlet portlet) {
-        removePortlet((Component) portlet.getParent());
+        portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
+        super.removePortlet(portlet);
     }
     
-    @Override
-    public void setMargin(boolean enabled) {
-        setMargin(new MarginInfo(enabled));
-    }
-
-    @Override
-    public MarginInfo getMargin() {
-        return new MarginInfo(getState().marginsBitmask);
-    }
-
-    @Override
-    public void setMargin(MarginInfo marginInfo) {
-        getState().marginsBitmask = marginInfo.getBitMask();
-    }
     
-    private void addComponentAt(Component c, int index) {
-        Portlet portlet = getPortletForComponent(c);
-        LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portletConnectors;
-        if (portlets.contains(portlet)) {
-            portlets.remove(portlet);
-        }
-        portlets.add(index, portlet);
-    }
-
-    private void addPortletMapping(Component c, Portlet result) {
-        getState().contentToPortlet.put(c, result);
-        getState().portletConnectors.add(result);
-
-        if (c instanceof ComponentContainer) {
-            for (Component parent = this; parent != null; parent = parent.getParent()) {
-                if (parent == c) {
-                    throw new IllegalArgumentException("Component cannot be added inside it's own content");
-                }
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        Iterator<Component> it = iterator();
+        while (it.hasNext()) {
+            final Component c = it.next();
+            String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
+            c.setWidth("100%");
+            if (!"100%".equals(width)) {
+                getPortlet(c).setPreferredFixedContentWidth(width);
+                c.beforeClientResponse(initial);
+                System.out.println("Preferred width of " + getPortlet(c).getParent().getClass() + " is " + width +  ", c is " + c.getClass());
             }
         }
-        c.setParent(null);
-        c.setParent(this);
-    }
-
-    @Override
-    protected PortalLayoutState getState() {
-        return (PortalLayoutState) super.getState();
     }
     
-    @Override
-    public Iterator<Component> iterator() {
-        return new Iterator<Component>() {
-            private final Iterator<Connector> wrappedIt = getState().portletConnectors.iterator();
-            
-            @Override
-            public void remove() {
-                wrappedIt.remove();
-            }
-
-            @Override
-            public Component next() {
-                return (Component) wrappedIt.next().getParent();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return wrappedIt.hasNext();
-            }
-        };
-    }
-
-    public Portlet getPortlet(Component c) {
-        return (Portlet) getState().contentToPortlet.get(c);
-    }
 }

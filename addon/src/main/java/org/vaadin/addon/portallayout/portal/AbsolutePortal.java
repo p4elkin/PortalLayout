@@ -19,6 +19,10 @@ package org.vaadin.addon.portallayout.portal;
 /**
  * AbsolutePortal.
  */
-public class AbsolutePortal extends PortalLayout {
+public class AbsolutePortal extends PortalBase {
 
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+    }
 }

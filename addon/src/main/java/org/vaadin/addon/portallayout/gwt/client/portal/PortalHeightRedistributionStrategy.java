@@ -13,18 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.shared.portlet.rpc;
+package org.vaadin.addon.portallayout.gwt.client.portal;
 
-import com.vaadin.shared.annotations.Delayed;
-import com.vaadin.shared.communication.ServerRpc;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 
 /**
- * PortletServerRpc.
+ * PortalHeightRedistributionStrategy.
  */
-public interface PortletServerRpc extends ServerRpc {
-    
-    void setCollapsed(boolean isCollapsed);
+public interface PortalHeightRedistributionStrategy {
 
-    @Delayed
-    void updatePreferredFixedWidth(int widthPixels);
+    void redistributeHeights(PortalLayoutConnector pc);
+    
 }

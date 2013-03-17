@@ -36,6 +36,11 @@ public class Portlet extends AbstractExtension {
             public void setCollapsed(boolean isCollapsed) {
                 getState().collapsed = isCollapsed;
             }
+
+            @Override
+            public void updatePreferredFixedWidth(int widthPixels) {
+                getState().fixedContentWidth = widthPixels + "px";
+            }
         });
     }
     
@@ -102,4 +107,21 @@ public class Portlet extends AbstractExtension {
     protected PortletState getState() {
         return (PortletState)super.getState();
     }
+
+    public void setPreferredFixedContentWidth(String width) {
+        getState().fixedContentWidth = width;
+    }
+
+    public String getPreferredFixedContentWidth() {
+        return getState().fixedContentWidth;
+    }
+
+    public void setCaption(String string) {
+        getState().caption = string;
+    }
+
+    public Component getContent() {
+        return getParent() == null ? null : (Component)getParent();
+    }
+    
 }

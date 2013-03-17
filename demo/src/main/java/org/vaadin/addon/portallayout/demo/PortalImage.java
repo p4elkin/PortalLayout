@@ -35,10 +35,16 @@ public class PortalImage extends Image {
             setCaption(files[currentDisplayedImage].getName());
             //setIcon(new ThemeResource("picture.png"));
         }
-        setWidth("100%");
+        setWidth("150px");
         setHeight("70%");
     }
 
+    @Override
+    public void setWidth(float width, Unit unit) {
+        // TODO Auto-generated method stub
+        super.setWidth(width, unit);
+    }
+    
     public boolean isEmpty() {
         return files == null || files.length == 0;
     }
