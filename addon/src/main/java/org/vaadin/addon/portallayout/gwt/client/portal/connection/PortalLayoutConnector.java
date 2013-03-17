@@ -154,7 +154,9 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
                 final PortletChrome portletWidget = pc.getWidget();
                 cc.getLayoutManager().addElementResizeListener(portletWidget.getAssociatedSlot().getElement(),
                         portletResizeListener);
-                commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());
+                if (!pc.isLocked()) {
+                    commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());    
+                }
                 getView().addPortlet(pc.getWidget());
 
             }
@@ -262,4 +264,20 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     public PortalHeightRedistributionStrategy getHeightRedistributionStrategy() {
         return heightRedistributionStrategy;
     }
+    
+    @Override
+    public void onUnregister() {
+        super.onUnregister();
+        final PickupDragController dragController = getDragController();
+        for (final ComponentConnector cc : getCurrentChildren()) {
+            dragController.makeNotDraggable(cc.getWidget());
+        }
+        dragController.unregisterDropController(dropController);
+    }
+
+    public PickupDragController getDragController() {
+        return commonDragController;
+    }
+    
 }
+

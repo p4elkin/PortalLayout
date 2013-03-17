@@ -13,8 +13,11 @@ import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasMouseDownHandlers;
+import com.google.gwt.event.dom.client.HasTouchStartHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -28,7 +31,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
 
-public class PortletHeader extends ComplexPanel implements HasPortletCollapseEventHandlers, HasPortletCloseEventHandlers, HasMouseDownHandlers {    
+public class PortletHeader extends ComplexPanel implements HasPortletCollapseEventHandlers, HasPortletCloseEventHandlers, HasMouseDownHandlers, HasTouchStartHandlers {    
     
     public static final String CLASSNAME = "-header";
 
@@ -183,6 +186,11 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
         return addDomHandler(handler, MouseDownEvent.getType());
     }
 
+    @Override
+    public HandlerRegistration addTouchStartHandler(TouchStartHandler handler) {
+        return addDomHandler(handler, TouchStartEvent.getType());
+    }
+    
     public void setToolbar(Widget toolbar) {
         if (this.toolbarWidget != null) {
             remove(toolbarWidget);
@@ -192,4 +200,5 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
             add(toolbar, uidlContainer);    
         }
     }
+
 }

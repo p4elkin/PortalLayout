@@ -18,6 +18,7 @@ package org.vaadin.addon.portallayout.gwt.client.portlet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
@@ -75,10 +76,8 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         @Override
         public void onStateChanged(StateChangeEvent event) {
             ComponentConnector cc = (ComponentConnector) event.getConnector();
-            if (!isCollased()) {
-                portletChrome.setWidth(cc.getState().width);
-                portletChrome.getAssociatedSlot().setWidth(cc.getState().width);   
-            }
+            portletChrome.setWidth(cc.getState().width);
+            portletChrome.getAssociatedSlot().setWidth(cc.getState().width);   
         }
     }
     /**
@@ -157,7 +156,12 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         stateChangeHandlers.put("locked", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent e) {
-                
+                boolean locked = getState().locked;
+                if (!locked) {
+                    PortalLayoutUtil.unlockPortlet(PortletConnector.this);
+                } else {
+                    PortalLayoutUtil.lockPortlet(PortletConnector.this);
+                }
             }
         });
         
@@ -228,5 +232,9 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     public void setSlotHeight(String percentSlotSize, double pixelSlotSize) {
         setSlotHeight(percentSlotSize);
         portletChrome.resizeContent((int) (pixelSlotSize - portletChrome.getHeaderHeight()));
+    }
+
+    public boolean isLocked() {
+        return getState().locked;
     }
 }

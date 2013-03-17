@@ -26,6 +26,7 @@ public class PortalViewImpl extends FlowPanel implements PortalView {
     public void insert(Widget w, int beforeIndex) {
         super.insert(w, beforeIndex);
         presenter.recalculateHeights();
+        w.setWidth("100%");
     }
     
     @Override

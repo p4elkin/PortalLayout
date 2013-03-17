@@ -16,9 +16,11 @@
 package org.vaadin.addon.portallayout.gwt.client.portal;
 
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 
 import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.Util;
 
 /**
  * PortalLayoutUtil.
@@ -32,5 +34,26 @@ public class PortalLayoutUtil {
             return (PortletConnector) portalConnector.getState().contentToPortlet.get(cc);
         }
         return null;
+    }
+    
+    public static PortalLayoutConnector getPortalLayoutConnectorForPortlet(PortletConnector pc) {
+        ComponentConnector cc = Util.findConnectorFor(pc.getWidget().getContentWidget());
+        return cc.getParent() instanceof PortalLayoutConnector ? (PortalLayoutConnector)cc.getParent() : null;
+    }
+    
+    public static void lockPortlet(PortletConnector portlet) {
+        PortalLayoutConnector portal = getPortalLayoutConnectorForPortlet(portlet);
+        if (portal != null) {
+            PortletChrome portletWidget = portlet.getWidget();
+            portal.getDragController().makeDraggable(portletWidget, portletWidget.getHeader());
+            portal.getDragController().makeNotDraggable(portletWidget);
+        }
+    }
+    
+    public static void unlockPortlet(PortletConnector portlet) {
+        PortalLayoutConnector portal = getPortalLayoutConnectorForPortlet(portlet);
+        if (portal != null) {
+            portal.getDragController().makeDraggable(portlet.getWidget(), portlet.getWidget().getHeader());
+        }
     }
 }

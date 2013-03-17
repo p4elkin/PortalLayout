@@ -65,6 +65,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             
             c.setHeight("300px");
             Portlet p = super.wrapInPortlet(c/*, position*/);
+            p.setLocked(true);
             return p;
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "yellow");
