@@ -28,6 +28,8 @@ import com.vaadin.shared.ui.AbstractLayoutState;
  */
 public class PortalLayoutState extends AbstractLayoutState {
 
+    public boolean spacing = false;
+    
     public int marginsBitmask = 0;
     
     public List<Connector> portletConnectors = new LinkedList<Connector>();

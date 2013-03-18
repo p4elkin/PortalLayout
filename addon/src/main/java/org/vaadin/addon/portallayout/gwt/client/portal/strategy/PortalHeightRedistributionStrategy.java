@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.client.portal;
+package org.vaadin.addon.portallayout.gwt.client.portal.strategy;
 
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 

@@ -89,6 +89,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     }
 
     private void buildPortals() {
+        ((PortalLayout)videoPortal).setSpacing(false);
+        ((PortalLayout)miscPortal).setSpacing(true);
         layout.addComponent(videoPortal, 0, 0);
         layout.addComponent(imagePortal, 1, 0);
         layout.addComponent(miscPortal, 2, 0);

@@ -16,10 +16,10 @@
 package org.vaadin.addon.portallayout.gwt.client.portal.connection;
 
 import org.vaadin.addon.portallayout.gwt.client.dnd.AbsolutePortalDropController;
-import org.vaadin.addon.portallayout.gwt.client.portal.AbsolutePortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.AbsolutePortalViewImpl;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.AbsolutePortalHeightRedistributionStrategy;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.shared.portal.AbsolutePortalState;
 import org.vaadin.addon.portallayout.portal.AbsolutePortal;
 

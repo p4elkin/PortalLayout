@@ -13,17 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.client.portal;
+package org.vaadin.addon.portallayout.gwt.client.portal.strategy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.Profiler;
 import com.vaadin.client.Util;
 import com.vaadin.shared.ui.ComponentStateUtil;
@@ -46,14 +49,23 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
                 totalPercentage += Util.parseRelativeSize(cc.getState().height);
                 relativeHeightPortlets.add(cc);
             } else {
-                Widget portletWidget = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget();
-                totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
+                PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
+                if (pc != null) {
+                    Widget portletWidget = pc.getWidget();
+                    totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());   
+                }
             }
         }
         if (totalPercentage > 0) {
             totalPercentage = Math.max(totalPercentage, 100);
             int totalPortalHeight = portalConnector.getLayoutManager().getInnerHeight(portalConnector.getWidget().getElement());
-            int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption;
+            boolean isSpacing = portalConnector.getState().spacing;
+            int spacingConsumption = 0;
+            if (isSpacing && portalConnector.getView().getWidgetCount() > 0) {
+                Element spacingEl = portalConnector.getWidget().getElement().getChild(1).cast();
+                spacingConsumption += new ComputedStyle(spacingEl).getIntProperty("height") * portalConnector.getView().getWidgetCount() - 1;
+            }
+            int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption - spacingConsumption;
             double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
             for (ComponentConnector cc : relativeHeightPortlets) {
                 PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);

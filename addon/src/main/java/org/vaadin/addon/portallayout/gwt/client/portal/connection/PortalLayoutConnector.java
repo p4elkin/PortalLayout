@@ -20,11 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.vaadin.addon.portallayout.gwt.client.dnd.PortalDropController;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
-import org.vaadin.addon.portallayout.gwt.client.portal.StackHeightRedistributionStrategy;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.StackHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
@@ -124,6 +124,9 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             String themeUri = getConnection().getThemeUri();
             commonDragController.setMoveablePanleStyleName(themeUri.substring(themeUri.lastIndexOf("/") + 1));
         }
+        
+        boolean spacing = getState().spacing;
+        getWidget().setStyleName("v-portal-layout-no-spacing", !spacing);
     }
 
     @Override
@@ -258,8 +261,8 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
             };
         };
         result.removeAll(headerConnectors);
-        result.add(incomingPortletCandidate);
         result.remove(outcomingPortletCandidate);
+        result.add(incomingPortletCandidate);
         return result;
     }
 

@@ -21,12 +21,13 @@ import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout.SpacingHandler;
 
 /**
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
  */
 @StyleSheet("portallayout_styles.css")
-public class PortalLayout extends PortalBase {
+public class PortalLayout extends PortalBase implements SpacingHandler {
 
     @Override
     public void removePortlet(Portlet portlet) {
@@ -48,5 +49,15 @@ public class PortalLayout extends PortalBase {
                 c.beforeClientResponse(initial);
             }
         }
+    }
+
+    @Override
+    public void setSpacing(boolean enabled) {
+        getState().spacing = enabled;
+    }
+
+    @Override
+    public boolean isSpacing() {
+        return getState().spacing;
     }
 }
