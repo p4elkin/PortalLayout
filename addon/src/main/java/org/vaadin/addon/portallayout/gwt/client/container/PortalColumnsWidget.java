@@ -13,26 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.shared.portal;
+package org.vaadin.addon.portallayout.gwt.client.container;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
- * PortalLayoutState.
+ * PortalColumnsWidget.
  */
-public class PortalLayoutState extends AbstractLayoutState {
-
-    public boolean spacing = false;
+public class PortalColumnsWidget extends HorizontalPanel {
     
-    public int marginsBitmask = 0;
-    
-    public List<Connector> portletConnectors = new LinkedList<Connector>();
-    
-    public Map<Connector, Connector> contentToPortlet = new HashMap<Connector, Connector>();
+    public PortalColumnsWidget() {
+    }
 }

@@ -29,7 +29,7 @@ import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
-import org.vaadin.addon.portallayout.portal.PortalLayout;
+import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
@@ -53,7 +53,7 @@ import com.vaadin.shared.ui.Connect;
 /**
  * PortalWithExtensionConnector.
  */
-@Connect(PortalLayout.class)
+@Connect(StackPortalLayout.class)
 public class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter {
 
     /**
@@ -110,7 +110,10 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     protected void init() {
         super.init();
         this.heightRedistributionStrategy = initHeightRedistributionStrategy();
-        getLayoutManager().setNeedsMeasure(this);
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {}
+        });
     }
 
     protected PortalHeightRedistributionStrategy initHeightRedistributionStrategy() {

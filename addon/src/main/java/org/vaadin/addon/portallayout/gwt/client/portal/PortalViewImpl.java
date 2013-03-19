@@ -45,8 +45,6 @@ public class PortalViewImpl extends FlowPanel implements PortalView {
         adopt(w);
     }
     
-   
-    
     @Override
     public boolean remove(Widget w) {
         int index = getWidgetIndex(w);

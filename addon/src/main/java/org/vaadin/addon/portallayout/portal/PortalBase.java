@@ -43,7 +43,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
 
 
     /**
-     * Constructs a {@link PortalLayout}.
+     * Constructs a {@link StackPortalLayout}.
      */
     public PortalBase() {
         setStyleName("v-portal-layout");
@@ -110,11 +110,9 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      */
     public void removePortlet(Portlet portlet) {
         Component portletContent = (Component) portlet.getParent();
-        if (portlet != null) {
-            getState().portletConnectors.remove(portlet);
-            if (portletContent.getParent() == this) {
-                portletContent.setParent(null);
-            }
+        getState().portletConnectors.remove(portlet);
+        if (portletContent.getParent() == this) {
+            portletContent.setParent(null);
         }
     }
 

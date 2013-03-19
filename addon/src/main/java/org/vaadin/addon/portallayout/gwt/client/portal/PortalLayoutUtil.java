@@ -45,6 +45,12 @@ public class PortalLayoutUtil {
         PortalLayoutConnector portal = getPortalLayoutConnectorForPortlet(portlet);
         if (portal != null) {
             PortletChrome portletWidget = portlet.getWidget();
+            /**
+             * If the component wasn't draggable before - the
+             * makeNotDraggable(..) call will result in NPE. So we first make
+             * the portlet draggable just in case and then make it not
+             * draggable.
+             */
             portal.getDragController().makeDraggable(portletWidget, portletWidget.getHeader());
             portal.getDragController().makeNotDraggable(portletWidget);
         }

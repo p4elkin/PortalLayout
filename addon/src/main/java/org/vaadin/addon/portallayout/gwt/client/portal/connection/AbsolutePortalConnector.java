@@ -21,7 +21,7 @@ import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.AbsolutePortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.shared.portal.AbsolutePortalState;
-import org.vaadin.addon.portallayout.portal.AbsolutePortal;
+import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.vaadin.shared.ui.Connect;
@@ -29,7 +29,7 @@ import com.vaadin.shared.ui.Connect;
 /**
  * AbsolutePortalConnector.
  */
-@Connect(AbsolutePortal.class)
+@Connect(AbsolutePortalLayout.class)
 public class AbsolutePortalConnector extends PortalLayoutConnector {
 
     @Override

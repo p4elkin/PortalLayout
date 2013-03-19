@@ -27,14 +27,13 @@ import com.vaadin.ui.Layout.SpacingHandler;
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
  */
 @StyleSheet("portallayout_styles.css")
-public class PortalLayout extends PortalBase implements SpacingHandler {
+public class StackPortalLayout extends PortalBase implements SpacingHandler {
 
     @Override
     public void removePortlet(Portlet portlet) {
         portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
         super.removePortlet(portlet);
     }
-    
     
     @Override
     public void beforeClientResponse(boolean initial) {

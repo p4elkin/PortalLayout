@@ -1,9 +1,10 @@
 package org.vaadin.addon.portallayout.demo;
 
+import org.vaadin.addon.portallayout.container.PortalColumns;
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
-import org.vaadin.addon.portallayout.portal.AbsolutePortal;
+import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 import org.vaadin.addon.portallayout.portal.PortalBase;
-import org.vaadin.addon.portallayout.portal.PortalLayout;
+import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -12,7 +13,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
@@ -22,11 +22,11 @@ import com.vaadin.ui.TextField;
 @SuppressWarnings("serial")
 public class ActionDemoTab extends Panel /*implements PortletCloseListener, PortletCollapseListener*/ {
    
-    public class DemoPortal extends PortalLayout {
+    public class DemoPortal extends StackPortalLayout {
         
         public DemoPortal() {
             setWidth("100%");
-            setHeight("800px");
+            setHeight("100%");
             //addCloseListener(ActionDemoTab.this);
             //addCollapseListener(ActionDemoTab.this);
             setMargin(true);
@@ -44,7 +44,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         };
     };
     
-    private final PortalBase imagePortal = new AbsolutePortal() {
+    private final PortalBase imagePortal = new AbsolutePortalLayout() {
         @Override
         public Portlet wrapInPortlet(Component c/*, int position*/) {
             setWidth("100%");
@@ -71,29 +71,29 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             //addPortletStyleName(c, "yellow");
         };
     };
-    
-    private final GridLayout layout = new GridLayout(3, 1);
+   
     
     private boolean init = false;
+    
+    private final PortalColumns layout = new PortalColumns();
     
     public ActionDemoTab() {
         super();
         setSizeFull();
         setContent(layout);
         layout.setWidth("100%");
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setWidth("100%");
+        //layout.setMargin(true);
+        //layout.setSpacing(true);
         buildPortals();
         construct();
     }
 
     private void buildPortals() {
-        ((PortalLayout)videoPortal).setSpacing(false);
-        ((PortalLayout)miscPortal).setSpacing(true);
-        layout.addComponent(videoPortal, 0, 0);
-        layout.addComponent(imagePortal, 1, 0);
-        layout.addComponent(miscPortal, 2, 0);
+        ((StackPortalLayout)videoPortal).setSpacing(false);
+        ((StackPortalLayout)miscPortal).setSpacing(true);
+        layout.appendPortal(videoPortal);
+        layout.appendPortal(imagePortal);
+        layout.appendPortal(miscPortal);
     }
     
 
