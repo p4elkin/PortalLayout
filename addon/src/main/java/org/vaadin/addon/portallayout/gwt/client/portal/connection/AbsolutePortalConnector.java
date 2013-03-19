@@ -21,9 +21,13 @@ import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.AbsolutePortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.shared.portal.AbsolutePortalState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.AbsolutePortalServerRpc;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -50,5 +54,22 @@ public class AbsolutePortalConnector extends PortalLayoutConnector {
     @Override
     protected DropController initDropController() {
         return new AbsolutePortalDropController(this);
+    }
+
+    @Override
+    public void updatePortletPositionOnServer(ComponentConnector cc) {
+        if (!getState().contentToPortlet.containsKey(cc)) {
+            getServerRpc().addPortlet(cc);    
+        }
+    }
+
+    @Override
+    protected AbsolutePortalServerRpc getServerRpc() {
+        return (AbsolutePortalServerRpc)super.getServerRpc();
+    }
+    
+    @Override
+    protected PortalServerRpc initRpc() {
+        return RpcProxy.create(AbsolutePortalServerRpc.class, this);
     }
 }

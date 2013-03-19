@@ -15,26 +15,21 @@
  */
 package org.vaadin.addon.portallayout.gwt.shared.portal;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.vaadin.shared.Connector;
 
 /**
- * AbsolutePortalState.
+ * StackPortalLayoutState.
  */
-public class AbsolutePortalState extends PortalLayoutState {
+public class StackPortalLayoutState extends PortalLayoutState {
 
-    public Map<Connector, Connector> absolutePortletExtensions = new HashMap<Connector, Connector>();
+    public List<Connector> portletConnectors = new LinkedList<Connector>();
 
-    public Set<Connector> portlets = new HashSet<Connector>();
-    
     @Override
-    public Collection<Connector> portlets() {
-        return portlets;
+    public List<Connector> portlets() {
+        return portletConnectors;
     }
     
 }

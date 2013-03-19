@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.vaadin.addon</groupId>
 		<artifactId>portal-layout-parent</artifactId>
-		<version>2.0.alpha2</version>
+		<version>2.0.alpha3</version>
 	</parent>
 	<artifactId>portal-layout-manual</artifactId>
 	<packaging>pom</packaging>

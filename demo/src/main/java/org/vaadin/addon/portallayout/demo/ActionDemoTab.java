@@ -17,6 +17,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
@@ -35,24 +36,24 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     
     private final PortalBase videoPortal = new DemoPortal() {
         @Override
-        public Portlet wrapInPortlet(Component c/*, int position*/) {
+        public Portlet portletFor(Component c/*, int position*/) {
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "red");
             c.setHeight("300px");
-            Portlet p = super.wrapInPortlet(c/*, position*/);
+            Portlet p = super.portletFor(c/*, position*/);
             return p;
         };
     };
     
     private final PortalBase imagePortal = new AbsolutePortalLayout() {
         @Override
-        public Portlet wrapInPortlet(Component c/*, int position*/) {
+        public Portlet portletFor(Component c/*, int position*/) {
             setWidth("100%");
             setHeight("800px");
             //clearPortletStyleNames(c);
             //addPortletStyleName(c, "green");
             c.setHeight("30%");
-            Portlet p = super.wrapInPortlet(c/*, position*/);
+            Portlet p = super.portletFor(c/*, position*/);
             //p.setCaption("Test Image");
             //p.setPreferredContentWidth("200px");
             return p;
@@ -61,10 +62,10 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     
     private final PortalBase miscPortal = new DemoPortal()  {
         @Override
-        public Portlet wrapInPortlet(Component c/*, int position*/) {
+        public Portlet portletFor(Component c/*, int position*/) {
             
             c.setHeight("300px");
-            Portlet p = super.wrapInPortlet(c/*, position*/);
+            Portlet p = super.portletFor(c/*, position*/);
             //p.setLocked(true);
             return p;
             //clearPortletStyleNames(c);
@@ -108,7 +109,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     
     private void createMiscContents() {
         final DemoTable table = new DemoTable();
-        Portlet portlet = miscPortal.wrapInPortlet(table);
+        Portlet portlet = miscPortal.portletFor(table);
         table.setCaption("Artists");
         //table.setIcon(new ThemeResource("chart.png"));
         
@@ -140,7 +141,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
 
     private void createImageContents() {
         final PortalImage image = new PortalImage();
-        Portlet portlet = imagePortal.wrapInPortlet(image);
+        Portlet portlet = imagePortal.portletFor(image);
         portlet.setClosable(false);
         /*final RatingStars rating = new RatingStars();
         rating.setImmediate(true);
@@ -189,7 +190,9 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         pl.setHeight("100%");
         pl.setWidth("100%");
         pl.setImmediate(true);
-        Portlet portlet = videoPortal.wrapInPortlet(pl);
+        final TextArea tf = new TextArea();
+        tf.setSizeFull();
+        Portlet portlet = videoPortal.portletFor(tf);
         portlet.setCollapsible(false);
         pl.setCaption("Joy Division - Disorder");
         //pl.setIcon(new ThemeResource("video.png"));

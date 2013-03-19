@@ -16,10 +16,15 @@
 package org.vaadin.addon.portallayout.portal;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
+import org.vaadin.addon.portallayout.gwt.shared.portal.StackPortalLayoutState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.annotations.StyleSheet;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.SharedState;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout.SpacingHandler;
 
@@ -29,6 +34,33 @@ import com.vaadin.ui.Layout.SpacingHandler;
 @StyleSheet("portallayout_styles.css")
 public class StackPortalLayout extends PortalBase implements SpacingHandler {
 
+    public StackPortalLayout() {
+        super();
+        registerRpc(new StackPortalRpc() {
+            
+            @Override
+            public void removePortlet(Connector portlet) {
+                StackPortalLayout.this.removePortlet((Component) portlet);
+            }
+
+            @Override
+            public void insertPortletAt(Connector portlet, int index) {
+                if (index >= 0) {
+                    addPortletAt((Component) portlet, index);
+                }
+            }
+        });
+    }
+    
+    private void addPortletAt(Component c, int index) {
+        Portlet portlet = getOrCreatePortletForComponent(c);
+        LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portlets();
+        if (portlets.contains(portlet)) {
+            portlets.remove(portlet);
+        }
+        portlets.add(index, portlet);
+    }
+    
     @Override
     public void removePortlet(Portlet portlet) {
         portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
@@ -50,6 +82,16 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
         }
     }
 
+    @Override
+    protected StackPortalLayoutState getState() {
+        return (StackPortalLayoutState)super.getState();
+    }
+    
+    @Override
+    public Class<? extends SharedState> getStateType() {
+        return StackPortalLayoutState.class;
+    }
+    
     @Override
     public void setSpacing(boolean enabled) {
         getState().spacing = enabled;

@@ -22,8 +22,6 @@ import com.vaadin.shared.communication.ServerRpc;
  * PortalServerRpc.
  */
 public interface PortalServerRpc extends ServerRpc {
-
-    void updatePortletPosition(Connector portlet, int index);
     
     void removePortlet(Connector portlet);
     

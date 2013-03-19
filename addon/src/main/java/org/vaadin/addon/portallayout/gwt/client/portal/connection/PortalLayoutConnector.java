@@ -19,42 +19,36 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.vaadin.addon.portallayout.gwt.client.dnd.PortalDropController;
+import org.vaadin.addon.portallayout.gwt.client.dnd.StackPortalDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalViewImpl;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portal.strategy.StackHeightRedistributionStrategy;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
-import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
-import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ComponentConstants;
 import com.vaadin.shared.communication.URLReference;
-import com.vaadin.shared.ui.Connect;
 
 /**
  * PortalWithExtensionConnector.
  */
-@Connect(StackPortalLayout.class)
-public class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter {
+public abstract class PortalLayoutConnector extends AbstractLayoutConnector implements PortalView.Presenter {
 
     /**
      * PortalPickupDragController.
@@ -82,7 +76,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
     }
 
-    private final PortalServerRpc rpc = RpcProxy.create(PortalServerRpc.class, this);
+    private PortalServerRpc rpc;
 
     private final static PortalPickupDragController commonDragController = new PortalPickupDragController(
             RootPanel.get(), false);
@@ -109,6 +103,7 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     @Override
     protected void init() {
         super.init();
+        rpc = initRpc();
         this.heightRedistributionStrategy = initHeightRedistributionStrategy();
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
@@ -116,10 +111,16 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         });
     }
 
+    protected abstract PortalServerRpc initRpc();
+    
     protected PortalHeightRedistributionStrategy initHeightRedistributionStrategy() {
         return new StackHeightRedistributionStrategy();
     }
 
+    protected PortalServerRpc getServerRpc() {
+        return rpc;
+    }
+    
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
@@ -213,12 +214,10 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
     }
 
     protected DropController initDropController() {
-        return new PortalDropController(this);
+        return new StackPortalDropController(this);
     }
 
-    protected PortalView initView() {
-        return new PortalViewImpl(this);
-    }
+    protected abstract PortalView initView();
 
     @Override
     public PortalLayoutState getState() {
@@ -237,21 +236,12 @@ public class PortalLayoutConnector extends AbstractLayoutConnector implements Po
         }
 
         if (incomingPortletCandidate != null) {
-            Widget slot = PortalLayoutUtil.getPortletConnectorForContent(incomingPortletCandidate).getWidget()
-                    .getAssociatedSlot();
-            rpc.updatePortletPosition(incomingPortletCandidate, view.getWidgetIndex(slot));
+            updatePortletPositionOnServer(incomingPortletCandidate);
             incomingPortletCandidate = null;
         }
     }
 
-    public void updatePortletPositionOnServer(ComponentConnector cc) {
-        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget().getAssociatedSlot();
-        int positionInView = view.getWidgetIndex(slot);
-        int positionInState = getState().portletConnectors.indexOf(cc);
-        if (positionInState != positionInView) {
-            rpc.updatePortletPosition(cc, positionInView);
-        }
-    }
+    public abstract void updatePortletPositionOnServer(ComponentConnector cc);
 
     public List<ComponentConnector> getCurrentChildren() {
         List<ComponentConnector> result = new ArrayList<ComponentConnector>(getChildComponents()) {

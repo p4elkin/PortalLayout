@@ -32,7 +32,7 @@ import com.vaadin.client.Util;
 /**
  * StackPortalDropController.
  */
-public class PortalDropController extends AbstractPositioningDropController {
+public class StackPortalDropController extends AbstractPositioningDropController {
 
     private PortletSlot positionerSlot;
 
@@ -40,7 +40,7 @@ public class PortalDropController extends AbstractPositioningDropController {
 
     private final PortalLayoutConnector portalConnector;
 
-    public PortalDropController(PortalLayoutConnector portal) {
+    public StackPortalDropController(PortalLayoutConnector portal) {
         super(portal.getView().asWidget());
         this.panel = portal.getView();
         this.portalConnector = portal;
@@ -77,8 +77,7 @@ public class PortalDropController extends AbstractPositioningDropController {
         }
 
         ComponentConnector parentConnector = Util.findConnectorFor(portletWidget.getContentWidget());
-        PortalLayoutConnector originalConnector = ((PortalLayoutConnector) Util
-                .findConnectorFor(portletWidget.getContentWidget()).getParent());
+        PortalLayoutConnector originalConnector = (PortalLayoutConnector) Util.findConnectorFor(positionerSlot.getParent());
         if (originalConnector != portalConnector) {
             portalConnector.propagateHierarchyChangesToServer();
             originalConnector.propagateHierarchyChangesToServer();
@@ -98,13 +97,7 @@ public class PortalDropController extends AbstractPositioningDropController {
         int positionerIndex = panel.getWidgetIndex(positionerSlot);
         if (positionerIndex != targetIndex && (positionerIndex != targetIndex - 1 || targetIndex == 0)) {
             if (positionerIndex == 0 && panel.getWidgetCount() == 1) {
-                // do nothing, the positioner is the only widget
             } else if (targetIndex == -1) {
-                /**
-                 * Outside drop target, so normally - remove positioner to
-                 * indicate a drop will not happen. In our case the portlet slot
-                 * acts as a positioner, so we do not remove it.
-                 */
             } else {
                 panel.insert(positionerSlot, targetIndex);
             }

@@ -22,21 +22,20 @@ import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.dnd.client.drop.AbstractPositioningDropController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.InsertPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 
 /**
- * AbsolutePortalDropController.
+ * AbsolutePortalDropController. Almost verbatim copy of
+ * {@link AbsolutePositionDropController}. Unfortunately the latter cannot be
+ * extended that easy so that is why we have copied most of the logic from there. 
  */
 public class AbsolutePortalDropController extends AbstractPositioningDropController {
 
@@ -69,11 +68,9 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
         }
     }
 
-    private static final Label DUMMY_LABEL_IE_QUIRKS_MODE_OFFSET_HEIGHT = new Label("x");
-
-    private Draggable draggable;
-
     private final AbsolutePanel dropTarget;
+    
+    private Draggable draggable;
 
     int dropTargetClientHeight;
 
@@ -95,19 +92,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
         super.onPreviewDrop(context);
     }
 
-    /**
-     * Programmatically drop a widget on our drop target while obeying the
-     * constraints of this controller.
-     * 
-     * @param widget
-     *            the widget to be dropped
-     * @param left
-     *            the desired absolute horizontal location relative to our drop
-     *            target
-     * @param top
-     *            the desired absolute vertical location relative to our drop
-     *            target
-     */
     public void drop(Widget widget, int left, int top) {
         left = Math.max(0, Math.min(left, dropTarget.getOffsetWidth() - widget.getOffsetWidth()));
         top = Math.max(0, Math.min(top, dropTarget.getOffsetHeight() - widget.getOffsetHeight()));
@@ -116,9 +100,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
 
     @Override
     public void onDrop(DragContext context) {
-
-        //draggable.positioner.removeFromParent();
-        //dropTarget.add(draggable.widget, draggable.desiredX, draggable.desiredY);
         super.onDrop(context);
 
         PortletChrome portletWidget = (PortletChrome) context.selectedWidgets.get(0);
@@ -137,7 +118,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
     @Override
     public void onEnter(DragContext context) {
         super.onEnter(context);
-        //assert draggable != null;
 
         dropTargetClientWidth = DOMUtil.getClientWidth(dropTarget.getElement());
         dropTargetClientHeight = DOMUtil.getClientHeight(dropTarget.getElement());
@@ -163,7 +143,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
 
     @Override
     public void onLeave(DragContext context) {
-        //draggable.positioner.removeFromParent();
         draggable = null;
         super.onLeave(context);
     }
@@ -179,37 +158,11 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
         if (context.dragController.getBehaviorScrollIntoView()) {
             draggable.positioner.getElement().scrollIntoView();
         }
-
         // may have changed due to scrollIntoView() or user driven scrolling
         calcDropTargetOffset();
     }
-
     
     public Widget makePositioner(Widget reference) {
-        // Use two widgets so that setPixelSize() consistently affects
-        // dimensions
-        // excluding positioner border in quirks and strict modes
-        SimplePanel outer = new SimplePanel();
-        outer.addStyleName(DragClientBundle.INSTANCE.css().positioner());
-        outer.getElement().getStyle().setProperty("margin", "0px");
-
-        // place off screen for border calculation
-        RootPanel.get().add(outer, -500, -500);
-
-        // Ensure IE quirks mode returns valid outer.offsetHeight, and thus
-        // valid
-        // DOMUtil.getVerticalBorders(outer)
-        outer.setWidget(DUMMY_LABEL_IE_QUIRKS_MODE_OFFSET_HEIGHT);
-
-        SimplePanel inner = new SimplePanel();
-        inner.getElement().getStyle().setProperty("margin", "0px");
-        inner.getElement().getStyle().setProperty("border", "none");
-        int offsetWidth = reference.getOffsetWidth() - DOMUtil.getHorizontalBorders(outer);
-        int offsetHeight = reference.getOffsetHeight() - DOMUtil.getVerticalBorders(outer);
-        inner.setPixelSize(offsetWidth, offsetHeight);
-
-        outer.setWidget(inner);
-
         return ((PortletChrome)reference).getAssociatedSlot();
     }
 
@@ -217,7 +170,6 @@ public class AbsolutePortalDropController extends AbstractPositioningDropControl
         WidgetLocation dropTargetLocation = new WidgetLocation(dropTarget, null);
         dropTargetOffsetX = dropTargetLocation.getLeft() + DOMUtil.getBorderLeft(dropTarget.getElement());
         dropTargetOffsetY = dropTargetLocation.getTop() + DOMUtil.getBorderTop(dropTarget.getElement());
-        // System.out.println(dropTargetOffsetX + ", " + dropTargetOffsetY);
     }
 
 }

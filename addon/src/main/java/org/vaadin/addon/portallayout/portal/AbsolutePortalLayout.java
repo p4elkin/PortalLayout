@@ -15,8 +15,34 @@
  */
 package org.vaadin.addon.portallayout.portal;
 
+import org.vaadin.addon.portallayout.gwt.shared.portal.AbsolutePortalState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.AbsolutePortalServerRpc;
+
+import com.vaadin.shared.Connector;
+import com.vaadin.ui.Component;
+
 
 /**
  * AbsolutePortal.
  */
-public class AbsolutePortalLayout extends PortalBase {}
+public class AbsolutePortalLayout extends PortalBase {
+    
+    public AbsolutePortalLayout() {
+        registerRpc(new AbsolutePortalServerRpc() {
+            @Override
+            public void removePortlet(Connector portletContent) {
+                AbsolutePortalLayout.this.removePortlet((Component)portletContent);
+            }
+            
+            @Override
+            public void addPortlet(Connector cc) {
+                getOrCreatePortletForComponent((Component)cc);
+            }
+        });
+    }
+    
+    @Override
+    protected AbsolutePortalState getState() {
+        return (AbsolutePortalState)super.getState();
+    }
+}

@@ -15,9 +15,8 @@
  */
 package org.vaadin.addon.portallayout.gwt.shared.portal;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import com.vaadin.shared.Connector;
@@ -26,13 +25,13 @@ import com.vaadin.shared.ui.AbstractLayoutState;
 /**
  * PortalLayoutState.
  */
-public class PortalLayoutState extends AbstractLayoutState {
+public abstract class PortalLayoutState extends AbstractLayoutState {
 
     public boolean spacing = false;
     
     public int marginsBitmask = 0;
     
-    public List<Connector> portletConnectors = new LinkedList<Connector>();
-    
     public Map<Connector, Connector> contentToPortlet = new HashMap<Connector, Connector>();
+    
+    public abstract Collection<Connector> portlets();
 }

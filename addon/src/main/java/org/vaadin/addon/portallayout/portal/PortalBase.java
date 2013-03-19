@@ -19,12 +19,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
-import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
 import com.vaadin.server.Extension;
@@ -37,7 +35,7 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout.MarginHandler;
 
 /**
- * PortalBase.
+ * Base class for Portal Layouts.
  */
 public abstract class PortalBase extends AbstractComponent implements MarginHandler, HasComponents {
 
@@ -47,50 +45,18 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      */
     public PortalBase() {
         setStyleName("v-portal-layout");
-        registerRpc(new PortalServerRpc() {
-
-            @Override
-            public void removePortlet(Connector portlet) {
-                PortalBase.this.removePortlet((Component) portlet);
-            }
-
-            @Override
-            public void updatePortletPosition(Connector portlet, int index) {
-                if (index >= 0) {
-                    addComponentAt((Component) portlet, index);
-                }
-            }
-        });
     }
 
     /**
-     * 
-     * @param c
-     *            Component to be wrapped into a {@link Portlet}.
+     * Wraps the provided component into a {@link Portlet} instance.
+     * @param c Component to be wrapped into a {@link Portlet}.
      * @return created {@link Portlet}.
      */
-    public Portlet wrapInPortlet(Component c) {
-        Portlet result = getPortletForComponent(c);
+    public Portlet portletFor(Component c) {
+        Portlet result = getOrCreatePortletForComponent(c);
         return result;
     }
-
-    private Portlet getPortletForComponent(Component c) {
-        Portlet result = (Portlet) getState().contentToPortlet.get(c);
-        if (result != null) {
-            return result;
-        } else {
-            for (Extension extension : c.getExtensions()) {
-                if (extension instanceof Portlet) {
-                    addPortletMapping(c, (Portlet) extension);
-                    return (Portlet) extension;
-                }
-            }
-        }
-        result = new Portlet(c);
-        addPortletMapping(c, result);
-        return result;
-    }
-
+    
     /**
      * Finds the correspondent {@link Portlet} and removes it.
      * 
@@ -110,7 +76,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      */
     public void removePortlet(Portlet portlet) {
         Component portletContent = (Component) portlet.getParent();
-        getState().portletConnectors.remove(portlet);
+        getState().portlets().remove(portlet);
         if (portletContent.getParent() == this) {
             portletContent.setParent(null);
         }
@@ -130,19 +96,50 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
     public void setMargin(MarginInfo marginInfo) {
         getState().marginsBitmask = marginInfo.getBitMask();
     }
+    
+    @Override
+    public Iterator<Component> iterator() {
+        CombinedIterator<Component> cIt = new CombinedIterator<Component>();
+        cIt.addIterator(portletContentIterator());
+        cIt.addIterator(portletHeaderIterator());
+        return cIt;
+    }
 
-    private void addComponentAt(Component c, int index) {
-        Portlet portlet = getPortletForComponent(c);
-        LinkedList<Connector> portlets = (LinkedList<Connector>) getState().portletConnectors;
-        if (portlets.contains(portlet)) {
-            portlets.remove(portlet);
+    protected Portlet getPortlet(Component c) {
+        return (Portlet) getState().contentToPortlet.get(c);
+    }
+    
+    /**
+     * Finds or creates a Portlet based on the Component. In case there is no
+     * Portlet existing for the given Component - a new Portlet is created, if
+     * there is a Portlet but it belongs to a different PortalLayout, current
+     * Portal steals the Component from it.
+     * 
+     * @param c
+     *            content Component.
+     * @return either Portlet instance from own mapping, other portlet's mapping
+     *         or a newly created instance.
+     */
+    protected Portlet getOrCreatePortletForComponent(Component c) {
+        Portlet result = (Portlet) getState().contentToPortlet.get(c);
+        if (result != null) {
+            return result;
+        } else {
+            for (Extension extension : c.getExtensions()) {
+                if (extension instanceof Portlet) {
+                    addPortletMapping(c, (Portlet) extension);
+                    return (Portlet) extension;
+                }
+            }
         }
-        portlets.add(index, portlet);
+        result = new Portlet(c);
+        addPortletMapping(c, result);
+        return result;
     }
 
     private void addPortletMapping(Component c, Portlet result) {
         getState().contentToPortlet.put(c, result);
-        getState().portletConnectors.add(result);
+        getState().portlets().add(result);
 
         if (c instanceof ComponentContainer) {
             for (Component parent = this; parent != null; parent = parent.getParent()) {
@@ -158,18 +155,6 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
     @Override
     protected PortalLayoutState getState() {
         return (PortalLayoutState) super.getState();
-    }
-
-    @Override
-    public Iterator<Component> iterator() {
-        CombinedIterator<Component> cIt = new CombinedIterator<Component>();
-        cIt.addIterator(portletContentIterator());
-        cIt.addIterator(portletHeaderIterator());
-        return cIt;
-    }
-
-    public Portlet getPortlet(Component c) {
-        return (Portlet) getState().contentToPortlet.get(c);
     }
     
 
@@ -219,7 +204,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      * IteratorImplementation.
      */
     private final class PortletContentIterator implements Iterator<Component> {
-        private final Iterator<Connector> wrappedIt = getState().portletConnectors.iterator();
+        private final Iterator<Connector> wrappedIt = getState().portlets().iterator();
         
         @Override
         public void remove() {
@@ -243,7 +228,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
         
         public PortletHeaderIterator() {
             List<Component> headers = new ArrayList<Component>();
-            for (Connector portletConnector : getState().portletConnectors) {
+            for (Connector portletConnector : getState().portlets()) {
                 Portlet p = (Portlet) portletConnector;
                 if (p.getHeaderComponent() != null) {
                     headers.add(p.getHeaderComponent());

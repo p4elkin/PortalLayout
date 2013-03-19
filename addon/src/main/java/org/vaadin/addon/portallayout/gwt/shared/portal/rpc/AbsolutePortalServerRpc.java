@@ -13,28 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.vaadin.addon.portallayout.gwt.shared.portal;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+package org.vaadin.addon.portallayout.gwt.shared.portal.rpc;
 
 import com.vaadin.shared.Connector;
 
+
 /**
- * AbsolutePortalState.
+ * AbsolutePortalServerRpc.
  */
-public class AbsolutePortalState extends PortalLayoutState {
+public interface AbsolutePortalServerRpc extends PortalServerRpc {
 
-    public Map<Connector, Connector> absolutePortletExtensions = new HashMap<Connector, Connector>();
-
-    public Set<Connector> portlets = new HashSet<Connector>();
-    
-    @Override
-    public Collection<Connector> portlets() {
-        return portlets;
-    }
-    
+    void addPortlet(Connector cc);
 }

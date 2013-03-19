@@ -15,6 +15,7 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal;
 
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.AbsolutePortalConnector;
 import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
@@ -39,6 +40,14 @@ public class PortalLayoutUtil {
     public static PortalLayoutConnector getPortalLayoutConnectorForPortlet(PortletConnector pc) {
         ComponentConnector cc = Util.findConnectorFor(pc.getWidget().getContentWidget());
         return cc.getParent() instanceof PortalLayoutConnector ? (PortalLayoutConnector)cc.getParent() : null;
+    }
+    
+    public static AbsolutePortalConnector getAbsolutePortletConnectorForPortlet(PortletConnector portlet) {
+        PortalLayoutConnector pc = getPortalLayoutConnectorForPortlet(portlet);
+        if (pc instanceof AbsolutePortalConnector) {
+            //return ((AbsolutePortalConnector)pc).getState().
+        }
+        return null;
     }
     
     public static void lockPortlet(PortletConnector portlet) {

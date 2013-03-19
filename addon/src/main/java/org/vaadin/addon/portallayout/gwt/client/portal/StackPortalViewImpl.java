@@ -10,13 +10,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PortalViewImpl extends FlowPanel implements PortalView {
+public class StackPortalViewImpl extends FlowPanel implements PortalView {
 
     private final Element sentinelElement = DOM.createDiv();
     
     private final Presenter presenter;
 
-    public PortalViewImpl(Presenter presenter) {
+    public StackPortalViewImpl(Presenter presenter) {
         super();
         this.presenter = presenter;
         this.sentinelElement.getStyle().setDisplay(Display.NONE);
@@ -35,7 +35,6 @@ public class PortalViewImpl extends FlowPanel implements PortalView {
         w.setWidth("100%");
         beforeIndex = adjustIndex(w, beforeIndex);
         w.removeFromParent();
-
         getChildren().insert(w, beforeIndex);
         if (getWidgetCount() > 1) {
             DOM.insertChild(getElement(), createSpacer(), beforeIndex > 0 ? 2 * beforeIndex - 1 : 0);
