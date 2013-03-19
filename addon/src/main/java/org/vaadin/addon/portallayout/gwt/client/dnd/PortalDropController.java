@@ -30,7 +30,7 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 
 /**
- * PortalWithExDropController.
+ * StackPortalDropController.
  */
 public class PortalDropController extends AbstractPositioningDropController {
 
