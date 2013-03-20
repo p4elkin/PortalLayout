@@ -67,6 +67,7 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
             }
             int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption - spacingConsumption;
             double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
+            System.out.println("total%: " + totalPercentage + " count: " + relativeHeightPortlets.size());
             for (ComponentConnector cc : relativeHeightPortlets) {
                 PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
                 if (!pc.isCollased()) {

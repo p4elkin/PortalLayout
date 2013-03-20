@@ -26,6 +26,7 @@ import com.allen_sauer.gwt.dnd.client.util.CoordinateLocation;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.LocationWidgetComparator;
 import com.google.gwt.user.client.ui.InsertPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 
@@ -75,14 +76,14 @@ public class StackPortalDropController extends AbstractPositioningDropController
         if (positionerSlot != null) {
             positionerSlot.setWidget(portletWidget);
         }
-
-        ComponentConnector parentConnector = Util.findConnectorFor(portletWidget.getContentWidget());
-        PortalLayoutConnector originalConnector = (PortalLayoutConnector) Util.findConnectorFor(positionerSlot.getParent());
+        Widget contentWidget = portletWidget.getContentWidget();
+        ComponentConnector contentConnector = Util.findConnectorFor(contentWidget);
+        PortalLayoutConnector originalConnector = (PortalLayoutConnector) contentConnector.getParent();
         if (originalConnector != portalConnector) {
             portalConnector.propagateHierarchyChangesToServer();
             originalConnector.propagateHierarchyChangesToServer();
         } else {
-            portalConnector.updatePortletPositionOnServer(parentConnector);
+            portalConnector.updatePortletPositionOnServer(contentConnector);
         }
     }
 

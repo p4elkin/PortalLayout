@@ -123,13 +123,28 @@ public class Portlet extends AbstractExtension {
     public Component getContent() {
         return getParent() == null ? null : (Component)getParent();
     }
-    
-    @Override
-    public void attach() {
-        super.attach();
-    }
 
     public Component getHeaderComponent() {
         return getState().headerComponent == null ? null : (Component)getState().headerComponent;
     }
+    
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        final Component c = (Component)getParent();
+        if (c.getWidth() >= 0) {
+            String width = c.getWidth() + c.getWidthUnits().getSymbol();
+            c.setWidth("100%");
+            getState().width = width;
+        }
+        
+        if (c.getHeight() >= 0) {
+            String height = c.getHeight() + c.getHeightUnits().getSymbol();
+            c.setHeight("100%");
+            getState().height = height;   
+        }
+        
+        c.beforeClientResponse(initial);
+    }
+    
 }
