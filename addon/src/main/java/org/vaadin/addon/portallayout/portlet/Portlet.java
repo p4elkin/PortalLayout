@@ -131,7 +131,7 @@ public class Portlet extends AbstractExtension {
     @Override
     public void beforeClientResponse(boolean initial) {
         super.beforeClientResponse(initial);
-        final Component c = (Component)getParent();
+        /*final Component c = (Component)getParent();
         if (c.getWidth() >= 0) {
             String width = c.getWidth() + c.getWidthUnits().getSymbol();
             c.setWidth("100%");
@@ -144,7 +144,7 @@ public class Portlet extends AbstractExtension {
             getState().height = height;   
         }
         
-        c.beforeClientResponse(initial);
+        c.beforeClientResponse(initial);*/
     }
     
 }
