@@ -20,6 +20,7 @@ import com.allen_sauer.gwt.dnd.client.drop.HorizontalPanelDropController;
 /**
  * PortalColumnsDropController.
  */
+@Deprecated
 public class PortalColumnsDropController extends HorizontalPanelDropController {
 
     private final PortalColumnsConnector portalColumnsConnector;

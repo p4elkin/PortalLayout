@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * PortalSlot.
  */
+@Deprecated
 public class PortalSlot extends Composite {
 
     private final FlowPanel root = new FlowPanel();

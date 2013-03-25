@@ -35,6 +35,7 @@ import com.vaadin.shared.ui.Connect;
  * PortalColumnsContainer.
  */
 @Connect(PortalColumns.class)
+@Deprecated
 public class PortalColumnsConnector extends AbstractLayoutConnector {
 
     private PortalColumnsDropController dropController;

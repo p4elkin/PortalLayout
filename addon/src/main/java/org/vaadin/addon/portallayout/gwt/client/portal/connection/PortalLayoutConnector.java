@@ -99,6 +99,12 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
             recalculateHeights();
         }
     };
+    
+    protected abstract PortalServerRpc initRpc();
+    
+    protected abstract PortalView initView();
+    
+    public abstract void updatePortletPositionOnServer(ComponentConnector cc);
 
     @Override
     protected void init() {
@@ -111,8 +117,7 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         });
     }
 
-    protected abstract PortalServerRpc initRpc();
-    
+        
     protected PortalHeightRedistributionStrategy initHeightRedistributionStrategy() {
         return new StackHeightRedistributionStrategy();
     }
@@ -216,9 +221,6 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     protected DropController initDropController() {
         return new StackPortalDropController(this);
     }
-
-    protected abstract PortalView initView();
-
     @Override
     public PortalLayoutState getState() {
         return (PortalLayoutState) super.getState();
@@ -241,7 +243,6 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         }
     }
 
-    public abstract void updatePortletPositionOnServer(ComponentConnector cc);
 
     public List<ComponentConnector> getCurrentChildren() {
         List<ComponentConnector> result = new ArrayList<ComponentConnector>(getChildComponents()) {

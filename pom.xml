@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vaadin.addon</groupId>
 	<artifactId>portal-layout-root</artifactId>
-	<version>2.0.alpha4</version>
+	<version>2.0.alpha5</version>
 	<packaging>pom</packaging>
 
 	<name>portal-layout root project</name>

@@ -29,7 +29,10 @@ import com.vaadin.ui.HasComponents;
 
 /**
  * PortalColumns.
+ * @deprecated This class is not for production use - it is very experimental and has a super unstable API as well as lacks 
+ * most of functionality. 
  */
+@Deprecated
 public class PortalColumns extends AbstractComponent implements HasComponents {
 
     public PortalColumns() {
