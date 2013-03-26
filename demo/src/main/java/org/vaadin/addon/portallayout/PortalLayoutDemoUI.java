@@ -20,5 +20,5 @@ public class PortalLayoutDemoUI extends UI {
         
         setContent(layout);
         layout.addComponent(new ActionDemoTab());
-    }   
+    }
 }
