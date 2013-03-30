@@ -18,6 +18,8 @@ package org.vaadin.addon.portallayout.portlet;
 
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.ClientConnector;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.AbsolutePositionPortletState;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.AbsolutePortletServerRpc;
 
 /**
  * AbsolutePortlet.
@@ -26,6 +28,13 @@ public class AbsolutePositionPortlet extends AbstractExtension {
 
     public AbsolutePositionPortlet(Portlet p) {
         extend(p);
+        registerRpc(new AbsolutePortletServerRpc() {
+            @Override
+            public void updateCoordinates(int x, int y) {
+                getState().x = x;
+                getState().y = y;
+            }
+        });
     }
     
     @Override
@@ -38,5 +47,9 @@ public class AbsolutePositionPortlet extends AbstractExtension {
         ClientConnector cc = super.getParent();
         return cc == null ? null : (Portlet)cc;
     }
-    
+
+    @Override
+    protected AbsolutePositionPortletState getState() {
+        return (AbsolutePositionPortletState)super.getState();
+    }
 }

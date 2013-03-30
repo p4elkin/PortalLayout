@@ -54,4 +54,5 @@ public class PortletCloseEvent extends GwtEvent<PortletCloseEvent.Handler>{
     protected void dispatch(Handler handler) {
         handler.onPortletClose(this);
     }
+
 }

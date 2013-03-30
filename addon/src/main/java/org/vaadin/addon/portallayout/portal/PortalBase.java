@@ -15,16 +15,6 @@
  */
 package org.vaadin.addon.portallayout.portal;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
-import org.vaadin.addon.portallayout.portlet.Portlet;
-
 import com.vaadin.server.Extension;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.MarginInfo;
@@ -33,12 +23,21 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout.MarginHandler;
+import org.vaadin.addon.portallayout.event.HasPortletCloseListeners;
+import org.vaadin.addon.portallayout.event.HasPortletCollapseListeners;
+import org.vaadin.addon.portallayout.event.PortletCloseEvent;
+import org.vaadin.addon.portallayout.event.PortletCollapseEvent;
+import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.portlet.Portlet;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Base class for Portal Layouts.
  */
-public abstract class PortalBase extends AbstractComponent implements MarginHandler, HasComponents {
-
+public abstract class PortalBase extends AbstractComponent implements MarginHandler,
+        HasComponents, HasPortletCollapseListeners, HasPortletCloseListeners {
 
     /**
      * Constructs a {@link StackPortalLayout}.
@@ -102,6 +101,33 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
         cIt.addIterator(portletContentIterator());
         cIt.addIterator(portletHeaderIterator());
         return cIt;
+    }
+
+    @Override
+    public void addPortletCollapseListener(PortletCollapseEvent.Listener listener) {
+        addListener("portletCollapseEvent",
+                PortletCollapseEvent.class, listener,
+                PortletCollapseEvent.PORTLET_COLLAPSE_STATE_CHANGED);
+    }
+
+    @Override
+    public void removePortletCollapseListener(PortletCollapseEvent.Listener listener) {
+        removeListener(PortletCollapseEvent.class, listener,
+                PortletCollapseEvent.PORTLET_COLLAPSE_STATE_CHANGED);
+    }
+
+
+    @Override
+    public void addPortletCloseListener(PortletCloseEvent.Listener listener) {
+        addListener("portletCloseEvent",
+                PortletCloseEvent.class, listener,
+                PortletCloseEvent.PORTLET_CLOSED);
+    }
+
+    @Override
+    public void removePortletCloseListener(PortletCloseEvent.Listener listener) {
+        removeListener(PortletCloseEvent.class, listener,
+                PortletCloseEvent.PORTLET_CLOSED);
     }
 
     protected Portlet getPortlet(Component c) {
@@ -169,7 +195,11 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
     protected Iterator<Component> portletHeaderIterator() {
         return new PortletHeaderIterator();
     }
-    
+
+    public void firePortletCollapseEvent(Portlet portlet) {
+        fireEvent(new PortletCollapseEvent(this, portlet));
+    }
+
     private static final class CombinedIterator<T> implements Iterator<T>, Serializable {
 
         private final Collection<Iterator<? extends T>> iterators = new ArrayList<Iterator<? extends T>>();

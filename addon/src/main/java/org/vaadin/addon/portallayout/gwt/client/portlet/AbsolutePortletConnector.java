@@ -15,6 +15,7 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -23,17 +24,24 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.AbsolutePositionPortletState;
 import org.vaadin.addon.portallayout.portlet.AbsolutePositionPortlet;
 /**
- * AbsolutePortletConnector.
+ * Client-side connector that corresponds to {@link AbsolutePositionPortlet}.
  */
 @Connect(AbsolutePositionPortlet.class)
 public class AbsolutePortletConnector extends AbstractExtensionConnector {
 
     private final HTML resizeDrag = new HTML() {
+
+        {
+            addStyleName("v-portlet-resize-drag");
+            sinkEvents(Event.MOUSEEVENTS);
+        }
+
         @Override
         public void onBrowserEvent(Event event) {
             int type = event.getTypeInt();
@@ -104,9 +112,7 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         assert target instanceof PortletConnector;
         PortletConnector portlet = (PortletConnector)target;
         PortletChrome widget = portlet.getWidget();
-        resizeDrag.addStyleName("v-portlet-resize-drag");
         widget.add(resizeDrag);
-        resizeDrag.sinkEvents(Event.MOUSEEVENTS);
     }
     
     @Override
@@ -118,7 +124,15 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
     public AbsolutePositionPortletState getState() {
         return (AbsolutePositionPortletState)super.getState();
     }
-    
+
+    @Override
+    public void onStateChanged(StateChangeEvent event) {
+        super.onStateChanged(event);
+        Style style = getParent().getWidget().getElement().getStyle();
+        style.setTop(getState().y, Style.Unit.PX);
+        style.setLeft(getState().x, Style.Unit.PX);
+    }
+
     @Override
     public void onUnregister() {
         resizeDrag.removeFromParent();

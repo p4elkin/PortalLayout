@@ -250,14 +250,14 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
 
     /*@Override
     public void portletCollapseStateChanged(PortletCollapseEvent event) {
-        final Context context = event.getContext();
+        final Context context = event.getPortlet();
         getWindow().showNotification(context.getComponent().getCaption() + "collapsed " + 
                 context.getPortal().isCollapsed(context.getComponent()));
     }
 
     @Override
     public void portletClosed(PortletClosedEvent event) {
-        getWindow().showNotification(event.getContext().getComponent().getCaption() + "closed");
+        getWindow().showNotification(event.getPortlet().getComponent().getCaption() + "closed");
     }*/
 
 }

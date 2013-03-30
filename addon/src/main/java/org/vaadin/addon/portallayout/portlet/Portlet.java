@@ -20,6 +20,7 @@ import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
+import org.vaadin.addon.portallayout.portal.PortalBase;
 
 /**
  * Extends a component on the client-side by providing a chrome with controls, icon and a caption.
@@ -34,6 +35,7 @@ public class Portlet extends AbstractExtension {
             @Override
             public void setCollapsed(boolean isCollapsed) {
                 getState().collapsed = isCollapsed;
+                getPortalLayout().firePortletCollapseEvent(Portlet.this);
             }
 
             @Override
@@ -47,7 +49,11 @@ public class Portlet extends AbstractExtension {
             }
         });
     }
-    
+
+    private PortalBase getPortalLayout() {
+        return getContent().getParent() == null ? null : (PortalBase) getContent().getParent();
+    }
+
     /**
      * Constructs a {@link Portlet} bound to a provided component.
      * @param portletContent Portlet Content.

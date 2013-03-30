@@ -15,18 +15,18 @@
  */
 package org.vaadin.addon.portallayout.portal;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import org.vaadin.addon.portallayout.gwt.shared.portal.StackPortalLayoutState;
-import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
-import org.vaadin.addon.portallayout.portlet.Portlet;
-
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout.SpacingHandler;
+import org.vaadin.addon.portallayout.event.PortletCloseEvent;
+import org.vaadin.addon.portallayout.gwt.shared.portal.StackPortalLayoutState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
+import org.vaadin.addon.portallayout.portlet.Portlet;
+
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
@@ -39,8 +39,9 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
         registerRpc(new StackPortalRpc() {
             
             @Override
-            public void removePortlet(Connector portlet) {
-                StackPortalLayout.this.removePortlet((Component) portlet);
+            public void removePortlet(Connector portletContent) {
+                fireEvent(new PortletCloseEvent(StackPortalLayout.this, getPortlet((Component) portletContent)));
+                StackPortalLayout.this.removePortlet((Component) portletContent);
             }
 
             @Override
