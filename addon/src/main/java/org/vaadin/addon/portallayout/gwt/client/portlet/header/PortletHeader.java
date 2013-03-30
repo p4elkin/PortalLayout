@@ -1,35 +1,23 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet.header;
 
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent.HasPortletCloseEventHandlers;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.Handler;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.HasPortletCollapseEventHandlers;
-
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.VerticalAlign;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasMouseDownHandlers;
-import com.google.gwt.event.dom.client.HasTouchStartHandlers;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.vaadin.client.Util;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent.HasPortletCloseEventHandlers;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.Handler;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.HasPortletCollapseEventHandlers;
 
 public class PortletHeader extends ComplexPanel implements HasPortletCollapseEventHandlers, HasPortletCloseEventHandlers, HasMouseDownHandlers, HasTouchStartHandlers {    
     
@@ -88,13 +76,15 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
             @Override
             public void onPreviewNativeEvent(NativePreviewEvent event) {
                 final NativeEvent nativeEvent = event.getNativeEvent();
-                if (event.getTypeInt() == Event.ONMOUSEDOWN) {
-                    getParent().blur();
-                    final Element target = nativeEvent.getEventTarget().cast();
-                    final Widget w = Util.findWidget(target, null);
-                    if (!(w instanceof HasWidgets)) {
-                        nativeEvent.stopPropagation();
-                    }   
+                final Element target = nativeEvent.getEventTarget().cast();
+                if (getElement().isOrHasChild(target)) {
+                    if (event.getTypeInt() == Event.ONMOUSEDOWN) {
+                        getParent().blur();
+                        final Widget w = Util.findWidget(target, null);
+                        if (!(w instanceof HasWidgets)) {
+                            nativeEvent.stopPropagation();
+                        }
+                    }
                 }
             }
         });
@@ -133,7 +123,7 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
         if (iconUri != null) {
             iconUri = iconUri == null ? "" : iconUri;
             icon.setUrl(iconUri);
-            icon.getElement().getStyle().setDisplay(iconUri == "" ? Display.NONE : Display.INLINE);   
+            icon.getElement().getStyle().setDisplay(iconUri.isEmpty() ? Display.NONE : Display.INLINE);
         }
     }
     

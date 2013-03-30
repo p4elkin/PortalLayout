@@ -53,8 +53,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      * @return created {@link Portlet}.
      */
     public Portlet portletFor(Component c) {
-        Portlet result = getOrCreatePortletForComponent(c);
-        return result;
+        return getOrCreatePortletForComponent(c);
     }
     
     /**
@@ -71,7 +70,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
     /**
      * Removes a {@link Portlet} from current layout.
      * 
-     * @param portletContent
+     * @param portlet
      *            {@link Portlet} to be removed.
      */
     public void removePortlet(Portlet portlet) {
@@ -117,7 +116,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      * 
      * @param c
      *            content Component.
-     * @return either Portlet instance from own mapping, other portlet's mapping
+     * @return either Portlet instance from own mapping, other portlets mapping
      *         or a newly created instance.
      */
     protected Portlet getOrCreatePortletForComponent(Component c) {
@@ -132,7 +131,12 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
                 }
             }
         }
-        result = new Portlet(c);
+        result = createPortlet(c);
+        return result;
+    }
+
+    protected Portlet createPortlet(Component c) {
+        Portlet result = new Portlet(c);
         addPortletMapping(c, result);
         return result;
     }

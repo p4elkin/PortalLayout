@@ -42,7 +42,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             c.setHeight("300px");
             Portlet p = super.portletFor(c/*, position*/);
             return p;
-        };
+        }
     };
     
     private final PortalBase imagePortal = new AbsolutePortalLayout() {
@@ -64,7 +64,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         @Override
         public Portlet portletFor(Component c/*, int position*/) {
             
-            c.setHeight("300px");
+            //c.setHeight("300px");
             Portlet p = super.portletFor(c/*, position*/);
             //p.setLocked(true);
             return p;
@@ -72,8 +72,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             //addPortletStyleName(c, "yellow");
         };
     };
-   
-    
+
     private boolean init = false;
     
     private final PortalColumns layout = new PortalColumns();
@@ -134,7 +133,7 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         filterField.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                table.filter((NameType)filterType.getValue(), filterField.getValue().toString());
+                table.filter((NameType)filterType.getValue(), filterField.getValue());
             }
         });
     }

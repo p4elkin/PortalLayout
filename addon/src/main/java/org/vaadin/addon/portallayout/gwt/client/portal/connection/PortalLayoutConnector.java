@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import org.vaadin.addon.portallayout.gwt.client.dnd.StackPortalDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
@@ -60,7 +61,7 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
             super(boundaryPanel, allowDroppingOnBoundaryPanel);
         }
 
-        protected void setMoveablePanleStyleName(String styleName) {
+        protected void setMoveablePanelStyleName(String styleName) {
             this.moveablePanelStyleHack = styleName;
         }
 
@@ -88,23 +89,25 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     private PortalView view;
 
     private DropController dropController;
-    
+
     private PortalHeightRedistributionStrategy heightRedistributionStrategy;
-    
+
     private final List<ComponentConnector> headerConnectors = new ArrayList<ComponentConnector>();
-    
-    private final ElementResizeListener portletResizeListener = new ElementResizeListener() {
+
+    private final ElementResizeListener slotResizeListener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent event) {
-            recalculateHeights();
+            /**
+             * We defer recalculation of heights so that other listeners first update the size values.
+             */
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                @Override
+                public void execute() {
+                    recalculateHeights();
+                }
+            });
         }
     };
-    
-    protected abstract PortalServerRpc initRpc();
-    
-    protected abstract PortalView initView();
-    
-    public abstract void updatePortletPositionOnServer(ComponentConnector cc);
 
     @Override
     protected void init() {
@@ -113,11 +116,13 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         this.heightRedistributionStrategy = initHeightRedistributionStrategy();
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
-            public void onElementResize(ElementResizeEvent e) {}
+            public void onElementResize(ElementResizeEvent e) {
+            }
         });
     }
 
-        
+    protected abstract PortalServerRpc initRpc();
+
     protected PortalHeightRedistributionStrategy initHeightRedistributionStrategy() {
         return new StackHeightRedistributionStrategy();
     }
@@ -125,15 +130,15 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     protected PortalServerRpc getServerRpc() {
         return rpc;
     }
-    
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         if (!commonDragController.isMoveablePanelStyleSet()) {
             String themeUri = getConnection().getThemeUri();
-            commonDragController.setMoveablePanleStyleName(themeUri.substring(themeUri.lastIndexOf("/") + 1));
+            commonDragController.setMoveablePanelStyleName(themeUri.substring(themeUri.lastIndexOf("/") + 1));
         }
-        
+
         boolean spacing = getState().spacing;
         getWidget().setStyleName("v-portal-layout-no-spacing", !spacing);
     }
@@ -167,13 +172,8 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
             if (getState().contentToPortlet.get(cc) != null) {
                 final PortletConnector pc = (PortletConnector) getState().contentToPortlet.get(cc);
                 final PortletChrome portletWidget = pc.getWidget();
-                cc.getLayoutManager().addElementResizeListener(portletWidget.getAssociatedSlot().getElement(),
-                        portletResizeListener);
-                if (!pc.isLocked()) {
-                    commonDragController.makeDraggable(portletWidget, portletWidget.getHeader().getDraggableArea());    
-                }
+                cc.getLayoutManager().addElementResizeListener(portletWidget.getAssociatedSlot().getElement(), slotResizeListener);
                 getView().addPortlet(pc.getWidget());
-
             } else {
                 headerConnectors.add(cc);
             }
@@ -221,6 +221,9 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     protected DropController initDropController() {
         return new StackPortalDropController(this);
     }
+
+    protected abstract PortalView initView();
+
     @Override
     public PortalLayoutState getState() {
         return (PortalLayoutState) super.getState();
@@ -243,16 +246,14 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         }
     }
 
+    public abstract void updatePortletPositionOnServer(ComponentConnector cc);
 
     public List<ComponentConnector> getCurrentChildren() {
         List<ComponentConnector> result = new ArrayList<ComponentConnector>(getChildComponents()) {
             @Override
             public boolean add(ComponentConnector cc) {
-                if (cc != null) {
-                    return super.add(cc);
-                }
-                return false;
-            };
+                return cc != null && super.add(cc);
+            }
         };
         result.removeAll(headerConnectors);
         result.remove(outcomingPortletCandidate);
@@ -263,17 +264,17 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     public void removePortlet(ServerConnector connector) {
         rpc.removePortlet(connector);
     }
-    
+
     public PortalHeightRedistributionStrategy getHeightRedistributionStrategy() {
         return heightRedistributionStrategy;
     }
-    
+
     @Override
     public void onUnregister() {
         super.onUnregister();
         final PickupDragController dragController = getDragController();
         for (final ComponentConnector cc : getCurrentChildren()) {
-            dragController.makeNotDraggable(cc.getWidget());
+            PortalLayoutUtil.lockPortlet((PortletConnector) cc);
         }
         dragController.unregisterDropController(dropController);
     }
@@ -281,6 +282,4 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     public PickupDragController getDragController() {
         return commonDragController;
     }
-    
 }
-

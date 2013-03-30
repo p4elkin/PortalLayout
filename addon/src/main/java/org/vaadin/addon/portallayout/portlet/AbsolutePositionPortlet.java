@@ -24,6 +24,10 @@ import com.vaadin.server.ClientConnector;
  */
 public class AbsolutePositionPortlet extends AbstractExtension {
 
+    public AbsolutePositionPortlet(Portlet p) {
+        extend(p);
+    }
+    
     @Override
     protected Class<Portlet> getSupportedParentType() {
         return Portlet.class;

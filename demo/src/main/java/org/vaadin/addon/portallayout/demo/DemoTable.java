@@ -27,8 +27,9 @@ public class DemoTable extends Table {
     
     public DemoTable() {
         super();
+        setSizeUndefined();
         setWidth("100%");
-        setHeight("200px");
+        //setHeight("200px");
         populateContainer();
     }
 

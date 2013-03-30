@@ -9,7 +9,11 @@ public class PortletSlot extends SimplePanel {
         setStyleName("v-portlet-slot");
         setWidget(portlet);
     }
-    
+
+    public String getHeight() {
+        return getElement().getStyle().getHeight();
+    }
+
     @Override
     public PortletChrome getWidget() {
         return (PortletChrome)super.getWidget();

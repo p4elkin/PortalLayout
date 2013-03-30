@@ -15,12 +15,11 @@
  */
 package org.vaadin.addon.portallayout.portlet;
 
-import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
-import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
-
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
 
 /**
  * Extends a component on the client-side by providing a chrome with controls, icon and a caption.
@@ -38,8 +37,13 @@ public class Portlet extends AbstractExtension {
             }
 
             @Override
-            public void updatePreferredFixedWidth(int widthPixels) {
+            public void updatePreferredPixelWidth(int widthPixels) {
                 getState().fixedContentWidth = widthPixels + "px";
+            }
+
+            @Override
+            public void updatePixelHeight(int heightPixels) {
+                getState().height = heightPixels + "px";
             }
         });
     }
@@ -131,20 +135,21 @@ public class Portlet extends AbstractExtension {
     @Override
     public void beforeClientResponse(boolean initial) {
         super.beforeClientResponse(initial);
-        /*final Component c = (Component)getParent();
-        if (c.getWidth() >= 0) {
-            String width = c.getWidth() + c.getWidthUnits().getSymbol();
+        final Component c = (Component)getParent();
+        String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
+        
+        if (c.getWidth() >= 0 && !"100%".equals(width)) {
             c.setWidth("100%");
             getState().width = width;
         }
         
-        if (c.getHeight() >= 0) {
-            String height = c.getHeight() + c.getHeightUnits().getSymbol();
+        String height = String.format("%d%s", (int)c.getHeight(), c.getHeightUnits().getSymbol());
+        if (c.getHeight() >= 0 && !"100%".equals(height)) {
             c.setHeight("100%");
             getState().height = height;   
         }
         
-        c.beforeClientResponse(initial);*/
+        c.beforeClientResponse(initial);
     }
     
 }

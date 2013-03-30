@@ -15,16 +15,15 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal.strategy;
 
-import java.util.Iterator;
-
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
-
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Profiler;
 import com.vaadin.client.Util;
-import com.vaadin.shared.ui.ComponentStateUtil;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
+
+import java.util.Iterator;
 
 /**
  * AbsolutePortalHeightRedistributionStrategy.
@@ -34,20 +33,16 @@ public class AbsolutePortalHeightRedistributionStrategy implements PortalHeightR
     @Override
     public void redistributeHeights(PortalLayoutConnector portalConnector) {
         Profiler.enter("PLC.recalcHeight");
-        Iterator<ComponentConnector> it = portalConnector.getCurrentChildren().iterator();
-        int totalPortalHeight = portalConnector.getLayoutManager().getInnerHeight(portalConnector.getWidget()
-                .getElement());
-        while (it.hasNext()) {
-            ComponentConnector cc = it.next();
-            if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
+        for (ComponentConnector cc : portalConnector.getCurrentChildren()) {
+            PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
+            PortletSlot slot = pc.getWidget().getAssociatedSlot();
+            if (pc.hasRelativeHeight()) {
                 if (!pc.isCollased()) {
-                    float slotHeight = Util.parseRelativeSize(cc.getState().height);
-                    pc.setSlotHeight(slotHeight + "%", slotHeight * totalPortalHeight / 100f);   
+                    float relativeHeight = Util.parseRelativeSize(pc.getState().height);
+                    slot.setHeight(relativeHeight + "%");
                 }
             }
         }
         Profiler.leave("PLC.recalcHeight");
     }
-
 }

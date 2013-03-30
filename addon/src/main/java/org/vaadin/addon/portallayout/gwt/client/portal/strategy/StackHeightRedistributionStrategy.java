@@ -45,15 +45,17 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
         int totalFixedHeightConsumption = 0;
         while (it.hasNext()) {
             ComponentConnector cc = it.next();
-            if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                totalPercentage += Util.parseRelativeSize(cc.getState().height);
-                relativeHeightPortlets.add(cc);
-            } else {
-                PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
-                if (pc != null) {
-                    Widget portletWidget = pc.getWidget();
-                    totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());   
-                }
+            PortletConnector portletConnector = PortalLayoutUtil.getPortletConnectorForContent(cc);
+            if (portletConnector != null) {
+                //if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
+                if (ComponentStateUtil.isRelativeHeight(portletConnector.getState())) {
+                    //totalPercentage += Util.parseRelativeSize(cc.getState().height);
+                    totalPercentage += Util.parseRelativeSize(portletConnector.getState().height);
+                    relativeHeightPortlets.add(cc);
+                } else {
+                    Widget portletWidget = portletConnector.getWidget();
+                    totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
+                }   
             }
         }
         if (totalPercentage > 0) {
@@ -67,13 +69,12 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
             }
             int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption - spacingConsumption;
             double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
-            //System.out.println("total%: " + totalPercentage + " count: " + relativeHeightPortlets.size());
             for (ComponentConnector cc : relativeHeightPortlets) {
-                PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
-                if (!pc.isCollased()) {
-                    float height = Util.parseRelativeSize(cc.getState().height);
+                PortletConnector portletConnector = PortalLayoutUtil.getPortletConnectorForContent(cc);
+                if (!portletConnector.isCollased()) {
+                    float height = Util.parseRelativeSize(portletConnector.getState().height);
                     double slotHeight = (height / totalPercentage * ratio);
-                    pc.setSlotHeight(slotHeight + "%", slotHeight * totalPortalHeight / 100f);
+                    portletConnector.getWidget().getAssociatedSlot().setHeight(slotHeight + "%");
                 }
             }
         }

@@ -26,5 +26,8 @@ public interface PortletServerRpc extends ServerRpc {
     void setCollapsed(boolean isCollapsed);
 
     @Delayed
-    void updatePreferredFixedWidth(int widthPixels);
+    void updatePreferredPixelWidth(int widthPixels);
+
+    @Delayed
+    void updatePixelHeight(int heightPixels);
 }

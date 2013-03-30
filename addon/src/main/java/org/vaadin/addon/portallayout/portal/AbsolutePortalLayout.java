@@ -17,7 +17,10 @@ package org.vaadin.addon.portallayout.portal;
 
 import org.vaadin.addon.portallayout.gwt.shared.portal.AbsolutePortalState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.AbsolutePortalServerRpc;
+import org.vaadin.addon.portallayout.portlet.AbsolutePositionPortlet;
+import org.vaadin.addon.portallayout.portlet.Portlet;
 
+import com.vaadin.server.Extension;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.Component;
 
@@ -39,6 +42,38 @@ public class AbsolutePortalLayout extends PortalBase {
                 getOrCreatePortletForComponent((Component)cc);
             }
         });
+    }
+    
+    @Override
+    public void removePortlet(Portlet portlet) {
+        AbsolutePositionPortlet ex = getAbsoluteExtension(portlet);
+        if (ex != null) {
+            ex.remove();
+        }
+        super.removePortlet(portlet);
+    }
+    
+    @Override
+    protected Portlet getOrCreatePortletForComponent(Component c) {
+        Portlet p = super.getOrCreatePortletForComponent(c);
+        ensureAbsoluteExtension(p);
+        return p;
+    }
+    
+    private void ensureAbsoluteExtension(Portlet p) {
+        AbsolutePositionPortlet ex = getAbsoluteExtension(p);
+        if (ex == null) {
+            ex = new AbsolutePositionPortlet(p);
+        }
+    }
+    
+    private AbsolutePositionPortlet getAbsoluteExtension(Portlet p) {
+        for (Extension ex : p.getExtensions()) {
+            if (ex instanceof AbsolutePositionPortlet) {
+                return (AbsolutePositionPortlet)ex;
+            }
+        }
+        return null;
     }
     
     @Override

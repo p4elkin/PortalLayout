@@ -28,13 +28,12 @@ import com.vaadin.shared.Connector;
  */
 public class AbsolutePortalState extends PortalLayoutState {
 
-    public Map<Connector, Connector> absolutePortletExtensions = new HashMap<Connector, Connector>();
-
     public Set<Connector> portlets = new HashSet<Connector>();
     
     @Override
     public Collection<Connector> portlets() {
         return portlets;
     }
+    
     
 }
