@@ -71,7 +71,7 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
             double ratio = reservedForRelativeSize / (double) totalPortalHeight * 100d;
             for (ComponentConnector cc : relativeHeightPortlets) {
                 PortletConnector portletConnector = PortalLayoutUtil.getPortletConnectorForContent(cc);
-                if (!portletConnector.isCollased()) {
+                if (!portletConnector.isCollapsed()) {
                     float height = Util.parseRelativeSize(portletConnector.getState().height);
                     double slotHeight = (height / totalPercentage * ratio);
                     portletConnector.getWidget().getAssociatedSlot().setHeight(slotHeight + "%");

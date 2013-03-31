@@ -49,7 +49,7 @@ public class PortletChrome extends FlowPanel {
 
     @Override
     public void add(Widget child) {
-        super.add(child,/* isHeightUndefined() ? getElement() : */contentEl);
+        super.add(child, contentEl);
     }
 
     public void blur() {

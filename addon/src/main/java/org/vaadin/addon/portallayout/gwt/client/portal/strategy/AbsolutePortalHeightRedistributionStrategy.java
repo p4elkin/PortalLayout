@@ -23,8 +23,6 @@ import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutCo
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletSlot;
 
-import java.util.Iterator;
-
 /**
  * AbsolutePortalHeightRedistributionStrategy.
  */
@@ -37,7 +35,7 @@ public class AbsolutePortalHeightRedistributionStrategy implements PortalHeightR
             PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
             PortletSlot slot = pc.getWidget().getAssociatedSlot();
             if (pc.hasRelativeHeight()) {
-                if (!pc.isCollased()) {
+                if (!pc.isCollapsed()) {
                     float relativeHeight = Util.parseRelativeSize(pc.getState().height);
                     slot.setHeight(relativeHeight + "%");
                 }

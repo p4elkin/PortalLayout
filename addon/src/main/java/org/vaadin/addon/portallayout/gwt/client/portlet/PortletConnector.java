@@ -124,9 +124,9 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     private final class ContentAreaSizeChangeListener implements ElementResizeListener {
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            if (!isCollased()) {
+            if (!isCollapsed()) {
                 rpc.updatePreferredPixelWidth(layoutManager.getOuterWidth(e.getElement()));
-                if (Util.parseRelativeSize(portletChrome.getAssociatedSlot().getHeight()) < 0) {
+                if (Util.parseRelativeSize(portletChrome.getAssociatedSlot().getHeight()) < 0 && !isHeightUndefined) {
                     isHeightRelative = false;
                     rpc.updatePixelHeight(layoutManager.getOuterHeight(e.getElement()));
                 }
@@ -199,7 +199,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         return portletChrome;
     }
 
-    public boolean isCollased() {
+    public boolean isCollapsed() {
         return portletChrome.isCollapsed();
     }
 
@@ -232,10 +232,6 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         portletChrome.getAssociatedSlot().removeFromParent();
         portletChrome.removeFromParent();
         super.onUnregister();
-    }
-
-    public boolean isLocked() {
-        return getState().locked;
     }
 
     public LayoutManager getLayoutManager() {

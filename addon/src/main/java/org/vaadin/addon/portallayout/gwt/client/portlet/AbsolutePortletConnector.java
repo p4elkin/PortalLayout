@@ -96,13 +96,20 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
             int deltaX = currentX - initialX;
             int deltaY = currentY - initialY;
             LayoutManager lm = parentPortlet.getLayoutManager();
-            String width = (initialWidth + deltaX) + "px";
-            String height = (initialHeight + deltaY) + "px";
+            PortletSlot slot = portletChrome.getAssociatedSlot();
+            int parentWidth = lm.getOuterWidth(slot.getParent().getElement());
+            int parentHeight = lm.getOuterHeight(slot.getParent().getElement());
+            if (currentX < slot.getParent().getAbsoluteLeft() + parentWidth) {
+                String width = (initialWidth + deltaX) + "px";
+                portletChrome.getAssociatedSlot().setWidth(width);
+            }
 
-            portletChrome.getAssociatedSlot().setWidth(width);
-            portletChrome.getAssociatedSlot().setHeight(height);
+            if (currentY < slot.getParent().getAbsoluteTop() + parentHeight) {
+                String height = (initialHeight + deltaY) + "px";
+                portletChrome.getAssociatedSlot().setHeight(height);
+            }
 
-            lm.setNeedsMeasure((ComponentConnector)getParent().getParent());
+            lm.setNeedsMeasure((ComponentConnector) getParent().getParent());
             lm.layoutLater();
         }
     }
@@ -127,32 +134,34 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         });
     }
 
+
     private int initialX = -1;
-    
+
     private int initialY = -1;
-    
+
     private boolean isResizing = false;
-    
+
     @Override
     protected void extend(ServerConnector target) {
         assert target instanceof PortletConnector;
         this.parentPortlet = getParent();
         this.portletChrome = parentPortlet.getWidget();
-        PortletConnector portlet = (PortletConnector)target;
+
+        PortletConnector portlet = (PortletConnector) target;
         PortletChrome widget = portlet.getWidget();
         widget.addStyleName("v-portlet-resizable");
         widget.insert(resizeDrag, widget.getWidgetCount() - 1);
         widget.getElement().appendChild(footer);
     }
-    
+
     @Override
     public PortletConnector getParent() {
-        return (PortletConnector)super.getParent();
+        return (PortletConnector) super.getParent();
     }
-    
+
     @Override
     public AbsolutePositionPortletState getState() {
-        return (AbsolutePositionPortletState)super.getState();
+        return (AbsolutePositionPortletState) super.getState();
     }
 
     @Override
@@ -170,5 +179,5 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         resizeDrag.removeFromParent();
         super.onUnregister();
     }
-    
+
 }
