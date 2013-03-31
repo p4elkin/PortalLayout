@@ -85,12 +85,12 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         initialY = -1;
         isResizing = false;
         DOM.releaseCapture(resizeDrag.getElement());
-        cancelDocumentSelection();
+        cancelDocumentSelection(event);
     }
 
     private void handleMouseMove(Event event) {
         if (isResizing) {
-            cancelDocumentSelection();
+            cancelDocumentSelection(event);
             int currentX = Util.getTouchOrMouseClientX(event);
             int currentY = Util.getTouchOrMouseClientY(event);
             int deltaX = currentX - initialX;
@@ -121,11 +121,12 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         initialY = Util.getTouchOrMouseClientY(event);
         initialWidth = lm.getOuterWidth(portletChrome.getElement());
         initialHeight = lm.getOuterHeight(portletChrome.getElement());
-        cancelDocumentSelection();
+        cancelDocumentSelection(event);
         isResizing = true;
     }
 
-    private void cancelDocumentSelection() {
+    private void cancelDocumentSelection(Event event) {
+        event.preventDefault();
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {

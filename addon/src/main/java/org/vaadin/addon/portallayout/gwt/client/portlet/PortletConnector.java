@@ -60,7 +60,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     }
 
     /**
-     * HeaderToolbarStateHandler.
+     * Triggered when header component is changed from the server-side.
      */
     private final class HeaderToolbarStateHandler implements StateChangeHandler {
         @Override
@@ -71,20 +71,21 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     }
 
     /**
-     * HeightStateChangeListener.
+     * Triggered when height is changed from the server-side.
      */
     private final class HeightStateChangeListener implements StateChangeHandler {
         @Override
         public void onStateChanged(StateChangeEvent event) {
             isHeightRelative = ComponentStateUtil.isRelativeHeight(getState());
             isHeightUndefined = ComponentStateUtil.isUndefinedHeight(getState());
+
             portletChrome.updateContentStructure(isHeightUndefined);
             portletChrome.getAssociatedSlot().setHeight(getState().height);
         }
     }
 
     /**
-     * WidthStateChangeHandler.
+     * Triggered when width is changed from the server-side.
      */
     public class WidthStateChangeHandler implements StateChangeHandler {
         @Override
@@ -94,20 +95,38 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     }
     
     /**
-     * CollapseStateChangeListener.
+     * Triggered when collapse state is changed from the server-side.
      */
     private final class CollapseStateChangeListener implements StateChangeHandler {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             boolean isCollapsed = portletChrome.isCollapsed();
-            if (isCollapsed != getState().collapsed) {
-                portletChrome.setStyleName("collapsed", getState().collapsed);
-                if (getState().collapsed) {
-                    portletChrome.getAssociatedSlot().setHeight(portletChrome.getHeader().getOffsetHeight() + "px");
-                    portletChrome.setHeight(layoutManager.getOuterHeight(portletChrome.getElement()) + "px");
+            if (getState().collapsed != isCollapsed) {
+
+                String slotHeight;
+                if (getState().collapsed)  {
+                    slotHeight = portletChrome.getHeader().getOffsetHeight() + "px";
                 } else {
-                    portletChrome.getAssociatedSlot().setHeight(layoutManager.getOuterHeight(portletChrome.getElement()) + "px");
-                    portletChrome.setHeight("100%");
+                    if (isHeightUndefined) {
+                        slotHeight = layoutManager.getOuterHeight(portletChrome.getElement()) + "px";
+                    } else {
+                        slotHeight = getState().height;
+                    }
+                }
+
+                final String portletHeight = getState().collapsed ?
+                        layoutManager.getOuterHeight(portletChrome.getElement()) + "px" :
+                        getParent().getState().height;
+
+                portletChrome.setStyleName("collapsed", getState().collapsed);
+                portletChrome.getAssociatedSlot().setHeight(slotHeight);
+                portletChrome.setHeight(portletHeight);
+
+                /**
+                 * In case portlet is expanded - it might need to occupy a different area than before,
+                 * so we cause a layout phase.
+                 */
+                if (!getState().collapsed) {
                     layoutManager.setNeedsMeasure((ComponentConnector) portletChrome.getParent());
                     layoutManager.layoutLater();
                 }
@@ -121,11 +140,15 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
      * {@link StackPortalLayout}) and sets the width to a {@link PortletChrome},
      * we save the new width and send it to server.
      */
-    private final class ContentAreaSizeChangeListener implements ElementResizeListener {
+    private final class SlotSizeChangeListener implements ElementResizeListener {
         @Override
-        public void onElementResize(ElementResizeEvent e) {
+        public void onElementResize(final ElementResizeEvent e) {
             if (!isCollapsed()) {
-                rpc.updatePreferredPixelWidth(layoutManager.getOuterWidth(e.getElement()));
+                rpc.updatePixelWidth(layoutManager.getOuterWidth(e.getElement()));
+                /**
+                 * In case slot was re-sized, state will still contain relative height
+                 * whereas slot already has pixels. This is why we check the actual state of slot here.
+                 */
                 if (Util.parseRelativeSize(portletChrome.getAssociatedSlot().getHeight()) < 0 && !isHeightUndefined) {
                     isHeightRelative = false;
                     rpc.updatePixelHeight(layoutManager.getOuterHeight(e.getElement()));
@@ -191,7 +214,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         addStateChangeHandler("width", new WidthStateChangeHandler());
         PortletSlot slot = portletChrome.getAssociatedSlot();
         layoutManager = cc.getLayoutManager();
-        layoutManager.addElementResizeListener(slot.getElement(), new ContentAreaSizeChangeListener());
+        layoutManager.addElementResizeListener(slot.getElement(), new SlotSizeChangeListener());
         layoutManager.addElementResizeListener(portletChrome.getElement(), new UndefinedHeightResizeListener());
     }
 
@@ -232,6 +255,11 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         portletChrome.getAssociatedSlot().removeFromParent();
         portletChrome.removeFromParent();
         super.onUnregister();
+    }
+
+    @Override
+    public ComponentConnector getParent() {
+        return super.getParent() == null ? null : (ComponentConnector) super.getParent();
     }
 
     public LayoutManager getLayoutManager() {

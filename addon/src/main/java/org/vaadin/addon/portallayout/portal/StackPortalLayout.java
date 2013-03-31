@@ -15,7 +15,6 @@
  */
 package org.vaadin.addon.portallayout.portal;
 
-import com.vaadin.annotations.StyleSheet;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.ui.Component;
@@ -24,13 +23,11 @@ import org.vaadin.addon.portallayout.gwt.shared.portal.StackPortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
  */
-@StyleSheet("portallayout_styles.css")
 public class StackPortalLayout extends PortalBase implements SpacingHandler {
 
     public StackPortalLayout() {
@@ -63,23 +60,8 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
     
     @Override
     public void removePortlet(Portlet portlet) {
-        portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
+        //portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
         super.removePortlet(portlet);
-    }
-    
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        Iterator<Component> it = portletContentIterator();
-        while (it.hasNext()) {
-            final Component c = it.next();
-            String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
-            c.setWidth("100%");
-            if (!"100%".equals(width)) {
-                getPortlet(c).setPreferredFixedContentWidth(width);
-                c.beforeClientResponse(initial);
-            }
-        }
     }
 
     @Override

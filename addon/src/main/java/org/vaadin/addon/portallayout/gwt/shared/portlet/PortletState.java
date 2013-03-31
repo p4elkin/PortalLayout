@@ -33,5 +33,5 @@ public class PortletState extends AbstractComponentState {
     
     public Connector headerComponent;
 
-    public String fixedContentWidth = "";
+    public String contentPixelWidth = "";
 }

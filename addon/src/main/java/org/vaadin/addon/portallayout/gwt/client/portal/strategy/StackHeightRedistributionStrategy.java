@@ -15,21 +15,19 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal.strategy;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
-
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.Profiler;
 import com.vaadin.client.Util;
-import com.vaadin.shared.ui.ComponentStateUtil;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * StackHeightRedistributionStrategy.
@@ -47,14 +45,13 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
             ComponentConnector cc = it.next();
             PortletConnector portletConnector = PortalLayoutUtil.getPortletConnectorForContent(cc);
             if (portletConnector != null) {
-                //if (ComponentStateUtil.isRelativeHeight(cc.getState())) {
-                if (ComponentStateUtil.isRelativeHeight(portletConnector.getState())) {
-                    //totalPercentage += Util.parseRelativeSize(cc.getState().height);
+                if (portletConnector.hasRelativeHeight()) {
                     totalPercentage += Util.parseRelativeSize(portletConnector.getState().height);
                     relativeHeightPortlets.add(cc);
                 } else {
-                    Widget portletWidget = portletConnector.getWidget();
-                    totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(portletWidget.getElement());
+                    PortletChrome portletWidget = portletConnector.getWidget();
+                    totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(
+                            portletWidget.getAssociatedSlot().getElement());
                 }   
             }
         }

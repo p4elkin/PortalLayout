@@ -15,6 +15,7 @@
  */
 package org.vaadin.addon.portallayout.portal;
 
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.Extension;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.MarginInfo;
@@ -36,6 +37,7 @@ import java.util.*;
 /**
  * Base class for Portal Layouts.
  */
+@StyleSheet("portallayout_styles.css")
 public abstract class PortalBase extends AbstractComponent implements MarginHandler,
         HasComponents, HasPortletCollapseListeners, HasPortletCloseListeners {
 
@@ -133,7 +135,15 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
     protected Portlet getPortlet(Component c) {
         return (Portlet) getState().contentToPortlet.get(c);
     }
-    
+
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        for (Connector portlet : getState().portlets()) {
+            ((Portlet)portlet).delegateSizeManagement(initial);
+        }
+    }
+
     /**
      * Finds or creates a Portlet based on the Component. In case there is no
      * Portlet existing for the given Component - a new Portlet is created, if

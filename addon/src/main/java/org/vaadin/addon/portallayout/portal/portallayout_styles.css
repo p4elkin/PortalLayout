@@ -43,13 +43,13 @@
 	width: 100%;
 }
 
-.v-portlet .v-portlet-header {
+.v-portlet > .v-portlet-header {
 	color: #FFFFFF;
 	overflow: hidden;
 	height: 28px;
 }
 
-.v-portlet .v-portlet-header .v-captiontext {
+.v-portlet > .v-portlet-header .v-captiontext {
 	font-weight: bold;
 	font-size: 12px;
 	line-height: normal;
@@ -68,13 +68,13 @@
 	cursor: move;
 }
 
-.v-portlet .v-portlet-header .v-captiontext {
+.v-portlet > .v-portlet-header .v-captiontext {
 	padding-left: 7px;
 	height: 100%;
 	float: left;
 }
 
-.v-portlet .v-portlet-header .v-icon {
+.v-portlet > .v-portlet-header .v-icon {
 	float: left;
 	height: 16px;
 	padding-bottom: 3px;
@@ -83,11 +83,16 @@
 	width: 16px;
 }
 
-.v-portlet .v-portlet-header-button:hover {
+.v-portlet > .v-portlet-header-button:hover {
 	cursor: pointer;
 }
 
 .v-portlet-draggable .v-caption:hover {
 	cursor: move;
+}
+
+.dragdrop-movable-panel {
+    overflow: hidden !important;
+    background: transparent;
 }
 

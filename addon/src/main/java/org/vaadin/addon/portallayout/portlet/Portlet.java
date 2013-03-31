@@ -39,8 +39,8 @@ public class Portlet extends AbstractExtension {
             }
 
             @Override
-            public void updatePreferredPixelWidth(int widthPixels) {
-                getState().fixedContentWidth = widthPixels + "px";
+            public void updatePixelWidth(int widthPixels) {
+                getState().width = widthPixels + "px";
             }
 
             @Override
@@ -65,8 +65,9 @@ public class Portlet extends AbstractExtension {
     
     @Override
     public void remove() {
+        getParent().setHeight(getState().height);
+        getParent().setWidth(getState().width);
         super.remove();
-        markAsDirty();
     }
     
     public void wrap(Component content) {
@@ -112,18 +113,24 @@ public class Portlet extends AbstractExtension {
     public boolean isClosable() {
         return getState().closable;
     }
-    
+
+
     @Override
     protected PortletState getState() {
         return (PortletState)super.getState();
     }
 
-    public void setPreferredFixedContentWidth(String width) {
-        getState().fixedContentWidth = width;
+    @Override
+    protected PortletState getState(boolean markAsDirty) {
+        return (PortletState) super.getState(markAsDirty);
+    }
+
+    public void setContentPixelWidth(String width) {
+        getState().contentPixelWidth = width;
     }
 
     public String getPreferredFixedContentWidth() {
-        return getState().fixedContentWidth;
+        return getState().contentPixelWidth;
     }
 
     public void setCaption(String string) {
@@ -131,31 +138,34 @@ public class Portlet extends AbstractExtension {
     }
 
     public Component getContent() {
-        return getParent() == null ? null : (Component)getParent();
+        return getParent() == null ? null : getParent();
     }
 
     public Component getHeaderComponent() {
         return getState().headerComponent == null ? null : (Component)getState().headerComponent;
     }
-    
+
+
     @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        final Component c = (Component)getParent();
+    public Component getParent() {
+        return (Component) super.getParent();
+    }
+
+    public void delegateSizeManagement(boolean initial) {
+        final Component c = getParent();
         String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
-        
+
         if (c.getWidth() >= 0 && !"100%".equals(width)) {
             c.setWidth("100%");
             getState().width = width;
         }
-        
+
         String height = String.format("%d%s", (int)c.getHeight(), c.getHeightUnits().getSymbol());
         if (c.getHeight() >= 0 && !"100%".equals(height)) {
             c.setHeight("100%");
-            getState().height = height;   
+            getState().height = height;
         }
-        
-        c.beforeClientResponse(initial);
+        getParent().beforeClientResponse(initial);
     }
-    
+
 }
