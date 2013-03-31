@@ -1,6 +1,6 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -49,7 +49,7 @@ public class PortletChrome extends FlowPanel {
 
     @Override
     public void add(Widget child) {
-        super.add(child, isHeightUndefined() ? getElement() : contentEl);
+        super.add(child,/* isHeightUndefined() ? getElement() : */contentEl);
     }
 
     public void blur() {
@@ -71,27 +71,12 @@ public class PortletChrome extends FlowPanel {
     }
 
     public void updateContentStructure(boolean isHeightUndefined) {
-        if (isHeightUndefined != isHeightUndefined()) {
-            if (getElement().isOrHasChild(contentEl)) {
-                getElement().removeChild(contentEl);
-            }
-            if (contentWidget != null) {
-                remove(contentWidget);
-                add(contentWidget, getElement());
-            }
+        if (isHeightUndefined) {
+            contentEl.getStyle().setTop(0, Style.Unit.PX);
         } else {
-            if (!getElement().isOrHasChild(contentEl)) {
-                getElement().appendChild(contentEl);
-            }
-            if (contentWidget != null) {
-                remove(contentWidget);
-                add(contentWidget, contentEl);
-            }
+            contentEl.getStyle().clearTop();
         }
+        contentEl.getStyle().setPosition(isHeightUndefined ? Position.RELATIVE : Position.ABSOLUTE);
         setHeight(isHeightUndefined ? "" : "100%");
-    }
-
-    public boolean isHeightUndefined() {
-        return Display.BLOCK.getCssName().equalsIgnoreCase(contentEl.getStyle().getDisplay());
     }
 }

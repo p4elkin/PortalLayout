@@ -91,8 +91,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
     private void buildPortals() {
         ((StackPortalLayout)videoPortal).setSpacing(false);
         ((StackPortalLayout)miscPortal).setSpacing(true);
-        layout.appendPortal(videoPortal);
-        layout.appendPortal(imagePortal);
+        //layout.appendPortal(videoPortal);
+        //layout.appendPortal(imagePortal);
         layout.appendPortal(miscPortal);
     }
     

@@ -111,3 +111,25 @@
 	filter: alpha(opacity = 50);
 	z-index: 20000;
 }
+
+.v-portlet-resizable .v-portlet-resize-drag {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    cursor: se-resize;
+    background: transparent;
+    background-image: url(resize.png);
+    z-index: 1000;
+
+}
+
+.v-portlet-resizable .v-portlet-footer {
+    position: absolute;
+    bottom: 0;
+    background-color: white;
+    background-repeat: repeat-x;
+    background-image: url(footer-bg.png);
+    height: 15px;
+}

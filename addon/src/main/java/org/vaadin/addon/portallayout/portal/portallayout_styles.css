@@ -91,11 +91,3 @@
 	cursor: move;
 }
 
-.v-portlet-resize-drag {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 10px;
-    height: 10px;
-    background-color: #000000;
-}

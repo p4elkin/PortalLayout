@@ -20,7 +20,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout.SpacingHandler;
-import org.vaadin.addon.portallayout.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.gwt.shared.portal.StackPortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
 import org.vaadin.addon.portallayout.portlet.Portlet;
@@ -40,8 +39,8 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
             
             @Override
             public void removePortlet(Connector portletContent) {
-                fireEvent(new PortletCloseEvent(StackPortalLayout.this, getPortlet((Component) portletContent)));
                 StackPortalLayout.this.removePortlet((Component) portletContent);
+                //fireEvent(new PortletCloseEvent(StackPortalLayout.this, getPortlet((Component) portletContent)));
             }
 
             @Override
