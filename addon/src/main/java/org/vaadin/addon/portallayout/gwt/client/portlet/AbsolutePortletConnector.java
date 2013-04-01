@@ -146,10 +146,10 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
     protected void extend(ServerConnector target) {
         assert target instanceof PortletConnector;
         this.parentPortlet = getParent();
-        this.portletChrome = parentPortlet.getWidget();
+        this.portletChrome = parentPortlet.getPortletChrome();
 
         PortletConnector portlet = (PortletConnector) target;
-        PortletChrome widget = portlet.getWidget();
+        PortletChrome widget = portlet.getPortletChrome();
         widget.addStyleName("v-portlet-resizable");
         widget.insert(resizeDrag, widget.getWidgetCount() - 1);
         widget.getElement().appendChild(footer);
@@ -168,7 +168,7 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
     @Override
     public void onStateChanged(StateChangeEvent event) {
         super.onStateChanged(event);
-        Style style = getParent().getWidget().getElement().getStyle();
+        Style style = getParent().getPortletChrome().getElement().getStyle();
         style.setTop(getState().y, Style.Unit.PX);
         style.setLeft(getState().x, Style.Unit.PX);
     }

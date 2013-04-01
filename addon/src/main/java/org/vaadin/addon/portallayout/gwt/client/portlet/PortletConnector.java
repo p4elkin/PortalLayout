@@ -29,9 +29,8 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.Connect;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
-import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEventGwt;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
 import org.vaadin.addon.portallayout.portal.StackPortalLayout;
@@ -44,7 +43,7 @@ import java.util.Map;
  * Client-side connector that corresponds to {@link Portlet}.
  */
 @Connect(Portlet.class)
-public class PortletConnector extends AbstractExtensionConnector implements PortletCollapseEvent.Handler, PortletCloseEvent.Handler {
+public class PortletConnector extends AbstractExtensionConnector implements PortletCollapseEventGwt.Handler, PortletCloseEventGwt.Handler {
 
     /**
      * In case portlet has an unspecified height - it could resize if the contents shrink/expand.
@@ -218,7 +217,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         layoutManager.addElementResizeListener(portletChrome.getElement(), new UndefinedHeightResizeListener());
     }
 
-    public PortletChrome getWidget() {
+    public PortletChrome getPortletChrome() {
         return portletChrome;
     }
 
@@ -240,12 +239,12 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     }
 
     @Override
-    public void onPortletClose(PortletCloseEvent e) {
-        ((PortalLayoutConnector) getParent().getParent()).removePortlet(getParent());
+    public void onPortletClose(PortletCloseEventGwt e) {
+        rpc.close();
     }
 
     @Override
-    public void onPortletCollapse(PortletCollapseEvent e) {
+    public void onPortletCollapse(PortletCollapseEventGwt e) {
         portletChrome.getHeader().toggleCollapseStyles(!getState().collapsed);
         rpc.setCollapsed(!getState().collapsed);
     }

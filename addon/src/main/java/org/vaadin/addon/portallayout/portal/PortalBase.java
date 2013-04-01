@@ -75,7 +75,7 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
      *            {@link Portlet} to be removed.
      */
     public void removePortlet(Portlet portlet) {
-        Component portletContent = (Component) portlet.getParent();
+        Component portletContent = portlet.getParent();
         getState().portlets().remove(portlet);
         if (portletContent.getParent() == this) {
             portletContent.setParent(null);
@@ -208,6 +208,15 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
 
     public void firePortletCollapseEvent(Portlet portlet) {
         fireEvent(new PortletCollapseEvent(this, portlet));
+    }
+
+    private void firePortletCloseEvent(Portlet portlet) {
+        fireEvent(new PortletCloseEvent(this, portlet));
+    }
+
+    public void closePortlet(Portlet portlet) {
+        firePortletCloseEvent(portlet);
+        removePortlet(portlet);
     }
 
     private static final class CombinedIterator<T> implements Iterator<T>, Serializable {

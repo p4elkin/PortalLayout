@@ -31,7 +31,7 @@ public class PortletCloseEvent extends Component.Event {
 
     public interface Listener {
 
-        void portletClosed(PortletCollapseEvent event);
+        void portletClosed(PortletCloseEvent event);
     }
 
 }

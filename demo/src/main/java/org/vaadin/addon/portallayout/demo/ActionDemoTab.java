@@ -1,35 +1,28 @@
 package org.vaadin.addon.portallayout.demo;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.*;
 import org.vaadin.addon.portallayout.container.PortalColumns;
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
+import org.vaadin.addon.portallayout.event.PortletCloseEvent;
+import org.vaadin.addon.portallayout.event.PortletCollapseEvent;
 import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 import org.vaadin.addon.portallayout.portal.PortalBase;
 import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
-
 @SuppressWarnings("serial")
-public class ActionDemoTab extends Panel /*implements PortletCloseListener, PortletCollapseListener*/ {
+public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, PortletCollapseEvent.Listener {
    
     public class DemoPortal extends StackPortalLayout {
         
         public DemoPortal() {
             setWidth("100%");
             setHeight("100%");
-            //addCloseListener(ActionDemoTab.this);
-            //addCollapseListener(ActionDemoTab.this);
+            addPortletCloseListener(ActionDemoTab.this);
+            addPortletCollapseListener(ActionDemoTab.this);
             setMargin(true);
         }
     }
@@ -56,6 +49,8 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
             Portlet p = super.portletFor(c/*, position*/);
             //p.setCaption("Test Image");
             //p.setPreferredContentWidth("200px");
+            addPortletCloseListener(ActionDemoTab.this);
+            addPortletCollapseListener(ActionDemoTab.this);
             return p;
         };
     };
@@ -247,17 +242,14 @@ public class ActionDemoTab extends Panel /*implements PortletCloseListener, Port
         });*/
     }
 
-
-    /*@Override
+    @Override
     public void portletCollapseStateChanged(PortletCollapseEvent event) {
-        final Context context = event.getPortlet();
-        getWindow().showNotification(context.getComponent().getCaption() + "collapsed " + 
-                context.getPortal().isCollapsed(context.getComponent()));
+        Notification.show(event.getPortlet().getParent().getCaption() + "collapsed " + event.getPortlet().isCollapsed());
     }
 
     @Override
-    public void portletClosed(PortletClosedEvent event) {
-        getWindow().showNotification(event.getPortlet().getComponent().getCaption() + "closed");
-    }*/
+    public void portletClosed(PortletCloseEvent event) {
+        Notification.show(event.getPortlet().getParent().getCaption() + "closed");
+    }
 
 }

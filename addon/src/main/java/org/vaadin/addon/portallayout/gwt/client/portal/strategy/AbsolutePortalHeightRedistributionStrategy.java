@@ -32,11 +32,11 @@ public class AbsolutePortalHeightRedistributionStrategy implements PortalHeightR
     public void redistributeHeights(PortalLayoutConnector portalConnector) {
         Profiler.enter("PLC.recalcHeight");
         for (ComponentConnector cc : portalConnector.getCurrentChildren()) {
-            PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
-            PortletSlot slot = pc.getWidget().getAssociatedSlot();
-            if (pc.hasRelativeHeight()) {
-                if (!pc.isCollapsed()) {
-                    float relativeHeight = Util.parseRelativeSize(pc.getState().height);
+            PortletConnector portletConnector = PortalLayoutUtil.getPortletConnectorForContent(cc);
+            PortletSlot slot = portletConnector.getPortletChrome().getAssociatedSlot();
+            if (portletConnector.hasRelativeHeight()) {
+                if (!portletConnector.isCollapsed()) {
+                    float relativeHeight = Util.parseRelativeSize(portletConnector.getState().height);
                     slot.setHeight(relativeHeight + "%");
                 }
             }

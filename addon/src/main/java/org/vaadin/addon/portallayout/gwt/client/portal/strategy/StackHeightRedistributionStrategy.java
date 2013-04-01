@@ -49,7 +49,7 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
                     totalPercentage += Util.parseRelativeSize(portletConnector.getState().height);
                     relativeHeightPortlets.add(cc);
                 } else {
-                    PortletChrome portletWidget = portletConnector.getWidget();
+                    PortletChrome portletWidget = portletConnector.getPortletChrome();
                     totalFixedHeightConsumption += cc.getLayoutManager().getOuterHeight(
                             portletWidget.getAssociatedSlot().getElement());
                 }   
@@ -71,7 +71,7 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
                 if (!portletConnector.isCollapsed()) {
                     float height = Util.parseRelativeSize(portletConnector.getState().height);
                     double slotHeight = (height / totalPercentage * ratio);
-                    portletConnector.getWidget().getAssociatedSlot().setHeight(slotHeight + "%");
+                    portletConnector.getPortletChrome().getAssociatedSlot().setHeight(slotHeight + "%");
                 }
             }
         }

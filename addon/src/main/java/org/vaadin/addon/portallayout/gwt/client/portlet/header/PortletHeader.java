@@ -13,11 +13,11 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.*;
 import com.vaadin.client.Util;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEvent.HasPortletCloseEventHandlers;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.Handler;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEvent.HasPortletCollapseEventHandlers;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEventGwt;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEventGwt.HasPortletCloseEventHandlers;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt.Handler;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt.HasPortletCollapseEventHandlers;
 
 public class PortletHeader extends ComplexPanel implements HasPortletCollapseEventHandlers, HasPortletCloseEventHandlers, HasMouseDownHandlers, HasTouchStartHandlers {    
     
@@ -58,7 +58,7 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     private final ClickHandler closeButtonClickHandler = new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
-            fireEvent(new PortletCloseEvent(getParent()));
+            fireEvent(new PortletCloseEventGwt(getParent()));
         }
     };
 
@@ -66,7 +66,7 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     private final ClickHandler collapseButtonClickHandler = new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
-            fireEvent(new PortletCollapseEvent(getParent()));
+            fireEvent(new PortletCollapseEventGwt(getParent()));
         }
     };
 
@@ -163,12 +163,12 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     
     @Override
     public HandlerRegistration addPortletCollapseEventHandler(Handler handler) {
-        return addHandler(handler, PortletCollapseEvent.TYPE);
+        return addHandler(handler, PortletCollapseEventGwt.TYPE);
     }
 
     @Override
-    public HandlerRegistration addPortletCloseEventHandler(PortletCloseEvent.Handler handler) {
-        return addHandler(handler, PortletCloseEvent.TYPE);
+    public HandlerRegistration addPortletCloseEventHandler(PortletCloseEventGwt.Handler handler) {
+        return addHandler(handler, PortletCloseEventGwt.TYPE);
     }
 
     @Override

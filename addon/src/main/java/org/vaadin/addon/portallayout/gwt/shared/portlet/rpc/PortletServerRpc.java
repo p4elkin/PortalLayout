@@ -22,7 +22,9 @@ import com.vaadin.shared.communication.ServerRpc;
  * PortletServerRpc.
  */
 public interface PortletServerRpc extends ServerRpc {
-    
+
+    void close();
+
     void setCollapsed(boolean isCollapsed);
 
     @Delayed

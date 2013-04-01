@@ -21,19 +21,19 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
 
 /**
- * PortletCloseEvent.
+ * PortletCollapseEventGwt.
  */
-public class PortletCloseEvent extends GwtEvent<PortletCloseEvent.Handler>{
-
+public class PortletCollapseEventGwt extends GwtEvent<PortletCollapseEventGwt.Handler>{
+    
     public static final Type<Handler> TYPE = new Type<Handler>();
     
     public interface Handler extends EventHandler {
-        void onPortletClose(PortletCloseEvent e);
+        void onPortletCollapse(PortletCollapseEventGwt e);
     }
     
     private final PortletChrome portlet;
     
-    public PortletCloseEvent(PortletChrome portletWidget) {
+    public PortletCollapseEventGwt(PortletChrome portletWidget) {
         this.portlet = portletWidget;
     }
     
@@ -41,8 +41,8 @@ public class PortletCloseEvent extends GwtEvent<PortletCloseEvent.Handler>{
         return portlet;
     }
     
-    public interface HasPortletCloseEventHandlers { 
-        HandlerRegistration addPortletCloseEventHandler(Handler handler);
+    public interface HasPortletCollapseEventHandlers { 
+        HandlerRegistration addPortletCollapseEventHandler(Handler handler);
     }
     
     @Override
@@ -52,7 +52,6 @@ public class PortletCloseEvent extends GwtEvent<PortletCloseEvent.Handler>{
 
     @Override
     protected void dispatch(Handler handler) {
-        handler.onPortletClose(this);
+        handler.onPortletCollapse(this);
     }
-
 }

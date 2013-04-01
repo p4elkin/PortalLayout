@@ -18,6 +18,7 @@ package org.vaadin.addon.portallayout.portlet;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
+import org.vaadin.addon.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
 import org.vaadin.addon.portallayout.portal.PortalBase;
@@ -46,6 +47,11 @@ public class Portlet extends AbstractExtension {
             @Override
             public void updatePixelHeight(int heightPixels) {
                 getState().height = heightPixels + "px";
+            }
+
+            @Override
+            public void close() {
+                getPortalLayout().closePortlet(Portlet.this);
             }
         });
     }

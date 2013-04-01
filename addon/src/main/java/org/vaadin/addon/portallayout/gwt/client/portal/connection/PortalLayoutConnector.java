@@ -15,23 +15,9 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal.connection;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.google.gwt.core.client.Scheduler;
-import org.vaadin.addon.portallayout.gwt.client.dnd.StackPortalDropController;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
-import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
-import org.vaadin.addon.portallayout.gwt.client.portal.strategy.StackHeightRedistributionStrategy;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
-import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
-import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
-import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
-
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -45,6 +31,19 @@ import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ComponentConstants;
 import com.vaadin.shared.communication.URLReference;
+import org.vaadin.addon.portallayout.gwt.client.dnd.StackPortalDropController;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.PortalHeightRedistributionStrategy;
+import org.vaadin.addon.portallayout.gwt.client.portal.strategy.StackHeightRedistributionStrategy;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletChrome;
+import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
+import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * PortalWithExtensionConnector.
@@ -162,7 +161,7 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         for (final ComponentConnector cc : oldChildren) {
             final PortletConnector pc = PortalLayoutUtil.getPortletConnectorForContent(cc);
             if (pc != null) {
-                view.removePortlet(pc.getWidget());
+                view.removePortlet(pc.getPortletChrome());
             }
         }
 
@@ -171,9 +170,9 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
             final ComponentConnector cc = it.next();
             if (getState().contentToPortlet.get(cc) != null) {
                 final PortletConnector pc = (PortletConnector) getState().contentToPortlet.get(cc);
-                final PortletChrome portletWidget = pc.getWidget();
+                final PortletChrome portletWidget = pc.getPortletChrome();
                 cc.getLayoutManager().addElementResizeListener(portletWidget.getAssociatedSlot().getElement(), slotResizeListener);
-                getView().addPortlet(pc.getWidget());
+                getView().addPortlet(pc.getPortletChrome());
             } else {
                 headerConnectors.add(cc);
             }

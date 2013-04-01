@@ -35,7 +35,7 @@ public class StackPortalLayoutConnector extends PortalLayoutConnector {
 
     @Override
     public void updatePortletPositionOnServer(ComponentConnector cc) {
-        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getWidget().getAssociatedSlot();
+        Widget slot = PortalLayoutUtil.getPortletConnectorForContent(cc).getPortletChrome().getAssociatedSlot();
         int positionInView = getView().getWidgetIndex(slot);
         int positionInState = getState().portlets().indexOf(cc);
         if (positionInState != positionInView) {

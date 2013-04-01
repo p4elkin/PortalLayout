@@ -38,7 +38,7 @@ public class PortalLayoutUtil {
     }
     
     public static PortalLayoutConnector getPortalLayoutConnectorForPortlet(PortletConnector pc) {
-        ComponentConnector cc = Util.findConnectorFor(pc.getWidget().getContentWidget());
+        ComponentConnector cc = Util.findConnectorFor(pc.getPortletChrome().getContentWidget());
         return cc.getParent() instanceof PortalLayoutConnector ? (PortalLayoutConnector)cc.getParent() : null;
     }
     
@@ -53,7 +53,7 @@ public class PortalLayoutUtil {
     public static void lockPortlet(PortletConnector portlet) {
         PortalLayoutConnector portal = getPortalLayoutConnectorForPortlet(portlet);
         if (portal != null) {
-            PortletChrome portletWidget = portlet.getWidget();
+            PortletChrome portletWidget = portlet.getPortletChrome();
             /**
              * If the component wasn't draggable before - the
              * makeNotDraggable(..) call will result in NPE. So we first make
@@ -68,7 +68,7 @@ public class PortalLayoutUtil {
     public static void unlockPortlet(PortletConnector portlet) {
         PortalLayoutConnector portal = getPortalLayoutConnectorForPortlet(portlet);
         if (portal != null) {
-            portal.getDragController().makeDraggable(portlet.getWidget(), portlet.getWidget().getHeader());
+            portal.getDragController().makeDraggable(portlet.getPortletChrome(), portlet.getPortletChrome().getHeader());
         }
     }
 }

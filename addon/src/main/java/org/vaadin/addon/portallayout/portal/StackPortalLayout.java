@@ -37,7 +37,7 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
             @Override
             public void removePortlet(Connector portletContent) {
                 StackPortalLayout.this.removePortlet((Component) portletContent);
-                //fireEvent(new PortletCloseEvent(StackPortalLayout.this, getPortlet((Component) portletContent)));
+                //fireEvent(new PortletCloseEventGwt(StackPortalLayout.this, getPortlet((Component) portletContent)));
             }
 
             @Override
