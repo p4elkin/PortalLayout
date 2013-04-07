@@ -15,6 +15,9 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
+import org.vaadin.addon.portallayout.gwt.shared.portlet.AbsolutePositionPortletState;
+import org.vaadin.addon.portallayout.portlet.AbsolutePositionPortlet;
+
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
@@ -23,15 +26,12 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
-import org.vaadin.addon.portallayout.gwt.shared.portlet.AbsolutePositionPortletState;
-import org.vaadin.addon.portallayout.portlet.AbsolutePositionPortlet;
 
 /**
  * Client-side connector that corresponds to {@link AbsolutePositionPortlet}.
@@ -86,6 +86,7 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         isResizing = false;
         DOM.releaseCapture(resizeDrag.getElement());
         cancelDocumentSelection(event);
+        getConnection().sendPendingVariableChanges();
     }
 
     private void handleMouseMove(Event event) {
@@ -101,15 +102,15 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
             int parentHeight = lm.getOuterHeight(slot.getParent().getElement());
             if (currentX < slot.getParent().getAbsoluteLeft() + parentWidth) {
                 String width = (initialWidth + deltaX) + "px";
-                portletChrome.getAssociatedSlot().setWidth(width);
+                getParent().setWidth(width);
             }
 
             if (currentY < slot.getParent().getAbsoluteTop() + parentHeight) {
                 String height = (initialHeight + deltaY) + "px";
-                portletChrome.getAssociatedSlot().setHeight(height);
+                getParent().setHeight(height);
             }
 
-            lm.setNeedsMeasure((ComponentConnector) getParent().getParent());
+            lm.setNeedsMeasure(getParent().getParent());
             lm.layoutLater();
         }
     }

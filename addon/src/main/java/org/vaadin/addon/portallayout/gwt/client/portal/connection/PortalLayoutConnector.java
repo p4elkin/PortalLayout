@@ -15,22 +15,10 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portal.connection;
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.ServerConnector;
-import com.vaadin.client.Util;
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.ui.AbstractLayoutConnector;
-import com.vaadin.client.ui.layout.ElementResizeEvent;
-import com.vaadin.client.ui.layout.ElementResizeListener;
-import com.vaadin.shared.ComponentConstants;
-import com.vaadin.shared.communication.URLReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.vaadin.addon.portallayout.gwt.client.dnd.StackPortalDropController;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addon.portallayout.gwt.client.portal.PortalView;
@@ -41,9 +29,21 @@ import org.vaadin.addon.portallayout.gwt.client.portlet.PortletConnector;
 import org.vaadin.addon.portallayout.gwt.shared.portal.PortalLayoutState;
 import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.Util;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
+import com.vaadin.shared.ComponentConstants;
+import com.vaadin.shared.communication.URLReference;
 
 /**
  * PortalWithExtensionConnector.
@@ -258,10 +258,6 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
         result.remove(outcomingPortletCandidate);
         result.add(incomingPortletCandidate);
         return result;
-    }
-
-    public void removePortlet(ServerConnector connector) {
-        rpc.removePortlet(connector);
     }
 
     public PortalHeightRedistributionStrategy getHeightRedistributionStrategy() {

@@ -1,34 +1,5 @@
-.v-portallayout-margin-top {
-	padding-top: 12px;	
-}
-.v-portallayout-margin-bottom {
-	padding-bottom: 12px;	
-}
-.v-portallayout-margin-left {
-	padding-left: 12px;	
-}
-.v-portallayout-margin-right {
-	padding-right: 12px;	
-}
-
-.v-portallayout-spacing {
-	width: 8px;
-}
-
-.v-portallayout-positioner {
-	border: 2px dashed black;	
-}
-
 .v-portlet .v-portlet-header {
 	background-image: url(header-bg.png);
-
-}
-
-.v-portlet .v-portlet-header-button {
-	width: 16px;
-	height: 16px;
-	background: transparent;
-	border: none;
 }
 
 .v-portlet .v-portlet-header-button-close {
@@ -43,32 +14,6 @@
 	background-image: url(expand.png);
 }
 
-.v-portlet .v-portlet-header-toolbar {
-	display: inline-block;
-}
-
-.v-portlet .v-portlet-header-buttonbar {
-	float: right;
-    margin-top: 6px;
-    margin-bottom: 6px;
-}
-
-.v-portlet .v-portlet-header-widget-slot {
-	height: 100%;
-	float: right;
-}
-
-.v-portlet .v-portlet-header-widget {
-	float: right;
-	margin-right: 10px;
-}
-            
-.v-portlet .v-portlet-header .v-caption {
-	padding-left: 7px;
-	height: 100%;
-	float: left;
-}
-
 .v-portlet .v-portlet-header-button-close:hover {
 	background-image: url(close-hover.png);
 	cursor: pointer;
@@ -80,36 +25,6 @@
 
 .v-portlet .v-portlet-header-button-close:active {
 	background-image: url(close-pressed.png);
-}
-
-.v-portlet-slot {
-	width: 100%;
-}
-
-.v-portlet-draggable:hover {
-	cursor: move;
-}
-
-.v-portlet .v-portlet-header .v-captiontext {
-	padding-left: 7px;
-	height: 100%;
-	float: left;
-}
-
-
-.v-portlet .v-portlet-header .v-icon {
-   float: left;
-    height: 16px;
-    padding-bottom: 3px;
-    padding-left: 3px;
-    padding-top: 6px;
-    width: 16px;
-}
-
-.dragdrop-movable-panel {
-	opacity : 0.5;
-	filter: alpha(opacity = 50);
-	z-index: 20000;
 }
 
 .v-portlet-resizable .v-portlet-resize-drag {
@@ -126,10 +41,5 @@
 }
 
 .v-portlet-resizable .v-portlet-footer {
-    position: absolute;
-    bottom: 0;
-    background-color: white;
-    background-repeat: repeat-x;
     background-image: url(footer-bg.png);
-    height: 15px;
 }

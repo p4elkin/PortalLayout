@@ -41,6 +41,9 @@
     overflow: hidden;
 	position: relative;
 	width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .v-portlet > .v-portlet-header {
@@ -50,28 +53,28 @@
 }
 
 .v-portlet > .v-portlet-header .v-captiontext {
+    text-align: left;
+    text-shadow: #000 0 -1px 0;
 	font-weight: bold;
 	font-size: 12px;
 	line-height: normal;
 	color: #fff;
-	text-shadow: #000 0 -1px 0;
 	white-space: nowrap;
-	overflow: hidden;
+
 	text-overflow: ellipsis;
 	-ms-text-overflow: ellipsis;
+
 	padding-top: 7px;
 	padding-bottom: 2px;
 	padding-left: 4px;
+    height: 20px;
+
+    float: left;
+    overflow: hidden;
 }
 
 .v-portlet-draggable:hover {
 	cursor: move;
-}
-
-.v-portlet > .v-portlet-header .v-captiontext {
-	padding-left: 7px;
-	height: 100%;
-	float: left;
 }
 
 .v-portlet > .v-portlet-header .v-icon {
@@ -96,3 +99,110 @@
     background: transparent;
 }
 
+.v-portlet-footer {
+    height: 15px;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    background-repeat: repeat-x;
+    height: 15px;
+}
+
+.v-portlet-undefined-height .v-portlet-footer {
+    position: relative;
+}
+
+.v-portlet-resizable .v-portlet-content {
+    bottom: 15px;
+}
+
+.v-portlet .v-portlet-header-widget {
+
+}
+
+.v-portlet-slot {
+    width: 100%;
+}
+
+.v-portlet-draggable:hover {
+    cursor: move;
+}
+
+.v-portlet .v-portlet-header .v-captiontext {
+    padding-left: 7px;
+    height: 100%;
+    float: left;
+}
+
+
+.v-portlet .v-portlet-header .v-icon {
+    float: left;
+    height: 16px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 6px;
+    width: 16px;
+}
+
+.dragdrop-movable-panel {
+    opacity : 0.5;
+    filter: alpha(opacity = 50);
+    z-index: 20000;
+}
+
+.v-portallayout-spacing {
+    width: 8px;
+}
+
+.v-portallayout-positioner {
+    border: 2px dashed black;
+}
+
+.v-portlet .v-portlet-header-button {
+    width: 16px;
+    height: 16px;
+    border: none;
+}
+
+.v-portlet .v-portlet-header-toolbar {
+    display: inline-block;
+}
+
+.v-portlet .v-portlet-header-buttonbar {
+    float: right;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.v-portlet .v-portlet-header-widget-slot {
+    height: 100%;
+    width: 100%;
+    padding-top: 2px;
+}
+
+.v-portlet .v-portlet-header-widget-slot > .v-widget {
+    position: absolute;
+}
+
+.v-portlet .v-portlet-header .v-caption {
+    padding-left: 7px;
+    height: 100%;
+    float: left;
+}
+
+/*MARGINS*/
+.v-portallayout-margin-top {
+    padding-top: 12px;
+}
+.v-portallayout-margin-bottom {
+    padding-bottom: 12px;
+}
+.v-portallayout-margin-left {
+    padding-left: 12px;
+}
+.v-portallayout-margin-right {
+    padding-right: 12px;
+}

@@ -34,11 +34,13 @@
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-theme-compiler</artifactId>
 			<version>${vaadin.version}</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiler</artifactId>
 			<version>${vaadin.version}</version>
+            <scope>provided</scope>
 		</dependency>
 	</dependencies>
 

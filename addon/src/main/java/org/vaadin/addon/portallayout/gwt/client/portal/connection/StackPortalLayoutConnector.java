@@ -28,7 +28,7 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * StackPortalLayoutConnectore.
+ * StackPortalLayoutConnector.
  */
 @Connect(StackPortalLayout.class)
 public class StackPortalLayoutConnector extends PortalLayoutConnector {
@@ -44,7 +44,7 @@ public class StackPortalLayoutConnector extends PortalLayoutConnector {
     }
 
     @Override
-    protected StackPortalRpc getServerRpc() {
+    public StackPortalRpc getServerRpc() {
         return (StackPortalRpc)super.getServerRpc();
     }
     

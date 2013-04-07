@@ -15,6 +15,17 @@
  */
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEventGwt;
+import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
+import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
+import org.vaadin.addon.portallayout.portal.StackPortalLayout;
+import org.vaadin.addon.portallayout.portlet.Portlet;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.LayoutManager;
@@ -28,16 +39,6 @@ import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.Connect;
-import org.vaadin.addon.portallayout.gwt.client.portal.PortalLayoutUtil;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCloseEventGwt;
-import org.vaadin.addon.portallayout.gwt.client.portlet.event.PortletCollapseEventGwt;
-import org.vaadin.addon.portallayout.gwt.shared.portlet.PortletState;
-import org.vaadin.addon.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
-import org.vaadin.addon.portallayout.portal.StackPortalLayout;
-import org.vaadin.addon.portallayout.portlet.Portlet;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Client-side connector that corresponds to {@link Portlet}.
@@ -50,6 +51,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
      * Slot should shrink/extend as well.
      */
     private final class UndefinedHeightResizeListener implements ElementResizeListener {
+
         @Override
         public void onElementResize(ElementResizeEvent e) {
             if (isHeightUndefined) {
@@ -64,7 +66,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     private final class HeaderToolbarStateHandler implements StateChangeHandler {
         @Override
         public void onStateChanged(StateChangeEvent e) {
-            Widget toolbar = getState().headerComponent == null ? null : ((ComponentConnector)getState().headerComponent).getWidget(); 
+            Widget toolbar = getState().headerComponent == null ? null : ((ComponentConnector)getState().headerComponent).getWidget();
             portletChrome.setHeaderToolbar(toolbar);
         }
     }
@@ -82,26 +84,30 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
             portletChrome.getAssociatedSlot().setHeight(getState().height);
         }
     }
-
     /**
      * Triggered when width is changed from the server-side.
      */
     public class WidthStateChangeHandler implements StateChangeHandler {
+
         @Override
         public void onStateChanged(StateChangeEvent event) {
-            portletChrome.getAssociatedSlot().setWidth(getState().width);   
+            portletChrome.getAssociatedSlot().setWidth(getState().width);
         }
     }
-    
     /**
      * Triggered when collapse state is changed from the server-side.
      */
     private final class CollapseStateChangeListener implements StateChangeHandler {
+
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             boolean isCollapsed = portletChrome.isCollapsed();
             if (getState().collapsed != isCollapsed) {
-
+                /**
+                 * In case portlet is collapsed - its slot consumes only the height of its header,
+                 * otherwise - either the height of the whole portletChrome (in case of undefined height)
+                 * or height from the state.
+                 */
                 String slotHeight;
                 if (getState().collapsed)  {
                     slotHeight = portletChrome.getHeader().getOffsetHeight() + "px";
@@ -113,26 +119,15 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
                     }
                 }
 
-                final String portletHeight = getState().collapsed ?
-                        layoutManager.getOuterHeight(portletChrome.getElement()) + "px" :
-                        getParent().getState().height;
-
                 portletChrome.setStyleName("collapsed", getState().collapsed);
                 portletChrome.getAssociatedSlot().setHeight(slotHeight);
-                portletChrome.setHeight(portletHeight);
-
                 /**
-                 * In case portlet is expanded - it might need to occupy a different area than before,
-                 * so we cause a layout phase.
+                 * In case we have relative-height portlets, redistribute heights.
                  */
-                if (!getState().collapsed) {
-                    layoutManager.setNeedsMeasure((ComponentConnector) portletChrome.getParent());
-                    layoutManager.layoutLater();
-                }
+                PortalLayoutUtil.getPortalLayoutConnectorForPortlet(PortletConnector.this).recalculateHeights();
             }
         }
     }
-
     /**
      * In case a {@link PortletChrome} is dragged from a portal with no width
      * restriction to the one that has width restrictions (like
@@ -140,6 +135,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
      * we save the new width and send it to server.
      */
     private final class SlotSizeChangeListener implements ElementResizeListener {
+
         @Override
         public void onElementResize(final ElementResizeEvent e) {
             if (!isCollapsed()) {
@@ -155,7 +151,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
             }
         }
     }
-    
+
     private final Map<String, StateChangeHandler> stateChangeHandlers = new HashMap<String, StateChangeHandler>();
 
     private final PortletServerRpc rpc = RpcProxy.create(PortletServerRpc.class, this);
@@ -163,11 +159,11 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     private final PortletChrome portletChrome = new PortletChrome();
 
     private boolean isHeightRelative = false;
-    
+
     public boolean isHeightUndefined = false;
 
     private LayoutManager layoutManager;
-    
+
     @Override
     protected void init() {
         super.init();
@@ -198,7 +194,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
                 }
             }
         });
-        
+
         for (final Map.Entry<String, StateChangeHandler> entry : stateChangeHandlers.entrySet()) {
             addStateChangeHandler(entry.getKey(), entry.getValue());
         }
@@ -209,12 +205,15 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         ComponentConnector cc = (ComponentConnector) target;
         Widget w = cc.getWidget();
         portletChrome.setContentWidget(w);
+
         addStateChangeHandler("height", new HeightStateChangeListener());
         addStateChangeHandler("width", new WidthStateChangeHandler());
+
         PortletSlot slot = portletChrome.getAssociatedSlot();
         layoutManager = cc.getLayoutManager();
         layoutManager.addElementResizeListener(slot.getElement(), new SlotSizeChangeListener());
         layoutManager.addElementResizeListener(portletChrome.getElement(), new UndefinedHeightResizeListener());
+        portletChrome.getHeader().setLayoutManager(layoutManager);
     }
 
     public PortletChrome getPortletChrome() {
@@ -225,17 +224,17 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
         return portletChrome.isCollapsed();
     }
 
-    @Override
-    public PortletState getState() {
-        return (PortletState) super.getState();
-    }
-
     public void setCaption(String caption) {
         portletChrome.getHeader().setCaptionText(caption);
     }
 
     public void setIcon(String url) {
         portletChrome.getHeader().setIcon(url);
+    }
+
+    @Override
+    public PortletState getState() {
+        return (PortletState) super.getState();
     }
 
     @Override
@@ -251,8 +250,8 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onUnregister() {
-        portletChrome.getAssociatedSlot().removeFromParent();
         portletChrome.removeFromParent();
+        portletChrome.getAssociatedSlot().removeFromParent();
         super.onUnregister();
     }
 
@@ -263,6 +262,16 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     public LayoutManager getLayoutManager() {
         return layoutManager;
+    }
+
+    public void setWidth(String width) {
+        portletChrome.getAssociatedSlot().setWidth(width);
+    }
+
+    public void setHeight(String height) {
+        isHeightUndefined = height == null || height.isEmpty();
+        portletChrome.updateContentStructure(isHeightUndefined);
+        portletChrome.getAssociatedSlot().setHeight(height);
     }
 
     public boolean hasRelativeHeight() {

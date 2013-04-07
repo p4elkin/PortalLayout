@@ -1,12 +1,13 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
+import org.vaadin.addon.portallayout.gwt.client.portlet.header.PortletHeader;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.vaadin.addon.portallayout.gwt.client.portlet.header.PortletHeader;
 
 public class PortletChrome extends FlowPanel {
 
@@ -77,6 +78,7 @@ public class PortletChrome extends FlowPanel {
             contentEl.getStyle().clearTop();
         }
         contentEl.getStyle().setPosition(isHeightUndefined ? Position.RELATIVE : Position.ABSOLUTE);
+        setStyleName("v-portlet-undefined-height", isHeightUndefined);
         setHeight(isHeightUndefined ? "" : "100%");
     }
 }
