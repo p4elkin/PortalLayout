@@ -20,6 +20,7 @@
 
 
 .v-portlet .v-portlet-content {
+    overflow: hidden;
 	visibility: visible;
 	width: 100%;
 	position: absolute;
@@ -193,6 +194,10 @@
     float: left;
 }
 
+.v-portlet.collapsed .v-portlet-footer {
+    display: none;
+}
+
 /*MARGINS*/
 .v-portallayout-margin-top {
     padding-top: 12px;
@@ -205,4 +210,8 @@
 }
 .v-portallayout-margin-right {
     padding-right: 12px;
+}
+
+.v-portlet-resizable .v-portlet-resize-drag {
+    z-index: 0 !important;
 }

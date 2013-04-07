@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
@@ -44,6 +45,8 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
     private PortletConnector parentPortlet;
 
     private PortletChrome portletChrome;
+
+    private Element contentWrapper = DOM.createDiv();
 
     private final HTML resizeDrag = new HTML() {
 
@@ -152,8 +155,24 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
         PortletConnector portlet = (PortletConnector) target;
         PortletChrome widget = portlet.getPortletChrome();
         widget.addStyleName("v-portlet-resizable");
-        widget.insert(resizeDrag, widget.getWidgetCount() - 1);
-        widget.getElement().appendChild(footer);
+
+        Element contentElement = widget.getContentElement();
+        contentElement.appendChild(contentWrapper);
+        contentElement.appendChild(footer);
+        widget.add(resizeDrag, footer);
+        if (widget.getContentWidget() != null) {
+            widget.add(widget.getContentWidget(), contentWrapper);
+        }
+
+        Style style = contentWrapper.getStyle();
+        style.setOverflow(Style.Overflow.HIDDEN);
+        if (!getParent().isHeightUndefined) {
+            style.setPosition(Style.Position.ABSOLUTE);
+            style.setTop(0, Style.Unit.PX);
+            style.setBottom(new ComputedStyle(footer).getIntProperty("height"), Style.Unit.PX);
+            style.setLeft(0, Style.Unit.PX);
+            style.setRight(0, Style.Unit.PX);
+        }
     }
 
     @Override
@@ -176,9 +195,10 @@ public class AbsolutePortletConnector extends AbstractExtensionConnector {
 
     @Override
     public void onUnregister() {
-        portletChrome.getElement().removeChild(footer);
+        portletChrome.getContentElement().removeChild(footer);
+        portletChrome.getContentElement().removeChild(contentWrapper);
+        portletChrome.add(portletChrome.getContentWidget(), portletChrome.getContentElement());
         portletChrome.removeStyleName("v-portlet-resizable");
-        resizeDrag.removeFromParent();
         super.onUnregister();
     }
 

@@ -36,8 +36,6 @@
     cursor: se-resize;
     background: transparent;
     background-image: url(resize.png);
-    z-index: 1000;
-
 }
 
 .v-portlet-resizable .v-portlet-footer {
