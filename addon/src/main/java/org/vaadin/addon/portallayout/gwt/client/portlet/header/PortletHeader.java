@@ -52,7 +52,9 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
 
     private final Element container = DOM.createDiv();
 
-    private final Element captionContainer = DOM.createSpan();
+    private final Element captionContainer = DOM.createDiv();
+
+    private final Element captionText = DOM.createSpan();
 
     private final Element buttonContainer = DOM.createDiv();
 
@@ -68,7 +70,25 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
 
     private LayoutManager lm;
 
-    private ElementResizeListener toolbarResizeListener;
+    private ElementResizeListener captionResizeListener = new ElementResizeListener() {
+        @Override
+        public void onElementResize(ElementResizeEvent e) {
+            toolbarContainer.getStyle().setLeft(lm.getOuterHeight(e.getElement()), Style.Unit.PX);
+            if (toolbarWidget != null) {
+                lm.setNeedsMeasure(Util.findConnectorFor(toolbarWidget));
+            }
+        }
+    };
+
+    private ElementResizeListener buttonBarResizeListener = new ElementResizeListener() {
+        @Override
+        public void onElementResize(ElementResizeEvent e) {
+            toolbarContainer.getStyle().setRight(lm.getOuterHeight(e.getElement()), Style.Unit.PX);
+            if (toolbarWidget != null) {
+                lm.setNeedsMeasure(Util.findConnectorFor(toolbarWidget));
+            }
+        }
+    };
 
     private final ClickHandler closeButtonClickHandler = new ClickHandler() {
         @Override
@@ -107,14 +127,18 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
         setElement(container);
         container.addClassName(getClassName());
         container.addClassName("v-caption");
-
-        captionContainer.addClassName("v-captiontext");
-        icon.addStyleName("v-icon");
-        add(icon, container);
         container.appendChild(captionContainer);
+
+        captionContainer.setClassName("v-caption-container");
+        captionText.addClassName("v-captiontext");
+
+        icon.addStyleName("v-icon");
+        add(icon, captionContainer);
+        captionContainer.appendChild(captionText);
 
         closeButton.addClickHandler(closeButtonClickHandler);
         collapseButton.addClickHandler(collapseButtonClickHandler);
+
         add(collapseButton, buttonContainer);
         add(closeButton, buttonContainer);
 
@@ -133,39 +157,9 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
 
     public void setLayoutManager(final LayoutManager lm) {
         this.lm = lm;
-        lm.addElementResizeListener(buttonContainer, new ElementResizeListener() {
-            @Override
-            public void onElementResize(ElementResizeEvent e) {
-                updateToolbarRightPos();
-            }
-        });
 
-        lm.addElementResizeListener(getElement(), new ElementResizeListener() {
-            @Override
-            public void onElementResize(ElementResizeEvent e) {
-                updateCaptionWidth();
-            }
-        });
-
-        lm.addElementResizeListener(captionContainer, new ElementResizeListener() {
-            @Override
-            public void onElementResize(ElementResizeEvent e) {}
-        });
-    }
-
-    private void updateCaptionWidth() {
-        int buttonbarWidth = buttonContainer.getOffsetWidth();
-        int totalWidth = lm.getOuterWidth(getElement());
-        int toolbarWidth = toolbarWidget == null ? 0 : lm.getOuterWidth(toolbarWidget.getElement());
-        int captionWidth = Math.max(0, totalWidth - buttonbarWidth - toolbarWidth - lm.getPaddingLeft(captionContainer));
-        captionContainer.getStyle().setWidth(captionWidth, Style.Unit.PX);
-    }
-
-    private void updateToolbarRightPos() {
-        int buttonContainerWidth = lm.getOuterWidth(buttonContainer);
-        if (toolbarWidget != null) {
-            toolbarWidget.getElement().getStyle().setRight(buttonContainerWidth, Style.Unit.PX);
-        }
+        lm.addElementResizeListener(captionContainer, captionResizeListener);
+        lm.addElementResizeListener(buttonContainer, buttonBarResizeListener);
     }
 
     public void setIcon(String iconUri) {
@@ -182,7 +176,7 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
     }
 
     public void setCaptionText(String text) {
-        captionContainer.setInnerHTML(text);
+        captionText.setInnerHTML(text);
     }
 
     public void setClosable(boolean closable) {
@@ -225,24 +219,11 @@ public class PortletHeader extends ComplexPanel implements HasPortletCollapseEve
 
     public void setToolbar(Widget toolbar) {
         if (this.toolbarWidget != null) {
-            if (toolbarResizeListener != null) {
-                lm.removeElementResizeListener(toolbarWidget.getElement(), toolbarResizeListener);
-            }
             remove(toolbarWidget);
         }
         this.toolbarWidget = toolbar;
         if (toolbar != null) {
             add(toolbar, toolbarContainer);
-        }
-
-        if (toolbarWidget != null) {
-            lm.addElementResizeListener(toolbarWidget.getElement(), new ElementResizeListener() {
-                @Override
-                public void onElementResize(ElementResizeEvent e) {
-                    updateToolbarRightPos();
-                    updateCaptionWidth();
-                }
-            });
         }
     }
 }

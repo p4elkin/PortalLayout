@@ -32,11 +32,14 @@ import org.vaadin.addon.portallayout.gwt.shared.portal.rpc.PortalServerRpc;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.LayoutManager;
+import com.vaadin.client.ServerConnector;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
@@ -210,10 +213,29 @@ public abstract class PortalLayoutConnector extends AbstractLayoutConnector impl
     }
 
     @Override
+    public void setParent(ServerConnector parent) {
+        super.setParent(parent);
+    }
+
+    @Override
     protected Panel createWidget() {
         this.view = initView();
         this.dropController = initDropController();
         commonDragController.registerDropController(dropController);
+        view.asWidget().addAttachHandler(new AttachEvent.Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+                getLayoutManager().addElementResizeListener(((ComponentConnector)getParent()).getWidget().getElement(), new ElementResizeListener() {
+                    @Override
+                    public void onElementResize(ElementResizeEvent e) {
+                        LayoutManager lm = e.getLayoutManager();
+                        if (lm.getOuterHeight(e.getElement()) > lm.getOuterHeight(getWidget().getElement())) {
+                            //getWidget().getElement().getStyle().setProperty("height", lm.getOuterHeight(e.getElement()) + "px");
+                        }
+                    }
+                });
+            }
+        });
         return view.asWidget();
     }
 

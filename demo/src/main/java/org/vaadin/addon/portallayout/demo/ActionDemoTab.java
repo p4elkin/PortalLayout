@@ -1,10 +1,5 @@
 package org.vaadin.addon.portallayout.demo;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.*;
-import org.vaadin.addon.portallayout.container.PortalColumns;
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
 import org.vaadin.addon.portallayout.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.event.PortletCollapseEvent;
@@ -12,6 +7,20 @@ import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 import org.vaadin.addon.portallayout.portal.PortalBase;
 import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
+
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
 public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, PortletCollapseEvent.Listener {
@@ -29,11 +38,9 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
     
     private final PortalBase videoPortal = new DemoPortal() {
         @Override
-        public Portlet portletFor(Component c/*, int position*/) {
-            //clearPortletStyleNames(c);
-            //addPortletStyleName(c, "red");
+        public Portlet portletFor(Component c) {
             c.setHeight("300px");
-            Portlet p = super.portletFor(c/*, position*/);
+            Portlet p = super.portletFor(c);
             return p;
         }
     };
@@ -43,12 +50,8 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
         public Portlet portletFor(Component c/*, int position*/) {
             setWidth("100%");
             setHeight("800px");
-            //clearPortletStyleNames(c);
-            //addPortletStyleName(c, "green");
             c.setHeight("30%");
             Portlet p = super.portletFor(c/*, position*/);
-            //p.setCaption("Test Image");
-            //p.setPreferredContentWidth("200px");
             addPortletCloseListener(ActionDemoTab.this);
             addPortletCollapseListener(ActionDemoTab.this);
             return p;
@@ -58,27 +61,20 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
     private final PortalBase miscPortal = new DemoPortal()  {
         @Override
         public Portlet portletFor(Component c/*, int position*/) {
-            
-            //c.setHeight("300px");
             Portlet p = super.portletFor(c/*, position*/);
-            //p.setLocked(true);
             return p;
-            //clearPortletStyleNames(c);
-            //addPortletStyleName(c, "yellow");
         };
     };
 
     private boolean init = false;
-    
-    private final PortalColumns layout = new PortalColumns();
+
+    private final HorizontalLayout layout = new HorizontalLayout();
     
     public ActionDemoTab() {
         super();
         setSizeFull();
         setContent(layout);
         layout.setWidth("100%");
-        //layout.setMargin(true);
-        //layout.setSpacing(true);
         buildPortals();
         construct();
     }
@@ -86,9 +82,9 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
     private void buildPortals() {
         ((StackPortalLayout)videoPortal).setSpacing(false);
         ((StackPortalLayout)miscPortal).setSpacing(true);
-        layout.appendPortal(videoPortal);
-        layout.appendPortal(imagePortal);
-        layout.appendPortal(miscPortal);
+        layout.addComponent(videoPortal);
+        layout.addComponent(imagePortal);
+        layout.addComponent(miscPortal);
     }
     
 
@@ -137,41 +133,6 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
         final PortalImage image = new PortalImage();
         Portlet portlet = imagePortal.portletFor(image);
         portlet.setClosable(false);
-        /*final RatingStars rating = new RatingStars();
-        rating.setImmediate(true);
-        rating.addListener(new ValueChangeListener() {            
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                if (rating.getValue() != null) {
-                    image.setRating((Double)rating.getValue());
-                }
-            }
-        });*/
-        //imagePortal.setHeaderComponent(image, rating);
-        /*imagePortal.addAction(image, new ToolbarAction(new ThemeResource("arrow_right.png")) {
-            @Override
-            public void execute(final Context context) {
-                if (!image.isEmpty()) {
-                    image.showNextFile();
-                    final Component header = context.getPortal().getHeaderComponent(image);
-                    if (header instanceof Field) {
-                        ((Field) header).setValue(image.getRating());
-                    }
-                }
-            }
-        });
-        imagePortal.addAction(image, new ToolbarAction(new ThemeResource("arrow_left.png")) {
-            @Override
-            public void execute(final Context context) {
-                if (!image.isEmpty()) {
-                    image.showPrevFile();
-                    final Component header = context.getPortal().getHeaderComponent(image);
-                    if (header instanceof Field) {
-                        ((Field) header).setValue(image.getRating());
-                    }
-                }
-            }
-        });*/
     }
     
     private void createVideoContents() {
@@ -208,38 +169,7 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
                 //pl.setVideoId(idField.getValue().toString());
             }
         });
-        
-        /*videoPortal.setHeaderComponent(pl, header);
-        videoPortal.addAction(pl, new ToolbarAction(new ThemeResource("stop.png")) {
-            @Override
-            public void execute(final Context context) {
-                pl.stop();
-                final Notification n = new Notification("Stop! If didn't stop - DO NOT use YouTube add-on and FF!");
-                n.setDelayMsec(1000);
-                getWindow().showNotification(n);
-            }
-        });
-        
-        videoPortal.addAction(pl, new ToolbarAction(new ThemeResource("pause.png")) {
-            @Override
-            public void execute(final Context context) {
-                pl.pause();
-                final Notification n = new Notification("Pause! If didn't pause - DO NOT use YouTube add-on and FF!");
-                n.setDelayMsec(1000);
-                getWindow().showNotification(n);
-            }
-        });
-        
-        videoPortal.addAction(pl, new ToolbarAction(new ThemeResource("play.png")) {
-            @Override
-            public void execute(final Context context) {
-                pl.requestRepaint();
-                pl.play();
-                final Notification n = new Notification("Play! If didn't start - DO NOT use YouTube add-on and FF!");
-                n.setDelayMsec(1000);
-                getWindow().showNotification(n);
-            }
-        });*/
+
     }
 
     @Override

@@ -61,17 +61,21 @@
 	line-height: normal;
 	color: #fff;
 	white-space: nowrap;
-
 	text-overflow: ellipsis;
 	-ms-text-overflow: ellipsis;
+}
 
-	padding-top: 7px;
-	padding-bottom: 2px;
-	padding-left: 4px;
-    height: 20px;
-
+.v-portlet > .v-portlet-header .v-caption-container {
     float: left;
     overflow: hidden;
+    padding-top: 7px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    height: 20px;
+    text-align: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .v-portlet-draggable:hover {
@@ -132,12 +136,6 @@
     cursor: move;
 }
 
-.v-portlet .v-portlet-header .v-captiontext {
-    padding-left: 7px;
-    height: 100%;
-    float: left;
-}
-
 
 .v-portlet .v-portlet-header .v-icon {
     float: left;
@@ -180,12 +178,14 @@
 
 .v-portlet .v-portlet-header-widget-slot {
     height: 100%;
-    width: 100%;
     padding-top: 2px;
+    position: absolute;
+    text-align: right;
 }
 
 .v-portlet .v-portlet-header-widget-slot > .v-widget {
     position: absolute;
+    right: 0;
 }
 
 .v-portlet .v-portlet-header .v-caption {

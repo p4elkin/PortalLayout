@@ -49,11 +49,6 @@ public class PortletChrome extends FlowPanel {
     }
 
     @Override
-    public void add(Widget child, Element container) {
-        super.add(child, container);
-    }
-
-    @Override
     public void add(Widget child) {
         super.add(child, contentEl);
     }

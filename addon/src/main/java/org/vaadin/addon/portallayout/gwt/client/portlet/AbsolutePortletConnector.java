@@ -16,7 +16,7 @@
 package org.vaadin.addon.portallayout.gwt.client.portlet;
 
 import org.vaadin.addon.portallayout.gwt.shared.portlet.AbsolutePositionPortletState;
-import org.vaadin.addon.portallayout.portlet.AbsolutePositionPortlet;
+import org.vaadin.addon.portallayout.portlet.AbsolutePortletExtension;
 
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.google.gwt.core.client.Scheduler;
@@ -35,9 +35,9 @@ import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Client-side connector that corresponds to {@link AbsolutePositionPortlet}.
+ * Client-side connector that corresponds to {@link org.vaadin.addon.portallayout.portlet.AbsolutePortletExtension}.
  */
-@Connect(AbsolutePositionPortlet.class)
+@Connect(AbsolutePortletExtension.class)
 public class AbsolutePortletConnector extends AbstractExtensionConnector {
 
     private Element footer = DOM.createDiv();
