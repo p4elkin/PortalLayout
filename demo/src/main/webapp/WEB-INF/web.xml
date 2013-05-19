@@ -12,12 +12,12 @@
         <init-param>
             <description>Vaadin UI to display</description>
             <param-name>UI</param-name>
-            <param-value>org.vaadin.addon.portallayout.PortalLayoutDemoUI</param-value>
+            <param-value>org.vaadin.addons.portallayout.PortalLayoutDemoUI</param-value>
         </init-param>
                 <init-param>
             <description>Application widgetset</description>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.addon.portallayout.gwt.PortalLayoutDemoWidgetSet</param-value>
+            <param-value>org.vaadin.addons.portallayout.gwt.PortalLayoutDemoWidgetSet</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

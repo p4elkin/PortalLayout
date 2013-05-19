@@ -41,9 +41,9 @@
 			</includes>
 		</fileSet>
 		<!-- These are in the javadoc and sources JARs -->
-		<!-- <fileSet> <directory>addon/target/site</directory> <outputDirectory></outputDirectory> 
+		<!-- <fileSet> <directory>addons/target/site</directory> <outputDirectory></outputDirectory>
 			<includes> <include>apidocs/**</include> </includes> </fileSet> <fileSet> 
-			<directory>addon/src/main</directory> <outputDirectory>addon/src/main</outputDirectory> 
+			<directory>addons/src/main</directory> <outputDirectory>addons/src/main</outputDirectory>
 			<includes> <include>**</include> </includes> </fileSet> -->
 		<fileSet>
 			<directory>demo/src/main/java</directory>

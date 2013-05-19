@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.vaadin.addon</groupId>
+	<groupId>org.vaadin.addons</groupId>
 	<artifactId>PortalLayout</artifactId>
 	<version>2.0.alpha5</version>
 	<packaging>jar</packaging>
@@ -153,7 +153,7 @@
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 							<Vaadin-Package-Version>1</Vaadin-Package-Version>
 							<Vaadin-Addon>PortalLayout-${pom.version}.jar</Vaadin-Addon>
-							<Vaadin-Widgetsets>org.vaadin.addon.portallayout.gwt.PortalLayoutWidgetSet</Vaadin-Widgetsets>
+							<Vaadin-Widgetsets>org.vaadin.addons.portallayout.gwt.PortalLayoutWidgetSet</Vaadin-Widgetsets>
 						</manifestEntries>
 					</archive>
 				</configuration>
