@@ -3,7 +3,6 @@ package org.vaadin.addon.portallayout.demo;
 import org.vaadin.addon.portallayout.demo.DemoTable.NameType;
 import org.vaadin.addon.portallayout.event.PortletCloseEvent;
 import org.vaadin.addon.portallayout.event.PortletCollapseEvent;
-import org.vaadin.addon.portallayout.portal.AbsolutePortalLayout;
 import org.vaadin.addon.portallayout.portal.PortalBase;
 import org.vaadin.addon.portallayout.portal.StackPortalLayout;
 import org.vaadin.addon.portallayout.portlet.Portlet;
@@ -45,7 +44,7 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
         }
     };
     
-    private final PortalBase imagePortal = new AbsolutePortalLayout() {
+    private final PortalBase imagePortal = new DemoPortal() {
         @Override
         public Portlet portletFor(Component c/*, int position*/) {
             setWidth("100%");
