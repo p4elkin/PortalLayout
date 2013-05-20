@@ -97,35 +97,37 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
     }
     
     private void createMiscContents() {
-        final DemoTable table = new DemoTable();
-        Portlet portlet = miscPortal.portletFor(table);
-        table.setCaption("Artists");
-        //table.setIcon(new ThemeResource("chart.png"));
-        
-        final HorizontalLayout header =  new HorizontalLayout();
-        final TextField filterField = new TextField();
-        final NativeSelect filterType = new NativeSelect();
-        final Label caption = new Label("Filter: ");
-        for (final NameType t : NameType.values()) {
-            filterType.addItem(t);
-        }
-        filterType.setValue(NameType.NT_FIRST_NAME);
-        caption.addStyleName("v-white-text");
-        filterField.setImmediate(true);
-        header.setSizeUndefined();
-        header.addComponent(caption);
-        header.addComponent(filterField);
-        header.addComponent(filterType);
-        header.setSpacing(true);
-        header.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-        header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);
-        portlet.setHeaderComponent(header);
-        filterField.addListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                table.filter((NameType)filterType.getValue(), filterField.getValue());
+        for (int i = 0; i < 2; ++i) {
+            final DemoTable table = new DemoTable();
+            Portlet portlet = miscPortal.portletFor(table);
+            table.setCaption("Artists");
+            //table.setIcon(new ThemeResource("chart.png"));
+
+            final HorizontalLayout header =  new HorizontalLayout();
+            final TextField filterField = new TextField();
+            final NativeSelect filterType = new NativeSelect();
+            final Label caption = new Label("Filter: ");
+            for (final NameType t : NameType.values()) {
+                filterType.addItem(t);
             }
-        });
+            filterType.setValue(NameType.NT_FIRST_NAME);
+            caption.addStyleName("v-white-text");
+            filterField.setImmediate(true);
+            header.setSizeUndefined();
+            header.addComponent(caption);
+            header.addComponent(filterField);
+            header.addComponent(filterType);
+            header.setSpacing(true);
+            header.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
+            header.setComponentAlignment(filterType, Alignment.MIDDLE_LEFT);
+            portlet.setHeaderComponent(header);
+            filterField.addListener(new ValueChangeListener() {
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    table.filter((NameType)filterType.getValue(), filterField.getValue());
+                }
+            });
+        }
     }
 
     private void createImageContents() {

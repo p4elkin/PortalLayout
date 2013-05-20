@@ -58,10 +58,6 @@ public class PortletChrome extends FlowPanel {
         super.add(child, container);
     }
 
-    public Element getContentElement() {
-        return contentEl;
-    }
-
     public void blur() {
         if (contentWidget != null) {
             contentWidget.getElement().blur();

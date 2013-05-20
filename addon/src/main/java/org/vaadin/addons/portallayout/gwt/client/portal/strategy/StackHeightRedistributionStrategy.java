@@ -15,19 +15,20 @@
  */
 package org.vaadin.addons.portallayout.gwt.client.portal.strategy;
 
-import com.google.gwt.user.client.Element;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ComputedStyle;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.Util;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.vaadin.addons.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addons.portallayout.gwt.client.portal.connection.PortalLayoutConnector;
 import org.vaadin.addons.portallayout.gwt.client.portlet.PortletChrome;
 import org.vaadin.addons.portallayout.gwt.client.portlet.PortletConnector;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.google.gwt.user.client.Element;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.Profiler;
+import com.vaadin.client.Util;
 
 /**
  * StackHeightRedistributionStrategy.
@@ -61,7 +62,7 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
             boolean isSpacing = portalConnector.getState().spacing;
             int spacingConsumption = 0;
             if (isSpacing && portalConnector.getView().getWidgetCount() > 0) {
-                Element spacingEl = portalConnector.getWidget().getElement().getChild(1).cast();
+                Element spacingEl = portalConnector.getWidget().getElement().getChild(0).cast();
                 spacingConsumption += new ComputedStyle(spacingEl).getIntProperty("height") * portalConnector.getView().getWidgetCount() - 1;
             }
             int reservedForRelativeSize = totalPortalHeight - totalFixedHeightConsumption - spacingConsumption;

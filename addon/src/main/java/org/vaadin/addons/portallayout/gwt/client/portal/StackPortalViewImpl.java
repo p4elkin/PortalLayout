@@ -3,7 +3,7 @@ package org.vaadin.addons.portallayout.gwt.client.portal;
 import org.vaadin.addons.portallayout.gwt.client.portlet.PortletChrome;
 
 import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -11,16 +11,12 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class StackPortalViewImpl extends FlowPanel implements PortalView {
-
-    private final Element sentinelElement = DOM.createDiv();
     
     private final Presenter presenter;
 
     public StackPortalViewImpl(Presenter presenter) {
         super();
         this.presenter = presenter;
-        this.sentinelElement.getStyle().setDisplay(Display.NONE);
-        getElement().appendChild(sentinelElement);
         DragClientBundle.INSTANCE.css().ensureInjected();
     }
 
@@ -36,23 +32,33 @@ public class StackPortalViewImpl extends FlowPanel implements PortalView {
         beforeIndex = adjustIndex(w, beforeIndex);
         w.removeFromParent();
         getChildren().insert(w, beforeIndex);
-        if (getWidgetCount() > 1) {
-            DOM.insertChild(getElement(), createSpacer(), beforeIndex > 0 ? 2 * beforeIndex - 1 : 0);
+
+        if (beforeIndex == 0) {
+            ((Element)getElement().getFirstChild()).getStyle().setDisplay(Style.Display.BLOCK);
         }
+
         DOM.insertChild(getElement(), w.getElement(), beforeIndex > 0 ? 2 * beforeIndex : 0);
+        DOM.insertChild(getElement(), createSpacer(), beforeIndex > 0 ? 2 * beforeIndex : 0);
+
+        if (getWidgetCount() > 0) {
+            ((Element)getElement().getFirstChild()).getStyle().setDisplay(Style.Display.NONE);
+        }
+
         // Adopt.
         adopt(w);
     }
     
     @Override
     public boolean remove(Widget w) {
+        Element root = getElement();
         int index = getWidgetIndex(w);
-        if (index <  getWidgetCount() - 1) {
-            Element spacer = getElement().getChild(2 * index + 1).cast();
-            getElement().removeChild(spacer);
-        }
+        Element spacer = root.getChild(2 * index).cast();
+        root.removeChild(spacer);
         boolean result =  super.remove(w);
         presenter.recalculateHeights();
+        if (getWidgetCount() > 0) {
+            ((Element)getElement().getFirstChild()).getStyle().setDisplay(Style.Display.NONE);
+        }
         return result;
     }
     
@@ -60,7 +66,7 @@ public class StackPortalViewImpl extends FlowPanel implements PortalView {
     public void addPortlet(PortletChrome p) {
         p.getAssociatedSlot().setWidget(p);
         if (getWidgetIndex(p.getAssociatedSlot()) < 0) {
-            insert(p.getAssociatedSlot(), getElement().getChildCount() - 1);
+            insert(p.getAssociatedSlot(), getWidgetCount());
         }
     }
 

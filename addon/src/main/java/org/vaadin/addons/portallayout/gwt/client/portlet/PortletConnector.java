@@ -119,6 +119,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
                     }
                 }
 
+                portletChrome.getHeader().toggleCollapseStyles(getState().collapsed);
                 portletChrome.setStyleName("collapsed", getState().collapsed);
                 portletChrome.getAssociatedSlot().setHeight(slotHeight);
                 /**
@@ -244,7 +245,6 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
     @Override
     public void onPortletCollapse(PortletCollapseEventGwt e) {
-        portletChrome.getHeader().toggleCollapseStyles(!getState().collapsed);
         rpc.setCollapsed(!getState().collapsed);
     }
 
@@ -258,10 +258,6 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     @Override
     public ComponentConnector getParent() {
         return super.getParent() == null ? null : (ComponentConnector) super.getParent();
-    }
-
-    public LayoutManager getLayoutManager() {
-        return layoutManager;
     }
 
     public void setWidth(String width) {
