@@ -84,6 +84,7 @@ public class ActionDemoTab extends Panel implements PortletCloseEvent.Listener, 
         layout.addComponent(videoPortal);
         layout.addComponent(imagePortal);
         layout.addComponent(miscPortal);
+        layout.setSpacing(true);
     }
     
 

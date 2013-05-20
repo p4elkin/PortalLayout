@@ -15,15 +15,16 @@
  */
 package org.vaadin.addons.portallayout.portal;
 
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.communication.SharedState;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Layout.SpacingHandler;
+import java.util.LinkedList;
+
 import org.vaadin.addons.portallayout.gwt.shared.portal.StackPortalLayoutState;
 import org.vaadin.addons.portallayout.gwt.shared.portal.rpc.StackPortalRpc;
 import org.vaadin.addons.portallayout.portlet.Portlet;
 
-import java.util.LinkedList;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.SharedState;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Layout.SpacingHandler;
 
 /**
  * Stacks the child components inside of itself wrapping each of them into a {@link Portlet} instance. 
@@ -56,12 +57,6 @@ public class StackPortalLayout extends PortalBase implements SpacingHandler {
             portlets.remove(portlet);
         }
         portlets.add(index, portlet);
-    }
-    
-    @Override
-    public void removePortlet(Portlet portlet) {
-        //portlet.getContent().setWidth(portlet.getPreferredFixedContentWidth());
-        super.removePortlet(portlet);
     }
 
     @Override

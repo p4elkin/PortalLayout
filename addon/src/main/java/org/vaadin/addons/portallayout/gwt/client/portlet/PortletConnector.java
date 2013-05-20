@@ -54,7 +54,7 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
 
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            if (isHeightUndefined) {
+            if (isHeightUndefined && !isCollapsed()) {
                 portletChrome.getAssociatedSlot().setHeight(layoutManager.getOuterHeight(e.getElement()) + "px");
             }
         }
@@ -134,20 +134,22 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
      * restriction to the one that has width restrictions (like
      * {@link StackPortalLayout}) and sets the width to a {@link PortletChrome},
      * we save the new width and send it to server.
+     *
+     * This method is temporarily useless (until the absolute-positioned portlets land).
      */
     private final class SlotSizeChangeListener implements ElementResizeListener {
 
         @Override
         public void onElementResize(final ElementResizeEvent e) {
             if (!isCollapsed()) {
-                rpc.updatePixelWidth(layoutManager.getOuterWidth(e.getElement()));
+                //rpc.updatePixelWidth(layoutManager.getOuterWidth(e.getElement()));
                 /**
                  * In case slot was re-sized, state will still contain relative height
                  * whereas slot already has pixels. This is why we check the actual state of slot here.
                  */
                 if (Util.parseRelativeSize(portletChrome.getAssociatedSlot().getHeight()) < 0 && !isHeightUndefined) {
                     isHeightRelative = false;
-                    rpc.updatePixelHeight(layoutManager.getOuterHeight(e.getElement()));
+                    //rpc.updatePixelHeight(layoutManager.getOuterHeight(e.getElement()));
                 }
             }
         }
@@ -258,10 +260,6 @@ public class PortletConnector extends AbstractExtensionConnector implements Port
     @Override
     public ComponentConnector getParent() {
         return super.getParent() == null ? null : (ComponentConnector) super.getParent();
-    }
-
-    public void setWidth(String width) {
-        portletChrome.getAssociatedSlot().setWidth(width);
     }
 
     public void setHeight(String height) {

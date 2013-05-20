@@ -30,5 +30,9 @@ public class PortletSlot extends SimplePanel {
     public void setHeight(String height) {
         super.setHeight(height);
     }
-   
+
+    @Override
+    public void setWidth(String width) {
+        super.setWidth(width);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

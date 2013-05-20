@@ -15,6 +15,20 @@
  */
 package org.vaadin.addons.portallayout.portal;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.vaadin.addons.portallayout.event.HasPortletCloseListeners;
+import org.vaadin.addons.portallayout.event.HasPortletCollapseListeners;
+import org.vaadin.addons.portallayout.event.PortletCloseEvent;
+import org.vaadin.addons.portallayout.event.PortletCollapseEvent;
+import org.vaadin.addons.portallayout.gwt.shared.portal.PortalLayoutState;
+import org.vaadin.addons.portallayout.portlet.Portlet;
+
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.Extension;
 import com.vaadin.shared.Connector;
@@ -24,15 +38,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout.MarginHandler;
-import org.vaadin.addons.portallayout.event.HasPortletCloseListeners;
-import org.vaadin.addons.portallayout.event.HasPortletCollapseListeners;
-import org.vaadin.addons.portallayout.event.PortletCloseEvent;
-import org.vaadin.addons.portallayout.event.PortletCollapseEvent;
-import org.vaadin.addons.portallayout.gwt.shared.portal.PortalLayoutState;
-import org.vaadin.addons.portallayout.portlet.Portlet;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Base class for Portal Layouts.
@@ -136,13 +141,6 @@ public abstract class PortalBase extends AbstractComponent implements MarginHand
         return (Portlet) getState().contentToPortlet.get(c);
     }
 
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        for (Connector portlet : getState().portlets()) {
-            ((Portlet)portlet).delegateSizeManagement(initial);
-        }
-    }
 
     /**
      * Finds or creates a Portlet based on the Component. In case there is no

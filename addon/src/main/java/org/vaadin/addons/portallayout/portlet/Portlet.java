@@ -15,13 +15,13 @@
  */
 package org.vaadin.addons.portallayout.portlet;
 
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.AbstractExtension;
-import com.vaadin.ui.Component;
-
 import org.vaadin.addons.portallayout.gwt.shared.portlet.PortletState;
 import org.vaadin.addons.portallayout.gwt.shared.portlet.rpc.PortletServerRpc;
 import org.vaadin.addons.portallayout.portal.PortalBase;
+
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.Component;
 
 /**
  * Extends a component on the client-side by providing a chrome with controls, icon and a caption.
@@ -36,7 +36,7 @@ public class Portlet extends AbstractExtension {
             @Override
             public void setCollapsed(boolean isCollapsed) {
                 getState().collapsed = isCollapsed;
-                getPortalLayout().firePortletCollapseEvent(Portlet.this);
+                getPortal().firePortletCollapseEvent(Portlet.this);
             }
 
             @Override
@@ -51,12 +51,16 @@ public class Portlet extends AbstractExtension {
 
             @Override
             public void close() {
-                getPortalLayout().closePortlet(Portlet.this);
+                getPortal().closePortlet(Portlet.this);
             }
         });
     }
 
-    private PortalBase getPortalLayout() {
+    /**
+     * Get instance of {@link PortalBase} that holds the current {@link Portlet}.
+     * @return parent portal.
+     */
+    private PortalBase getPortal() {
         return getContent().getParent() == null ? null : (PortalBase) getContent().getParent();
     }
 
@@ -68,18 +72,19 @@ public class Portlet extends AbstractExtension {
         this();
         wrap(portletContent);
     }
-    
-    @Override
-    public void remove() {
-        getParent().setHeight(getState().height);
-        getParent().setWidth(getState().width);
-        super.remove();
-    }
-    
+
+    /**
+     * Extend a {@link Component} with portlet chrome.
+     * @param content component to be extended.
+     */
     public void wrap(Component content) {
         extend((AbstractClientConnector)content);
     }
-    
+
+    /**
+     * Adds a component to the header of the current {@link Portlet}.
+     * @param header Component to be displayed in the header.
+     */
     public void setHeaderComponent(Component header) {
         if (getState().headerComponent != null) {
             ((Component)getState().headerComponent).setParent(null);
@@ -87,7 +92,24 @@ public class Portlet extends AbstractExtension {
         getState().headerComponent = header;
         header.setParent(getParent().getParent());
     }
-    
+
+
+    /**
+     * Get {@link Component} wrapped in the current {@link Portlet}.
+     * @return wrapped component.
+     */
+    public Component getContent() {
+        return getParent() == null ? null : getParent();
+    }
+
+    /**
+     * Get {@link Component} displayed in the header.
+     * @return
+     */
+    public Component getHeaderComponent() {
+        return getState().headerComponent == null ? null : (Component)getState().headerComponent;
+    }
+
     public void setCollapsed(boolean collapsed) {
         getState().collapsed = collapsed;
     }
@@ -143,21 +165,26 @@ public class Portlet extends AbstractExtension {
         getState().caption = string;
     }
 
-    public Component getContent() {
-        return getParent() == null ? null : getParent();
+
+    @Override
+    public void remove() {
+        getParent().setHeight(getState().height);
+        getParent().setWidth(getState().width);
+        super.remove();
     }
 
-    public Component getHeaderComponent() {
-        return getState().headerComponent == null ? null : (Component)getState().headerComponent;
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        delegateSizeManagement(initial);
     }
-
 
     @Override
     public Component getParent() {
         return (Component) super.getParent();
     }
 
-    public void delegateSizeManagement(boolean initial) {
+    private void delegateSizeManagement(boolean initial) {
         final Component c = getParent();
         String width = String.format("%d%s", (int)c.getWidth(), c.getWidthUnits().getSymbol());
 

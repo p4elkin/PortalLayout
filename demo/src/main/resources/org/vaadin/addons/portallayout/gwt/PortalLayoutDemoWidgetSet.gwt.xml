@@ -4,4 +4,5 @@
     <set-property name="user.agent" value="safari, gecko1_8"/>
     <set-configuration-property name="devModeRedirectEnabled" value="true" />
     <!-- <set-property name="vaadin.profiler" value="true"/> -->
+
 </module>

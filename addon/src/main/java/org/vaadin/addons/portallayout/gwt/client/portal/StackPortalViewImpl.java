@@ -33,14 +33,14 @@ public class StackPortalViewImpl extends FlowPanel implements PortalView {
         w.removeFromParent();
         getChildren().insert(w, beforeIndex);
 
-        if (beforeIndex == 0) {
+        if (beforeIndex == 0 && getElement().getChildCount() > 0) {
             ((Element)getElement().getFirstChild()).getStyle().setDisplay(Style.Display.BLOCK);
         }
 
         DOM.insertChild(getElement(), w.getElement(), beforeIndex > 0 ? 2 * beforeIndex : 0);
         DOM.insertChild(getElement(), createSpacer(), beforeIndex > 0 ? 2 * beforeIndex : 0);
 
-        if (getWidgetCount() > 0) {
+        if (getElement().getChildCount() > 0) {
             ((Element)getElement().getFirstChild()).getStyle().setDisplay(Style.Display.NONE);
         }
 
