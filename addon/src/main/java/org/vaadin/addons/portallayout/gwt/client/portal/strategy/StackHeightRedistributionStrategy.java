@@ -72,7 +72,9 @@ public class StackHeightRedistributionStrategy implements PortalHeightRedistribu
                 if (!portletConnector.isCollapsed()) {
                     float height = Util.parseRelativeSize(portletConnector.getState().height);
                     double slotHeight = (height / totalPercentage * ratio);
-                    portletConnector.getPortletChrome().getAssociatedSlot().setHeight(slotHeight + "%");
+                    int headerHeight = portletConnector.getPortletChrome().getHeader().getOffsetHeight();
+                    String slotHeightStr = headerHeight > (slotHeight * totalPortalHeight) / 100d ? headerHeight + "px" : slotHeight + "%";
+                    portletConnector.getPortletChrome().getAssociatedSlot().setHeight(slotHeightStr);
                 }
             }
         }

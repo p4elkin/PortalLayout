@@ -15,6 +15,8 @@
  */
 package org.vaadin.addons.portallayout.gwt.client.portal.connection;
 
+import java.util.Iterator;
+
 import org.vaadin.addons.portallayout.gwt.client.portal.PortalLayoutUtil;
 import org.vaadin.addons.portallayout.gwt.client.portal.PortalView;
 import org.vaadin.addons.portallayout.gwt.client.portal.StackPortalViewImpl;
@@ -25,13 +27,14 @@ import org.vaadin.addons.portallayout.portal.StackPortalLayout;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.ui.PostLayoutListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * StackPortalLayoutConnector.
  */
 @Connect(StackPortalLayout.class)
-public class StackPortalLayoutConnector extends PortalLayoutConnector {
+public class StackPortalLayoutConnector extends PortalLayoutConnector implements PostLayoutListener {
 
     @Override
     public void updatePortletPositionOnServer(ComponentConnector cc) {
@@ -71,5 +74,14 @@ public class StackPortalLayoutConnector extends PortalLayoutConnector {
     @Override
     protected StackPortalRpc initRpc() {
         return RpcProxy.create(StackPortalRpc.class, this);
+    }
+
+    @Override
+    public void postLayout() {
+        Iterator<Widget> it = getWidget().iterator();
+        while (it.hasNext()) {
+            Widget w = it.next();
+            w.setWidth("100%");
+        }
     }
 }

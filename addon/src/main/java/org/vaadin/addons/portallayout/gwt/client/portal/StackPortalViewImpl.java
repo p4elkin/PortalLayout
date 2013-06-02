@@ -28,7 +28,6 @@ public class StackPortalViewImpl extends FlowPanel implements PortalView {
     @Override
     public void insert(Widget w, int beforeIndex) {
         presenter.recalculateHeights();
-        w.setWidth("100%");
         beforeIndex = adjustIndex(w, beforeIndex);
         w.removeFromParent();
         getChildren().insert(w, beforeIndex);
